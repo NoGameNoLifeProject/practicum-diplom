@@ -3,7 +3,7 @@ package ru.practicum.android.diploma.domain.impl
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.data.dto.AreaDto
-import ru.practicum.android.diploma.data.dto.Industry
+import ru.practicum.android.diploma.data.dto.IndustryDto
 import ru.practicum.android.diploma.data.dto.VacancyDto
 import ru.practicum.android.diploma.data.dto.VacancyDetailsDto
 import ru.practicum.android.diploma.data.network.dto.GetVacancyDetailsRequest
@@ -41,7 +41,7 @@ class VacancyInteractorImpl(private val repository: IVacancyRepository) : IVacan
         }
     }
 
-    override fun getIndustries(): Flow<Pair<List<Industry>?, String?>> = flow {
+    override fun getIndustries(): Flow<Pair<List<IndustryDto>?, String?>> = flow {
         repository.getIndustries().collect { result ->
             when (result) {
                 is Resource.Error -> {

@@ -3,7 +3,7 @@ package ru.practicum.android.diploma.data
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.data.dto.AreaDto
-import ru.practicum.android.diploma.data.dto.Industry
+import ru.practicum.android.diploma.data.dto.IndustryDto
 import ru.practicum.android.diploma.data.dto.VacancyDetailsDto
 import ru.practicum.android.diploma.data.network.dto.GetAreasRequest
 import ru.practicum.android.diploma.data.network.dto.GetIndustriesRequest
@@ -48,7 +48,7 @@ class VacancyRepositoryImpl(private val networkClient: IRetrofitApiClient) : IVa
         }
     }
 
-    override fun getIndustries(): Flow<Resource<List<Industry>>> = flow {
+    override fun getIndustries(): Flow<Resource<List<IndustryDto>>> = flow {
         val result = networkClient.getIndustries(GetIndustriesRequest())
         val body = result.body()
         if (result.isSuccessful && body != null) {

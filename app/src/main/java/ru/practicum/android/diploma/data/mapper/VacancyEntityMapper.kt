@@ -2,7 +2,7 @@ package ru.practicum.android.diploma.data.mapper
 
 import ru.practicum.android.diploma.data.db.FavVacancyEntity
 import ru.practicum.android.diploma.data.dto.AreaDto
-import ru.practicum.android.diploma.data.dto.Employer
+import ru.practicum.android.diploma.data.dto.EmployerDto
 import ru.practicum.android.diploma.data.dto.ExperienceDto
 import ru.practicum.android.diploma.data.dto.KeySkillDto
 import ru.practicum.android.diploma.data.dto.LogoUrlsDto
@@ -12,7 +12,7 @@ import ru.practicum.android.diploma.data.dto.VacancyDetailsDto
 
 class VacancyEntityMapper {
     private fun convertToVacancy(entity: FavVacancyEntity): VacancyDto {
-        val employer = Employer(
+        val employer = EmployerDto(
             id = entity.employerId,
             name = entity.employerName,
             logoUrls = LogoUrlsDto(original = entity.employerLogoUrl)

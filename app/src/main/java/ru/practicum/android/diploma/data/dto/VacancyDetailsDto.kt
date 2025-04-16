@@ -10,7 +10,7 @@ data class VacancyDetailsDto(
 
     val description: String? = null,
 
-    val employer: Employer? = null,
+    val employer: EmployerDto? = null,
 
     @SerializedName("key_skills") val keySkills: ArrayList<KeySkillDto> = arrayListOf(),
 

@@ -2,7 +2,7 @@ package ru.practicum.android.diploma.data.network.dto
 
 import com.google.gson.annotations.SerializedName
 import ru.practicum.android.diploma.data.dto.AreaDto
-import ru.practicum.android.diploma.data.dto.Employer
+import ru.practicum.android.diploma.data.dto.EmployerDto
 import ru.practicum.android.diploma.data.dto.ExperienceDto
 import ru.practicum.android.diploma.data.dto.KeySkillDto
 import ru.practicum.android.diploma.data.dto.SalaryDto
@@ -15,7 +15,7 @@ data class GetVacancyDetailsResponse(
 
     val description: String? = null,
 
-    val employer: Employer? = null,
+    val employer: EmployerDto? = null,
 
     @SerializedName("key_skills") val keySkills: ArrayList<KeySkillDto> = arrayListOf(),
 
