@@ -9,5 +9,5 @@ data class VacancyDto(
     val salary: SalaryDto? = null,
 
     @SerializedName("salary_range")
-    val salaryRange: SalaryDto? = null,
+    val salaryRange: SalaryDto? = null
 )

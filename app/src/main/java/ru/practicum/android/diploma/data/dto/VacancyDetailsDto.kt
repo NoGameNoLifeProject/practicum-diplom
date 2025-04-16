@@ -17,5 +17,5 @@ data class VacancyDetailsDto(
     val salary: SalaryDto? = null,
     val salaryRange: SalaryDto? = null,
 
-    val experience: ExperienceDto? = null,
+    val experience: ExperienceDto? = null
 )
