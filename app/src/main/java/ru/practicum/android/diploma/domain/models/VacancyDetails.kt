@@ -6,7 +6,7 @@ data class VacancyDetails(
     val area: Area? = Area(),
     val description: String? = null,
     val employer: Employer? = null,
-    val keySkills: ArrayList<KeySkill> = arrayListOf(),
+    val keySkills: List<KeySkill> = arrayListOf(),
     val salary: Salary? = null,
     val salaryRange: Salary? = null,
     val experience: Experience? = null
