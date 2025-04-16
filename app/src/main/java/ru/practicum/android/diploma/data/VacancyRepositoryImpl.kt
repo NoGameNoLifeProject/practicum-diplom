@@ -2,9 +2,9 @@ package ru.practicum.android.diploma.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import ru.practicum.android.diploma.data.dto.Area
+import ru.practicum.android.diploma.data.dto.AreaDto
 import ru.practicum.android.diploma.data.dto.Industry
-import ru.practicum.android.diploma.data.dto.VacancyDetails
+import ru.practicum.android.diploma.data.dto.VacancyDetailsDto
 import ru.practicum.android.diploma.data.network.dto.GetAreasRequest
 import ru.practicum.android.diploma.data.network.dto.GetIndustriesRequest
 import ru.practicum.android.diploma.data.network.dto.GetVacancyDetailsRequest
@@ -26,7 +26,7 @@ class VacancyRepositoryImpl(private val networkClient: IRetrofitApiClient) : IVa
         }
     }
 
-    override fun getCountries(): Flow<Resource<List<Area>>> = flow {
+    override fun getCountries(): Flow<Resource<List<AreaDto>>> = flow {
         val result = networkClient.getAreas(GetAreasRequest())
         val body = result.body()
         if (result.isSuccessful && body != null) {
@@ -38,7 +38,7 @@ class VacancyRepositoryImpl(private val networkClient: IRetrofitApiClient) : IVa
 
     override fun getVacancyDetails(
         req: GetVacancyDetailsRequest
-    ): Flow<Resource<VacancyDetails>> = flow {
+    ): Flow<Resource<VacancyDetailsDto>> = flow {
         val result = networkClient.getVacancyDetails(req)
         val body = result.body()
         if (result.isSuccessful && body != null) {
@@ -58,7 +58,7 @@ class VacancyRepositoryImpl(private val networkClient: IRetrofitApiClient) : IVa
         }
     }
 
-    private fun parseVacancyDetailsResponse(response: GetVacancyDetailsResponse) = VacancyDetails(
+    private fun parseVacancyDetailsResponse(response: GetVacancyDetailsResponse) = VacancyDetailsDto(
         id = response.id,
         name = response.name,
         area = response.area,

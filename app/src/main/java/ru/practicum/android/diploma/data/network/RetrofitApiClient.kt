@@ -2,7 +2,7 @@ package ru.practicum.android.diploma.data.network
 
 import retrofit2.Response
 import ru.practicum.android.diploma.data.IRetrofitApiClient
-import ru.practicum.android.diploma.data.dto.Area
+import ru.practicum.android.diploma.data.dto.AreaDto
 import ru.practicum.android.diploma.data.dto.Industry
 import ru.practicum.android.diploma.data.network.dto.GetAreasRequest
 import ru.practicum.android.diploma.data.network.dto.GetIndustriesRequest
@@ -29,7 +29,7 @@ class RetrofitApiClient(
         }
     }
 
-    override suspend fun getAreas(req: GetAreasRequest): Response<ArrayList<Area>> {
+    override suspend fun getAreas(req: GetAreasRequest): Response<ArrayList<AreaDto>> {
         return handleRequest {
             api.getAreas(locale = req.locale)
         }

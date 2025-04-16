@@ -5,6 +5,6 @@ import com.google.gson.annotations.SerializedName
 data class Employer(
     val id: String,
     @SerializedName("logo_urls")
-    val logoUrls: LogoUrls? = null,
+    val logoUrls: LogoUrlsDto? = null,
     val name: String,
 )

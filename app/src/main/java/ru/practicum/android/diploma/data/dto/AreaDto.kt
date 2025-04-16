@@ -2,8 +2,8 @@ package ru.practicum.android.diploma.data.dto
 
 import com.google.gson.annotations.SerializedName
 
-data class Area(
-    val areas: ArrayList<Area> = arrayListOf(),
+data class AreaDto(
+    val areas: ArrayList<AreaDto> = arrayListOf(),
     val id: String? = null,
     val name: String? = null,
     @SerializedName("parent_id")

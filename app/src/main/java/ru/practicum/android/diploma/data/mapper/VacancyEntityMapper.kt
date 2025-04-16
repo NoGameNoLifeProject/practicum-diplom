@@ -1,29 +1,29 @@
 package ru.practicum.android.diploma.data.mapper
 
 import ru.practicum.android.diploma.data.db.FavVacancyEntity
-import ru.practicum.android.diploma.data.dto.Area
+import ru.practicum.android.diploma.data.dto.AreaDto
 import ru.practicum.android.diploma.data.dto.Employer
-import ru.practicum.android.diploma.data.dto.Experience
-import ru.practicum.android.diploma.data.dto.KeySkill
-import ru.practicum.android.diploma.data.dto.LogoUrls
-import ru.practicum.android.diploma.data.dto.Salary
-import ru.practicum.android.diploma.data.dto.Vacancy
-import ru.practicum.android.diploma.data.dto.VacancyDetails
+import ru.practicum.android.diploma.data.dto.ExperienceDto
+import ru.practicum.android.diploma.data.dto.KeySkillDto
+import ru.practicum.android.diploma.data.dto.LogoUrlsDto
+import ru.practicum.android.diploma.data.dto.SalaryDto
+import ru.practicum.android.diploma.data.dto.VacancyDto
+import ru.practicum.android.diploma.data.dto.VacancyDetailsDto
 
 class VacancyEntityMapper {
-    private fun convertToVacancy(entity: FavVacancyEntity): Vacancy {
+    private fun convertToVacancy(entity: FavVacancyEntity): VacancyDto {
         val employer = Employer(
             id = entity.employerId,
             name = entity.employerName,
-            logoUrls = LogoUrls(original = entity.employerLogoUrl)
+            logoUrls = LogoUrlsDto(original = entity.employerLogoUrl)
         )
-        val salary = Salary(
+        val salary = SalaryDto(
             currency = entity.salaryCurrency.ifEmpty { null },
             from = if (entity.salaryFrom == 0) null else entity.salaryFrom,
             gross = entity.salaryGross,
             to = entity.salaryTo.ifEmpty { null }
         )
-        return Vacancy(
+        return VacancyDto(
             id = entity.id,
             name = entity.name,
             employer = employer,
@@ -32,13 +32,13 @@ class VacancyEntityMapper {
         )
     }
 
-    fun convertToVacancyDetails(entity: FavVacancyEntity): VacancyDetails {
+    fun convertToVacancyDetails(entity: FavVacancyEntity): VacancyDetailsDto {
         val vacancy = convertToVacancy(entity)
-        val area = Area(id = entity.areaId, name = entity.areaName)
-        val experience = Experience(id = entity.experienceId, name = entity.experienceName)
-        val keySkills = entity.keySkills.split(",").map { KeySkill(it) }
+        val area = AreaDto(id = entity.areaId, name = entity.areaName)
+        val experience = ExperienceDto(id = entity.experienceId, name = entity.experienceName)
+        val keySkills = entity.keySkills.split(",").map { KeySkillDto(it) }
 
-        return VacancyDetails(
+        return VacancyDetailsDto(
             id = vacancy.id,
             name = vacancy.name,
             area = area,
@@ -52,16 +52,16 @@ class VacancyEntityMapper {
     }
 
     @Suppress("CyclomaticComplexMethod")
-    fun convertFromVacancyDetails(vacancy: VacancyDetails): FavVacancyEntity {
+    fun convertFromVacancyDetails(vacancy: VacancyDetailsDto): FavVacancyEntity {
         val salary = if (vacancy.salary != null) {
-            Salary(
+            SalaryDto(
                 currency = vacancy.salary.currency ?: "",
                 from = vacancy.salary.from ?: 0,
                 gross = vacancy.salary.gross ?: false,
                 to = vacancy.salary.to ?: ""
             )
         } else {
-            Salary(
+            SalaryDto(
                 currency = vacancy.salaryRange?.currency ?: "",
                 from = vacancy.salaryRange?.from ?: 0,
                 gross = vacancy.salaryRange?.gross ?: false,
