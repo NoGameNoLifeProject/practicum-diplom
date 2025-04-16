@@ -1,8 +1,8 @@
 package ru.practicum.android.diploma.domain.api
 
-import ru.practicum.android.diploma.data.dto.VacancyDto
+import ru.practicum.android.diploma.domain.models.SearchVacanciesParam
 
 interface IStorageRepository {
-    fun read(): List<VacancyDto>
-    fun write(vacancies: List<VacancyDto>)
+    fun read(): SearchVacanciesParam
+    fun write(filterParam: SearchVacanciesParam)
 }

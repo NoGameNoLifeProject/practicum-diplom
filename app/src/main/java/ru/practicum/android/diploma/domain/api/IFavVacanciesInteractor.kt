@@ -1,11 +1,11 @@
 package ru.practicum.android.diploma.domain.api
 
 import kotlinx.coroutines.flow.Flow
-import ru.practicum.android.diploma.data.dto.VacancyDetailsDto
+import ru.practicum.android.diploma.domain.models.VacancyDetails
 
 interface IFavVacanciesInteractor {
-    fun getFavorite(): Flow<List<VacancyDetailsDto>>
-    suspend fun addToFavorite(vacancy: VacancyDetailsDto)
-    suspend fun deleteFromFavorite(vacancy: VacancyDetailsDto)
+    fun getFavorite(): Flow<List<VacancyDetails>>
+    suspend fun addToFavorite(vacancy: VacancyDetails)
+    suspend fun deleteFromFavorite(vacancy: VacancyDetails)
     suspend fun isChecked(vacancyId: String): Boolean
 }
