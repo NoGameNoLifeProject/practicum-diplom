@@ -7,7 +7,4 @@
     <color name="yp_gray">#AEAFB4</color>
     <color name="yp_light_gray">#E6E8EB</color>
     <color name="overlay">#80000000</color>
-    <!-- для поиска -->
-    <color name="search_background">#E6E8EB</color>
-    <color name="search_hint_color">#AEAFB4</color>
 </resources>

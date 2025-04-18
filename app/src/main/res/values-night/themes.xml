@@ -5,5 +5,7 @@
         <item name="textColorSecondary">@color/yp_gray</item>
         <item name="iconColorPrimary">@color/yp_white</item>
         <item name="android:statusBarColor">@color/yp_black</item>
+        <item name="searchBackgroundColor">@color/yp_gray</item>
+        <item name="searchHintColor">@color/yp_white</item>
     </style>
 </resources>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- Тёмная тема: цвета для Searchbar -->
-    <color name="search_background">#AEAFB4</color>
-    <color name="search_hint_color">#FDFDFD</color>
-</resources>
