@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/search_card"
         android:layout_width="match_parent"
         android:layout_height="56dp"
         android:layout_marginTop="8dp"
@@ -30,13 +31,14 @@
                 android:hint="@string/default_search_hint"
                 android:background="@android:color/transparent"
                 android:inputType="text"
-                android:textColor="?attr/textColorPrimary"
+                android:textColor="?attr/searchTextColor"
                 android:textColorHint="?attr/searchHintColor"
                 android:textSize="16sp"
                 android:paddingStart="0dp"
                 android:paddingEnd="0dp"
                 android:layout_marginEnd="10dp"
-                android:gravity="center_vertical" />
+                android:gravity="center_vertical"
+                android:textCursorDrawable="@drawable/cursor_blue"/>
 
             <ImageView
                 android:id="@+id/search_icon"

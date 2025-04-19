@@ -1,4 +1,4 @@
-package com.practicum.android.diploma.ui.common
+package ru.practicum.android.diploma.ui.common
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ImageView
+import androidx.cardview.widget.CardView
 import androidx.core.widget.addTextChangedListener
 import ru.practicum.android.diploma.R
 
@@ -15,6 +16,7 @@ class SearchBarView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
+    private val searchCard: CardView
     private val input: EditText
     private val actionIcon: ImageView
 
@@ -25,8 +27,21 @@ class SearchBarView @JvmOverloads constructor(
         LayoutInflater.from(context)
             .inflate(R.layout.view_searchbar, this, true)
 
+        searchCard = findViewById(R.id.search_card)
         input = findViewById(R.id.search_input)
         actionIcon = findViewById(R.id.search_icon)
+
+        context.theme.obtainStyledAttributes(
+            attrs,
+            R.styleable.SearchBarView,
+            0,
+            0
+        ).apply {
+            searchCard.setCardBackgroundColor(getColor(R.styleable.SearchBarView_searchBackgroundColor, 0))
+            input.setHint(getString(R.styleable.SearchBarView_searchHint))
+            input.setHintTextColor(getColor(R.styleable.SearchBarView_searchHintColor, 0))
+            input.setTextColor(getColor(R.styleable.SearchBarView_searchTextColor, 0))
+        }
 
         updateIcon(input.text.toString())
 
