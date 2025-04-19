@@ -4,7 +4,7 @@
 
     <!--    Экран "Поиск вакансий"-->
     <string name="search_vacancies_title">Поиск вакансий</string>
-    <string name="search_vacancies_hint">Поиск вакансий</string>
+    <string name="search_vacancies_hint">Введите запрос</string>
     <string name="search_vacancies_no_internet">Нет интернета</string>
     <string name="search_vacancies_chip_not_found">Таких вакансий нет</string>
     <string name="search_vacancies_placeholder_not_found">Не удалось получить \n список вакансий</string>

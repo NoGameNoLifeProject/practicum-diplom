@@ -9,5 +9,8 @@
         <item name="iconColorPrimary">@color/yp_black</item>
         <item name="android:statusBarColor">@color/yp_white</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="searchTextColor">@color/yp_black</item>
+        <item name="searchBackgroundColor">@color/yp_light_gray</item>
+        <item name="searchHintColor">@color/yp_gray</item>
     </style>
 </resources>
