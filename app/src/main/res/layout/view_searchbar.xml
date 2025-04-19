@@ -1,52 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/search_card"
+    <FrameLayout
+        android:id="@+id/search_container"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:cardCornerRadius="12dp"
-        app:cardElevation="2dp"
-        app:cardBackgroundColor="?attr/searchBackgroundColor">
+        android:layout_height="@dimen/search_bar_height"
+        android:layout_marginTop="@dimen/padding8"
+        android:layout_marginBottom="@dimen/padding8"
+        android:layout_marginStart="@dimen/padding16"
+        android:layout_marginEnd="@dimen/padding16"
+        android:background="@drawable/background">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:paddingTop="8dp"
-            android:paddingBottom="8dp"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:paddingTop="@dimen/padding8"
+            android:paddingBottom="@dimen/padding8"
+            android:paddingStart="@dimen/padding16"
+            android:paddingEnd="@dimen/padding16">
 
             <EditText
                 android:id="@+id/search_input"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:hint="@string/default_search_hint"
+                android:hint="@string/search_vacancies_hint"
                 android:background="@android:color/transparent"
                 android:inputType="text"
                 android:textColor="?attr/searchTextColor"
                 android:textColorHint="?attr/searchHintColor"
-                android:textSize="16sp"
+                android:textSize="@dimen/text_size_md"
                 android:paddingStart="0dp"
                 android:paddingEnd="0dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="@dimen/padding8"
                 android:gravity="center_vertical"
-                android:textCursorDrawable="@drawable/cursor_blue"/>
+                android:textCursorDrawable="@drawable/cursor_blue" />
 
             <ImageView
                 android:id="@+id/search_icon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="@dimen/padding24"
+                android:layout_height="@dimen/padding24"
                 android:src="@drawable/ic_search_24px" />
 
         </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
+    </FrameLayout>
 </merge>
