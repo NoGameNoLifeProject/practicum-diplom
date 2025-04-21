@@ -10,6 +10,9 @@
     <string name="search_vacancies_placeholder_not_found">Не удалось получить \n список вакансий</string>
     <string name="search_vacancies_placeholder_server_error">Ошибка сервера</string>
     <string name="search_vacancies_chip_found_vacancies">Найдено %s вакансий</string>
+    <string name="salary_not_detailed">Зарплата не указана</string>
+    <string name="calendar">Календарь</string>
+
 
     <!--    Экран "Настройки фильтрации"-->
     <string name="filter_parameters_title">Настройки фильтрации</string>
