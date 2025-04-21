@@ -17,6 +17,7 @@
     <dimen name="filter_panel_margin">60dp</dimen>
 
     <dimen name="vacancy_item_size">48dp</dimen>
+    <dimen name="standard_icon_size">48dp</dimen>
 
     <dimen name="search_bar_height">56dp</dimen>
 </resources>
