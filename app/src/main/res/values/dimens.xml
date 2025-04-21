@@ -6,10 +6,13 @@
     <dimen name="text_size_xl">32sp</dimen>
 
     <dimen name="padding8">8dp</dimen>
+    <dimen name="padding4">4dp</dimen>
     <dimen name="padding16">16dp</dimen>
     <dimen name="padding24">24dp</dimen>
+    <dimen name="padding32">32dp</dimen>
 
 
     <dimen name="toolbar_height">64dp</dimen>
+    <dimen name="standard_icon_size">48dp</dimen>
 
 </resources>

@@ -46,6 +46,10 @@
     <string name="vacancy_details_title">Вакансия</string>
     <string name="vacancy_details_placeholder_not_found">Вакансия не найдена или удалена</string>
     <string name="vacancy_details_placeholder_server_error">Ошибка сервера</string>
+    <string name="vacancy_details_experience">Требуемый опыт</string>
+    <string name="vacancy_details_description">Описание вакансии</string>
+    <string name="vacancy_details_key_skills">Ключевые навыки</string>
+
 
     <!--    Экран "Избранное"-->
     <string name="fav_vacancies_title">Избранное</string>

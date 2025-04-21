@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/share"
+        android:title="Поделиться"
+        android:icon="@drawable/ic_sharing_24px"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/favorite"
+        android:icon="@drawable/ic_favorites_off_24px"
+        android:title="Избранные"
+        app:showAsAction="ifRoom" />
+</menu>
