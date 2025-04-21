@@ -4,10 +4,10 @@ import retrofit2.Response
 import ru.practicum.android.diploma.data.IRetrofitApiClient
 import ru.practicum.android.diploma.data.dto.AreaDto
 import ru.practicum.android.diploma.data.dto.IndustryDto
+import ru.practicum.android.diploma.data.dto.VacancyDetailsDto
 import ru.practicum.android.diploma.data.network.dto.GetAreasRequest
 import ru.practicum.android.diploma.data.network.dto.GetIndustriesRequest
 import ru.practicum.android.diploma.data.network.dto.GetVacancyDetailsRequest
-import ru.practicum.android.diploma.data.network.dto.GetVacancyDetailsResponse
 import ru.practicum.android.diploma.data.network.dto.SearchVacanciesRequest
 import ru.practicum.android.diploma.data.network.dto.SearchVacanciesResponse
 import ru.practicum.android.diploma.data.network.dto.toQueryParams
@@ -23,7 +23,7 @@ class RetrofitApiClient(
         }
     }
 
-    override suspend fun getVacancyDetails(req: GetVacancyDetailsRequest): Response<GetVacancyDetailsResponse> {
+    override suspend fun getVacancyDetails(req: GetVacancyDetailsRequest): Response<VacancyDetailsDto> {
         return handleRequest {
             api.getVacancyDetails(id = req.vacancyId)
         }

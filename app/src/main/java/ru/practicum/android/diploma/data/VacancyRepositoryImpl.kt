@@ -7,6 +7,7 @@ import ru.practicum.android.diploma.data.mapper.MapperVacancyDetails
 import ru.practicum.android.diploma.data.network.dto.GetAreasRequest
 import ru.practicum.android.diploma.data.network.dto.GetIndustriesRequest
 import ru.practicum.android.diploma.data.network.dto.GetVacancyDetailsRequest
+import ru.practicum.android.diploma.domain.api.IStorageRepository
 import ru.practicum.android.diploma.domain.api.IVacancyRepository
 import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.Area
@@ -17,7 +18,7 @@ import ru.practicum.android.diploma.domain.models.VacancyDetails
 
 class VacancyRepositoryImpl(
     private val networkClient: IRetrofitApiClient,
-    private val filterParam: StorageRepositoryImpl,
+    private val filterParam: IStorageRepository,
     private val searchMapper: MapperSearchVacancyRequestResponse,
     private val vacancyDetailsMapper: MapperVacancyDetails
 ) : IVacancyRepository {
@@ -30,7 +31,7 @@ class VacancyRepositoryImpl(
             val vacanciesData = searchMapper.mapResponse(body)
             emit(Resource.Success(vacanciesData))
         } else {
-            emit(Resource.Error(result.message(), null))
+            emit(Resource.Error(result.errorBody()?.string().orEmpty(), null))
         }
     }
 
@@ -40,7 +41,7 @@ class VacancyRepositoryImpl(
         if (result.isSuccessful && body != null) {
             emit(Resource.Success(body.toList().map { Area(id = it.id, name = it.name, parentId = it.parentId) }))
         } else {
-            emit(Resource.Error(result.message(), null))
+            emit(Resource.Error(result.errorBody()?.string().orEmpty(), null))
         }
     }
 
@@ -50,9 +51,9 @@ class VacancyRepositoryImpl(
         val result = networkClient.getVacancyDetails(GetVacancyDetailsRequest(vacancyId))
         val body = result.body()
         if (result.isSuccessful && body != null) {
-            emit(Resource.Success(vacancyDetailsMapper.map(body.vacancyDetails)))
+            emit(Resource.Success(vacancyDetailsMapper.map(body)))
         } else {
-            emit(Resource.Error(result.message(), null))
+            emit(Resource.Error(result.errorBody()?.string().orEmpty(), null))
         }
     }
 
@@ -66,13 +67,13 @@ class VacancyRepositoryImpl(
                         Industry(
                             id = it1.id,
                             name = it1.name,
-                            subIndustries = it1.subIndustries.map { SubIndustry(id = it.id, name = it.name) }
+                            subIndustries = it1.subIndustries?.map { SubIndustry(id = it.id, name = it.name) }
                         )
                     }
                 )
             )
         } else {
-            emit(Resource.Error(result.message(), null))
+            emit(Resource.Error(result.errorBody()?.string().orEmpty(), null))
         }
     }
 }
