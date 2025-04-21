@@ -12,7 +12,7 @@ data class AreaDto(
 )
 fun AreaDto.toDomain(): Area = Area(
     areas = ArrayList(areas.map { it.toDomain() }),
-    id       = id,
-    name     = name,
+    id = id,
+    name = name,
     parentId = parentId
 )
