@@ -19,6 +19,7 @@ import ru.practicum.android.diploma.data.mapper.MapperVacancyDetails
 import ru.practicum.android.diploma.data.mapper.VacancyEntityMapper
 import ru.practicum.android.diploma.data.network.IApiService
 import ru.practicum.android.diploma.data.network.RetrofitApiClient
+import ru.practicum.android.diploma.data.network.RetrofitClient
 import ru.practicum.android.diploma.domain.api.IFavVacanciesRepository
 import ru.practicum.android.diploma.domain.api.ISharingProvider
 import ru.practicum.android.diploma.domain.api.IStorageRepository
@@ -32,11 +33,7 @@ val dataModule = module {
     }
 
     single<IApiService> {
-        Retrofit.Builder()
-            .baseUrl("https://api.hh.ru/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(IApiService::class.java)
+        RetrofitClient.create()
     }
 
     single {
