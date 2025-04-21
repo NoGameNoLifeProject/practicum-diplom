@@ -19,9 +19,11 @@ class ErrorStateView @JvmOverloads constructor(
     private val errorText: TextView
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.view_error_state, this, true)
+        LayoutInflater.from(context)
+            .inflate(R.layout.view_error_state, this, true)
+
         errorImage = findViewById(R.id.error_image)
-        errorText  = findViewById(R.id.error_text)
+        errorText = findViewById(R.id.error_text)
         context.withStyledAttributes(attrs, R.styleable.ErrorStateView) {
             val imgRes = getResourceId(
                 R.styleable.ErrorStateView_errorImage,
