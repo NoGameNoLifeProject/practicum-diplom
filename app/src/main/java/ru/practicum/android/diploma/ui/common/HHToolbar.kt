@@ -40,11 +40,7 @@ class HHToolbar : LinearLayout {
         drawableNavigation = params.getDrawable(R.styleable.HHToolbar_drawableNavigation)
         drawableAction1 = params.getDrawable(R.styleable.HHToolbar_drawableAction1)
         drawableAction2 = params.getDrawable(R.styleable.HHToolbar_drawableAction2)
-        val titleText = params.getString(R.styleable.HHToolbar_titleText)
-
-        if (!titleText.isNullOrEmpty()) {
-            this.titleText = titleText
-        }
+        this.titleText = params.getString(R.styleable.HHToolbar_titleText)?:""
 
         params.recycle()
     }
@@ -72,22 +68,21 @@ class HHToolbar : LinearLayout {
             updateDrawable(action2Img, value)
         }
 
-    var titleText: String = "Title"
+    var titleText: String = ""
         set(value) {
             field = value
             titleTextView.text = value
             redrawItems()
         }
 
-    init {
-        this.orientation = HORIZONTAL
-    }
-
     private fun updateDrawable(view: ImageView, drawable: Drawable?) {
         if (drawable != null) {
+            view.isVisible = true
             view.setImageDrawable(drawable)
-            redrawItems()
+        } else {
+            view.isVisible = false
         }
+        redrawItems()
     }
 
     private fun redrawItems() {
