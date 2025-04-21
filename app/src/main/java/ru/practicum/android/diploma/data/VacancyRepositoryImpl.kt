@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import ru.practicum.android.diploma.data.dto.toDomain
 import ru.practicum.android.diploma.data.mapper.MapperSearchVacancyRequestResponse
 import ru.practicum.android.diploma.data.mapper.MapperVacancyDetails
 import ru.practicum.android.diploma.data.network.dto.GetAreasRequest
@@ -38,7 +39,7 @@ class VacancyRepositoryImpl(
         val result = networkClient.getAreas(GetAreasRequest())
         val body = result.body()
         if (result.isSuccessful && body != null) {
-            emit(Resource.Success(body.toList().map { Area(id = it.id, name = it.name, parentId = it.parentId) }))
+            emit(Resource.Success(body.toList().map { it.toDomain() }))
         } else {
             emit(Resource.Error(result.message(), null))
         }
