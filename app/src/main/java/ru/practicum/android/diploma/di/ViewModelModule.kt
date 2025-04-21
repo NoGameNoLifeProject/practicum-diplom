@@ -33,7 +33,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        SearchVacanciesViewModel()
+        SearchVacanciesViewModel(get())
     }
 
     viewModel {
