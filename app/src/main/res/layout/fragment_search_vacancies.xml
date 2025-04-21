@@ -35,55 +35,23 @@
         android:layout_marginTop="@dimen/padding8"
         android:layout_marginBottom="@dimen/padding8" />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/founded_vacancy"
+        style="@style/Regular16TextAppearance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/padding4"
+        android:background="@drawable/background"
+        android:backgroundTint="@color/yp_blue"
+        android:paddingStart="@dimen/padding12"
+        android:paddingTop="@dimen/padding4"
+        android:paddingEnd="@dimen/padding12"
+        android:paddingBottom="@dimen/padding4"
+        android:text="@string/search_vacancies_chip_not_found"
+        android:textColor="@color/yp_white"
+        android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/founded_vacancy"
-            style="@style/Regular16TextAppearance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/padding4"
-            android:background="@drawable/background"
-            android:backgroundTint="@color/yp_blue"
-            android:paddingStart="@dimen/padding12"
-            android:paddingTop="@dimen/padding4"
-            android:paddingEnd="@dimen/padding12"
-            android:paddingBottom="@dimen/padding4"
-            android:text="@string/search_vacancies_chip_not_found"
-            android:textColor="@color/yp_white"
-            android:visibility="gone" />
-
-        <LinearLayout
-            android:id="@+id/filter_panel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/filter_panel_margin"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <TextView
-                android:id="@+id/calendar"
-                style="@style/Regular16TextAppearance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:text="@string/calendar"
-                android:textColor="@color/yp_black" />
-
-            <TextView
-                android:id="@+id/salary_not_detailed"
-                style="@style/Regular16TextAppearance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:text="@string/salary_not_detailed"
-                android:textColor="@color/yp_black" />
-        </LinearLayout>
-
-    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/placeholder_layout"
