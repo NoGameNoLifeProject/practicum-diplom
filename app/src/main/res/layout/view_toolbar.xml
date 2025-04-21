@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/toolbarImgNavigation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding12"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginVertical="8dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:src="@drawable/ic_arrow_back_24px"/>
+
+    <TextView
+        android:id="@+id/toolbarTitle"
+        android:textAppearance="@style/Medium22TextAppearance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginEnd="4dp"
+        android:textColor="?attr/textColorPrimary"
+        tools:text="Выбор места работы"/>
+
+    <ImageView
+        android:id="@+id/toolbarImgAction2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding12"
+        android:layout_marginEnd="4dp"
+        android:layout_marginVertical="8dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:src="@drawable/ic_sharing_24px"/>
+    <ImageView
+        android:id="@+id/toolbarImgAction1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/padding12"
+        android:layout_marginEnd="8dp"
+        android:layout_marginVertical="8dp"
+        android:visibility="gone"
+        tools:visibility="visible"
+        tools:src="@drawable/ic_favorites_off_24px"/>
+</LinearLayout>

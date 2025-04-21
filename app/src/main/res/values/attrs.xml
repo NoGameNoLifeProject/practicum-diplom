@@ -15,4 +15,11 @@
         <attr name="errorText"      format="string"/>
         <attr name="errorTextColor" format="reference|color"/>
     </declare-styleable>
+
+    <declare-styleable name="HHToolbar">
+        <attr name="drawableNavigation" format="integer"/>
+        <attr name="titleText" format="string"/>
+        <attr name="drawableAction1" format="integer"/>
+        <attr name="drawableAction2" format="integer"/>
+    </declare-styleable>
 </resources>
