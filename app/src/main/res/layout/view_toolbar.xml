@@ -19,6 +19,8 @@
 
     <TextView
         android:id="@+id/toolbarTitle"
+        android:paddingTop="19dp"
+        android:paddingBottom="19dp"
         android:textAppearance="@style/Medium22TextAppearance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

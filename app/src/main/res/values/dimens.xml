@@ -7,12 +7,12 @@
 
     <dimen name="padding4">4dp</dimen>
     <dimen name="padding8">8dp</dimen>
-    <dimen name="padding12">12dp</dimen>
     <dimen name="padding16">16dp</dimen>
     <dimen name="padding12">12dp</dimen>
     <dimen name="padding24">24dp</dimen>
     <dimen name="padding32">32dp</dimen>
 
+    <dimen name="toolbar_no_nav_padding">12dp</dimen>
     <dimen name="toolbar_height">64dp</dimen>
     <dimen name="placeholder_height">223dp</dimen>
     <dimen name="filter_panel_margin">60dp</dimen>

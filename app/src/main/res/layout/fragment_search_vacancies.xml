@@ -7,24 +7,14 @@
     android:orientation="vertical"
     tools:context=".ui.search_vacancies.fragments.SearchVacanciesFragment">
 
-    <androidx.appcompat.widget.Toolbar
+    <ru.practicum.android.diploma.ui.common.HHToolbar
         android:id="@+id/search_tool_bar"
-        style="@style/Medium22TextAppearance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/search_vacancies_title"
-        app:titleMarginStart="@dimen/padding16"
-        app:titleTextColor="@color/yp_black">
+        app:titleText="@string/search_vacancies_title"
+        app:drawableAction1="@drawable/ic_filter_off_24px"
+        />
 
-        <ImageButton
-            android:id="@+id/filter_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginEnd="@dimen/padding16"
-            android:backgroundTint="@color/yp_white"
-            android:src="@drawable/ic_filter_off_24px" />
-    </androidx.appcompat.widget.Toolbar>
 
     <ru.practicum.android.diploma.ui.common.SearchBarView
         android:id="@+id/search_bar"
