@@ -27,9 +27,7 @@ class FavVacanciesInteractorImpl(private val favVacanciesRepository: IFavVacanci
             when (result) {
                 is Resource.Success -> {
                     val found = result.data?.find { it.id == vacancyId }
-                    if (found != null) {
-                        isChecked = true
-                    }
+                    isChecked = found != null
                 }
                 is Resource.Error -> {
                     isChecked = false
