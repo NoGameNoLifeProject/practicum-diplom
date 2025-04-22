@@ -12,6 +12,8 @@
     <dimen name="padding24">24dp</dimen>
     <dimen name="padding32">32dp</dimen>
 
+    <dimen name="vacancy_logo_corner_radius">12dp</dimen>
+
     <dimen name="toolbar_no_nav_padding">12dp</dimen>
     <dimen name="toolbar_height">64dp</dimen>
     <dimen name="placeholder_height">223dp</dimen>

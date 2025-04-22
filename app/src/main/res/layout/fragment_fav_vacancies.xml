@@ -8,13 +8,13 @@
     tools:context=".ui.fav_vacancies.fragments.FavVacanciesFragment">
 
     <ru.practicum.android.diploma.ui.common.HHToolbar
-        android:id="@+id/search_tool_bar"
+        android:id="@+id/VacanciesToolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:titleText="@string/fav_vacancies_title" />
 
     <ru.practicum.android.diploma.ui.common.ErrorStateView
-        android:id="@+id/error_state_view"
+        android:id="@+id/errorStateView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
@@ -22,12 +22,12 @@
         app:errorText="@string/fav_vacancies_placeholder_empty_list" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_vacancy"
+        android:id="@+id/rvVacancies"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <ProgressBar
-        android:id="@+id/progress_circular"
+        android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center"

@@ -21,7 +21,7 @@ class VacancyEntityMapper {
             currency = entity.salaryCurrency.ifEmpty { null },
             from = if (entity.salaryFrom == 0) null else entity.salaryFrom,
             gross = entity.salaryGross,
-            to = entity.salaryTo.ifEmpty { null }
+            to = if (entity.salaryTo == 0) null else entity.salaryTo
         )
         return Vacancy(
             id = entity.id,
@@ -58,14 +58,14 @@ class VacancyEntityMapper {
                 currency = vacancy.salary.currency ?: "",
                 from = vacancy.salary.from ?: 0,
                 gross = vacancy.salary.gross ?: false,
-                to = vacancy.salary.to ?: ""
+                to = vacancy.salary.to ?: 0
             )
         } else {
             Salary(
                 currency = vacancy.salaryRange?.currency ?: "",
                 from = vacancy.salaryRange?.from ?: 0,
                 gross = vacancy.salaryRange?.gross ?: false,
-                to = vacancy.salaryRange?.to ?: ""
+                to = vacancy.salaryRange?.to ?: 0
             )
         }
 
@@ -81,7 +81,7 @@ class VacancyEntityMapper {
             keySkills = vacancy.keySkills.joinToString(","),
             salaryFrom = salary.from ?: 0,
             salaryGross = salary.gross ?: false,
-            salaryTo = salary.to ?: "",
+            salaryTo = salary.to ?: 0,
             salaryCurrency = salary.currency ?: "",
             experienceId = vacancy.experience?.id ?: "",
             experienceName = vacancy.experience?.name ?: ""

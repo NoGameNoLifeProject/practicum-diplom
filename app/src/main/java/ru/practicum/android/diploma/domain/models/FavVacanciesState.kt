@@ -6,4 +6,3 @@ sealed class FavVacanciesState {
     data object Error : FavVacanciesState()
     data object Empty : FavVacanciesState()
 }
-
