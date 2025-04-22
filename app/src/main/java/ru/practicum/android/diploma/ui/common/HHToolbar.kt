@@ -7,17 +7,20 @@ import android.view.LayoutInflater
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.isVisible
 import ru.practicum.android.diploma.R
 
+class HHToolbar : LinearLayout {
 
-class HHToolbar: LinearLayout {
+    constructor(context: Context) : this(context, null)
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : this(context, attrs, defStyleAttr, 0)
 
-    constructor(context: Context): this(context, null)
-    constructor(context: Context, attrs: AttributeSet?): this(context, attrs, 0)
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int): this(context, attrs, defStyleAttr, 0)
-
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int): super(context, attrs, defStyleAttr, defStyleRes) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int, defStyleRes: Int) : super(
+        context,
+        attrs,
+        defStyleAttr,
+        defStyleRes
+    ) {
 
         LayoutInflater.from(context)
             .inflate(R.layout.view_toolbar, this, true)
@@ -28,7 +31,10 @@ class HHToolbar: LinearLayout {
         action1Img = findViewById(R.id.toolbarImgAction1)
 
         val params = context.obtainStyledAttributes(
-            attrs, R.styleable.HHToolbar, defStyleAttr, defStyleRes
+            attrs,
+            R.styleable.HHToolbar,
+            defStyleAttr,
+            defStyleRes
         )
 
         drawableNavigation = params.getDrawable(R.styleable.HHToolbar_drawableNavigation)
@@ -45,8 +51,8 @@ class HHToolbar: LinearLayout {
 
     private val navigationImg: ImageView
     private val titleTextView: TextView
-    private val action2Img:ImageView
-    private val action1Img:ImageView
+    private val action2Img: ImageView
+    private val action1Img: ImageView
 
     var drawableNavigation: Drawable? = null
         set(value) {
@@ -83,7 +89,6 @@ class HHToolbar: LinearLayout {
             redrawItems()
         }
     }
-
 
     private fun redrawItems() {
         invalidate()
