@@ -24,7 +24,8 @@ class MapperVacancyDetails {
             keySkills = vacancyDetails.keySkills.map { KeySkill(name = it.name) },
             salary = vacancyDetails.salary?.let { mapSalary(it) },
             salaryRange = vacancyDetails.salaryRange?.let { mapSalary(it) },
-            experience = vacancyDetails.experience?.let { mapExperience(it) }
+            experience = vacancyDetails.experience?.let { mapExperience(it) },
+            alternateUrl = vacancyDetails.alternateUrl
         )
     }
 

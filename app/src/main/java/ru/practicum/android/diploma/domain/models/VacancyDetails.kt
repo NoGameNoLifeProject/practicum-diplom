@@ -9,5 +9,6 @@ data class VacancyDetails(
     val keySkills: List<KeySkill> = arrayListOf(),
     val salary: Salary? = null,
     val salaryRange: Salary? = null,
-    val experience: Experience? = null
+    val experience: Experience? = null,
+    val alternateUrl: String
 )
