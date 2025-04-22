@@ -6,5 +6,5 @@ import ru.practicum.android.diploma.domain.models.VacancyDetails
 interface IFavVacanciesRepository {
     suspend fun add(vacancy: VacancyDetails)
     suspend fun delete(vacancy: VacancyDetails)
-    fun getAll(): Flow<List<VacancyDetails>>
+    fun getAll(): Flow<Resource<List<VacancyDetails>>>
 }

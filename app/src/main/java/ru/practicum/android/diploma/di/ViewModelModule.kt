@@ -13,7 +13,7 @@ import ru.practicum.android.diploma.ui.vacancy_details.view_models.VacancyDetail
 val viewModelModule = module {
 
     viewModel {
-        FavVacanciesViewModel()
+        FavVacanciesViewModel(get())
     }
 
     viewModel {

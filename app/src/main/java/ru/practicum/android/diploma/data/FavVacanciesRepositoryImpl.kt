@@ -5,6 +5,7 @@ import kotlinx.coroutines.flow.flow
 import ru.practicum.android.diploma.data.db.AppDatabase
 import ru.practicum.android.diploma.data.mapper.VacancyEntityMapper
 import ru.practicum.android.diploma.domain.api.IFavVacanciesRepository
+import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.VacancyDetails
 
 class FavVacanciesRepositoryImpl(val dataBase: AppDatabase, val mapper: VacancyEntityMapper) : IFavVacanciesRepository {
@@ -16,8 +17,13 @@ class FavVacanciesRepositoryImpl(val dataBase: AppDatabase, val mapper: VacancyE
         dataBase.favVacanciesDao().deleteVacancy(mapper.convertFromVacancyDetails(vacancy))
     }
 
-    override fun getAll(): Flow<List<VacancyDetails>> = flow {
-        val vacancies = dataBase.favVacanciesDao().getAllVacancies()
-        emit(vacancies.map { mapper.convertToVacancyDetails(it) })
+    @Suppress("TooGenericExceptionCaught")
+    override fun getAll(): Flow<Resource<List<VacancyDetails>>> = flow {
+        try {
+            val vacancies = dataBase.favVacanciesDao().getAllVacancies()
+            emit(Resource.Success(vacancies.map { mapper.convertToVacancyDetails(it) }))
+        } catch (e: Exception) {
+            emit(Resource.Error(e.message.toString()))
+        }
     }
 }

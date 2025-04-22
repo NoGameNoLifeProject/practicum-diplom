@@ -3,13 +3,14 @@ package ru.practicum.android.diploma.domain.impl
 import kotlinx.coroutines.flow.Flow
 import ru.practicum.android.diploma.domain.api.IFavVacanciesInteractor
 import ru.practicum.android.diploma.domain.api.IFavVacanciesRepository
+import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.VacancyDetails
 
 class FavVacanciesInteractorImpl(private val favVacanciesRepository: IFavVacanciesRepository) :
     IFavVacanciesInteractor {
     private var isChecked = false
 
-    override fun getFavorite(): Flow<List<VacancyDetails>> {
+    override fun getFavorite(): Flow<Resource<List<VacancyDetails>>> {
         return favVacanciesRepository.getAll()
     }
 
@@ -22,10 +23,17 @@ class FavVacanciesInteractorImpl(private val favVacanciesRepository: IFavVacanci
     }
 
     override suspend fun isChecked(vacancyId: String): Boolean {
-        getFavorite().collect { vacancyList ->
-            val found = vacancyList.find { it.id == vacancyId }
-            if (found != null) {
-                isChecked = true
+        getFavorite().collect { result ->
+            when (result) {
+                is Resource.Success -> {
+                    val found = result.data?.find { it.id == vacancyId }
+                    if (found != null) {
+                        isChecked = true
+                    }
+                }
+                is Resource.Error -> {
+                    isChecked = false
+                }
             }
         }
         return isChecked
