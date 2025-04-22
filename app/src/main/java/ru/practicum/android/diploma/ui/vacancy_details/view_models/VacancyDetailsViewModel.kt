@@ -58,7 +58,7 @@ class VacancyDetailsViewModel(
         }
     }
 
-    fun sharePlaylist(context: Context) {
+    fun shareVacancy(context: Context) {
         val vacancy = getCurrentVacancy() ?: return
         val shareText = vacancy.alternateUrl
         val shareIntent = Intent().apply {
