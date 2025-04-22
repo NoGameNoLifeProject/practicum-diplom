@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.IFavVacanciesInteractor
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
+import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.VacancyDetails
 import ru.practicum.android.diploma.domain.models.VacancyDetailsState
 
@@ -49,13 +50,21 @@ class VacancyDetailsViewModel(
         }
     }
 
-    private fun getFromDataBase(vacancyList: List<VacancyDetails>, vacancyId: String) {
-        val vacancy = vacancyList.find { it.id == vacancyId }
-        if (vacancy != null) {
-            _vacancyDetailsState.postValue(VacancyDetailsState.VacanciesDetails(vacancy))
-        } else {
-            _vacancyDetailsState.postValue(VacancyDetailsState.NothingFound)
+    private fun getFromDataBase(vacancyList: Resource<List<VacancyDetails>>, vacancyId: String) {
+        when (vacancyList) {
+            is Resource.Success -> {
+                val vacancy = vacancyList.data?.find { it.id == vacancyId }
+                if (vacancy != null) {
+                    _vacancyDetailsState.postValue(VacancyDetailsState.VacanciesDetails(vacancy))
+                } else {
+                    _vacancyDetailsState.postValue(VacancyDetailsState.NothingFound)
+                }
+            }
+            is Resource.Error -> {
+                _vacancyDetailsState.postValue(VacancyDetailsState.NetworkError)
+            }
         }
+
     }
 
     fun shareVacancy(context: Context) {
