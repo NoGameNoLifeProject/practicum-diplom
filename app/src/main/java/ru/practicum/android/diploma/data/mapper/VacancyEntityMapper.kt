@@ -47,7 +47,8 @@ class VacancyEntityMapper {
             keySkills = ArrayList(keySkills),
             salary = vacancy.salary,
             salaryRange = vacancy.salaryRange,
-            experience = experience
+            experience = experience,
+            alternateUrl = entity.alternateUrl
         )
     }
 
@@ -84,7 +85,8 @@ class VacancyEntityMapper {
             salaryTo = salary.to ?: "",
             salaryCurrency = salary.currency ?: "",
             experienceId = vacancy.experience?.id ?: "",
-            experienceName = vacancy.experience?.name ?: ""
+            experienceName = vacancy.experience?.name ?: "",
+            alternateUrl = vacancy.alternateUrl
         )
     }
 }
