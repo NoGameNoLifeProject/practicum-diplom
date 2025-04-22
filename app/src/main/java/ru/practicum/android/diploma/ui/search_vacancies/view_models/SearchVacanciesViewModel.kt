@@ -26,18 +26,33 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
             renderState(SearchVacanciesState.Loading)
             viewModelScope.launch {
                 vacancyInteractor.searchVacancies(expression).collect { (foundedVacancies, errorMessage) ->
+                    vacancies.clear()
                     // TODO: переделать при добавлении проверки интернета
-                    if (!foundedVacancies.isNullOrEmpty()) {
-                        renderState(SearchVacanciesState.VacanciesList(foundedVacancies))
-                    } else if (foundedVacancies.isNullOrEmpty() && errorMessage != null) {
-                        renderState(SearchVacanciesState.NetworkError)
-                    } else {
-                        renderState(SearchVacanciesState.NothingFound)
-                    }
+                    processFoundVacancies(foundedVacancies, errorMessage)
                 }
             }
         } else {
             renderState(SearchVacanciesState.Empty)
+        }
+    }
+
+    fun loadNewVacanciesPage() {
+        renderState(SearchVacanciesState.Loading)
+        viewModelScope.launch(Dispatchers.IO) {
+            vacancyInteractor.loadNewVacanciesPage().collect { (foundedVacancies, errorMessage) ->
+                processFoundVacancies(foundedVacancies, errorMessage)
+            }
+        }
+    }
+
+    private fun processFoundVacancies(foundedVacancies: List<Vacancy>?, errorMessage: String?) {
+        if (!foundedVacancies.isNullOrEmpty()) {
+            vacancies.addAll(foundedVacancies)
+            renderState(SearchVacanciesState.VacanciesList(vacancies))
+        } else if (foundedVacancies.isNullOrEmpty() && errorMessage != null) {
+            renderState(SearchVacanciesState.NetworkError)
+        } else {
+            renderState(SearchVacanciesState.NothingFound)
         }
     }
 

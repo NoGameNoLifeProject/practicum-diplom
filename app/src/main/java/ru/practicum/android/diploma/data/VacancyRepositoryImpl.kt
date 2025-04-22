@@ -8,6 +8,7 @@ import ru.practicum.android.diploma.data.mapper.MapperVacancyDetails
 import ru.practicum.android.diploma.data.network.dto.GetAreasRequest
 import ru.practicum.android.diploma.data.network.dto.GetIndustriesRequest
 import ru.practicum.android.diploma.data.network.dto.GetVacancyDetailsRequest
+import ru.practicum.android.diploma.data.network.dto.SearchVacanciesRequest
 import ru.practicum.android.diploma.domain.api.IStorageRepository
 import ru.practicum.android.diploma.domain.api.IVacancyRepository
 import ru.practicum.android.diploma.domain.api.Resource
@@ -24,12 +25,19 @@ class VacancyRepositoryImpl(
     private val vacancyDetailsMapper: MapperVacancyDetails
 ) : IVacancyRepository {
 
+    private var lastRequest: SearchVacanciesRequest? = null
+    private var pagesInLastResponse: Int = 0
+
     override fun searchVacancies(expression: String): Flow<Resource<ReceivedVacanciesData>> = flow {
         val req = searchMapper.mapRequest(expression, filterParam.read())
+        lastRequest = req
         val result = networkClient.searchVacancies(req)
         val body = result.body()
         if (result.isSuccessful && body != null) {
             val vacanciesData = searchMapper.mapResponse(body)
+            if (vacanciesData.pages != null) {
+                pagesInLastResponse = vacanciesData.pages
+            }
             emit(Resource.Success(vacanciesData))
         } else {
             emit(Resource.Error(result.errorBody()?.string().orEmpty(), null))
@@ -55,6 +63,29 @@ class VacancyRepositoryImpl(
             emit(Resource.Success(vacancyDetailsMapper.map(body)))
         } else {
             emit(Resource.Error(result.errorBody()?.string().orEmpty(), null))
+        }
+    }
+
+    override fun loadNewVacanciesPage(): Flow<Resource<ReceivedVacanciesData>> = flow {
+        val lastReq = lastRequest
+        if (lastReq == null) {
+            emit(Resource.Error("No search request", null))
+        } else if (lastReq.page >= pagesInLastResponse) {
+            emit(Resource.Error("No more results", null))
+        } else {
+            lastReq.page += 1
+//            lastRequest = lastReq
+            val result = networkClient.searchVacancies(lastReq)
+            val body = result.body()
+            if (result.isSuccessful && body != null) {
+                val vacanciesData = searchMapper.mapResponse(body)
+                if (vacanciesData.pages != null) {
+                    pagesInLastResponse = vacanciesData.pages //  мало-ли, вдруг количество изменится
+                }
+                emit(Resource.Success(vacanciesData))
+            } else {
+                emit(Resource.Error(result.errorBody()?.string().orEmpty(), null))
+            }
         }
     }
 

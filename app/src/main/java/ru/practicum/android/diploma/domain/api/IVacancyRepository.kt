@@ -11,4 +11,5 @@ interface IVacancyRepository {
     fun getCountries(): Flow<Resource<List<Area>>>
     fun getIndustries(): Flow<Resource<List<Industry>>>
     fun getVacancyDetails(vacancyId: String): Flow<Resource<VacancyDetails>>
+    fun loadNewVacanciesPage(): Flow<Resource<ReceivedVacanciesData>>
 }

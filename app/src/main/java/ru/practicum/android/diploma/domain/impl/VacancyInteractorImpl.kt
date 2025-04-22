@@ -70,4 +70,18 @@ class VacancyInteractorImpl(private val repository: IVacancyRepository) : IVacan
             }
         }
     }
+
+    override fun loadNewVacanciesPage(): Flow<Pair<List<Vacancy>?, String?>> {
+        return repository.loadNewVacanciesPage().map { result ->
+            when (result) {
+                is Resource.Error -> {
+                    Pair(null, result.message)
+                }
+
+                is Resource.Success -> {
+                    Pair(result.data?.items?.toList(), null)
+                }
+            }
+        }
+    }
 }

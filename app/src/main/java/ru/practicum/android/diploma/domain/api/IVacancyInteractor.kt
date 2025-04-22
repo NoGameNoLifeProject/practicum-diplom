@@ -11,4 +11,5 @@ interface IVacancyInteractor {
     fun getCountries(): Flow<Pair<List<Area>?, String?>>
     fun getIndustries(): Flow<Pair<List<Industry>?, String?>>
     fun getVacancyDetails(vacancyId: String): Flow<Pair<VacancyDetails?, String?>>
+    fun loadNewVacanciesPage(): Flow<Pair<List<Vacancy>?, String?>>
 }
