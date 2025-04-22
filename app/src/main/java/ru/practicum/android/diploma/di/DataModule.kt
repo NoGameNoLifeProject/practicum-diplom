@@ -8,6 +8,8 @@ import org.koin.dsl.module
 import ru.practicum.android.diploma.APP_PREFERENCES
 import ru.practicum.android.diploma.data.FavVacanciesRepositoryImpl
 import ru.practicum.android.diploma.data.IRetrofitApiClient
+import ru.practicum.android.diploma.data.NetworkInfoDataSource
+import ru.practicum.android.diploma.data.NetworkInfoDataSourceImpl
 import ru.practicum.android.diploma.data.StorageRepositoryImpl
 import ru.practicum.android.diploma.data.VacancyRepositoryImpl
 import ru.practicum.android.diploma.data.db.AppDatabase
@@ -32,6 +34,10 @@ val dataModule = module {
 
     single<IApiService> {
         RetrofitClient.create()
+    }
+
+    single<NetworkInfoDataSource> {
+        NetworkInfoDataSourceImpl(androidContext())
     }
 
     single {
