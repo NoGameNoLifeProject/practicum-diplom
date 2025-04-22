@@ -10,4 +10,9 @@
         <attr name="searchHintColor" format="color"/>
         <attr name="searchHint" format="string"/>
     </declare-styleable>
+    <declare-styleable name="ErrorStateView">
+        <attr name="errorImage"     format="reference"/>
+        <attr name="errorText"      format="string"/>
+        <attr name="errorTextColor" format="reference|color"/>
+    </declare-styleable>
 </resources>
