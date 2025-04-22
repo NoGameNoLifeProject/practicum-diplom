@@ -37,6 +37,7 @@ class SearchVacanciesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.recyclerViewVacancy.adapter = adapter
+		configurePagination()
 
         viewModel.state.observe(viewLifecycleOwner) {
             render(it)
@@ -116,4 +117,20 @@ class SearchVacanciesFragment : Fragment() {
         binding.errorStateView.setErrorText(getString(R.string.search_vacancies_no_internet))
     }
 
+
+    private fun configurePagination() {
+        binding.recyclerViewVacancy.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if (dy > 0) {
+                    val pos = (binding.recyclerViewVacancy.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                    val itemsCount = binding.recyclerViewVacancy.adapter?.itemCount ?: 0
+                    if (pos >= itemsCount - 1) {
+                        viewModel.loadNewVacanciesPage()
+                    }
+                }
+            }
+        })
+    }
 }

@@ -11,6 +11,7 @@ import ru.practicum.android.diploma.util.debounce
 
 class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor) : ViewModel() {
     private val _state = MutableLiveData<SearchVacanciesState>()
+    private var isLoadingNewPage = false
 
     val state: LiveData<SearchVacanciesState> get() = _state
 
@@ -41,6 +42,14 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
         viewModelScope.launch(Dispatchers.IO) {
             vacancyInteractor.loadNewVacanciesPage().collect { (foundedVacancies, errorMessage) ->
                 processFoundVacancies(foundedVacancies, errorMessage)
+        if (!isLoadingNewPage) {
+            isLoadingNewPage = true
+            renderState(SearchVacanciesState.Loading)
+            viewModelScope.launch(Dispatchers.IO) {
+                vacancyInteractor.loadNewVacanciesPage().collect { (foundedVacancies, errorMessage) ->
+                    processFoundVacancies(foundedVacancies, errorMessage)
+                    isLoadingNewPage = false
+                }
             }
         }
     }
