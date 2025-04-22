@@ -5,6 +5,8 @@ import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody.Companion.toResponseBody
 import retrofit2.Response
 
+const val NETWORK_ERROR_CODE = 999
+
 @Suppress("TooGenericExceptionCaught")
 suspend fun <T> handleRequest(request: suspend () -> Response<T>): Response<T> {
     return withContext(Dispatchers.IO) {
@@ -12,7 +14,7 @@ suspend fun <T> handleRequest(request: suspend () -> Response<T>): Response<T> {
             request.invoke()
         } catch (e: Exception) {
             // Обрабатываем возможные сетевые ошибки
-            Response.error<T>(-1, e.message?.toResponseBody() ?: "Network error".toResponseBody())
+            Response.error<T>(NETWORK_ERROR_CODE, e.message?.toResponseBody() ?: "Network error".toResponseBody())
         }
     }
 }
