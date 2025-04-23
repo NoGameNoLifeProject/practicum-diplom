@@ -60,14 +60,14 @@ fun workFormatSchedule(
     var workFormat = ""
     var workSchedule = ""
     if (!listWorkFormat.isNullOrEmpty() && !lisWorkSchedule.isNullOrEmpty()) {
-        workFormat = listWorkFormat.joinToString(",") { it.name }
-        workSchedule = lisWorkSchedule.joinToString(",") { it.name }
+        workFormat = listWorkFormat.joinToString(", ") { it.name }
+        workSchedule = lisWorkSchedule.joinToString(", ") { it.name }
         result = context.getString(R.string.vacancy_details_work_format_work_schedule, workFormat, workSchedule)
     } else if (!listWorkFormat.isNullOrEmpty()) {
-        workFormat = listWorkFormat.joinToString(",") { it.name }
+        workFormat = listWorkFormat.joinToString(", ") { it.name }
         result = workFormat
     } else if (!lisWorkSchedule.isNullOrEmpty()) {
-        workSchedule = lisWorkSchedule.joinToString(",") { it.name }
+        workSchedule = lisWorkSchedule.joinToString(", ") { it.name }
         result = workSchedule
     }
     return result

@@ -96,14 +96,25 @@
                 android:background="@drawable/background"
                 android:orientation="horizontal"
                 android:padding="@dimen/padding16">
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="@dimen/vacancy_item_size"
+                    android:layout_height="@dimen/vacancy_item_size"
+                    android:layout_gravity="top"
+                    android:backgroundTint="@android:color/transparent"
+                    app:cardCornerRadius="@dimen/vacancy_logo_corner_radius"
+                    app:cardElevation="0dp"
+                    app:cardPreventCornerOverlap="false"
+                    app:cardUseCompatPadding="false"
+                   >
 
-                <ImageView
-                    android:id="@+id/logo"
-                    android:layout_width="@dimen/standard_icon_size"
-                    android:layout_height="@dimen/standard_icon_size"
-                    android:layout_gravity="center"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_placeholder_32px" />
+                    <ImageView
+                        android:id="@+id/logo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_placeholder_32px" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
                     android:layout_width="0dp"

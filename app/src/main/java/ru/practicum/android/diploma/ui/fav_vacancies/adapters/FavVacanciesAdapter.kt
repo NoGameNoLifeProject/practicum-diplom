@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterInside
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.VacancyItemBinding
 import ru.practicum.android.diploma.domain.models.VacancyDetails
@@ -39,7 +38,7 @@ class FavVacanciesAdapter(private val onClick: (VacancyDetails) -> Unit) :
             Glide.with(holder.itemView)
                 .load(vacancies[position].employer?.logoUrls?.original)
                 .placeholder(R.drawable.ic_placeholder_32px)
-                .transform(RoundedCorners(R.dimen.vacancy_logo_corner_radius), CenterInside())
+                .transform(CenterInside())
                 .into(vacancyCardPlaceholder)
 
             holder.itemView.setOnClickListener {
