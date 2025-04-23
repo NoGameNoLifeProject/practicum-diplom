@@ -38,11 +38,22 @@ class VacancyEntityMapper {
     fun convertToVacancyDetails(entity: FavVacancyEntity): VacancyDetails {
         val vacancy = convertToVacancy(entity)
         val area = Area(id = entity.areaId, name = entity.areaName)
-        val experience = Experience(id = entity.experienceId, name = entity.experienceName)
-        val keySkills = entity.keySkills.split(",").map { KeySkill(it) }
-        val workFormat = entity.workFormat.split(",").mapIndexed { i, name -> WorkFormat(id = i.toString(), name) }
-        val workSchedule = entity.workSchedule.split(",")
-            .mapIndexed { i, name -> WorkSchedule(id = i.toString(), name) }
+        val experience = if (entity.experienceId.isNotEmpty() && entity.experienceName.isNotEmpty()) {
+            Experience(id = entity.experienceId, name = entity.experienceName)
+        } else {
+            null
+        }
+        val keySkills = entity.keySkills.split(",").filter { it.isNotEmpty() }.map { KeySkill(it) }
+        val workFormat = if (entity.workFormat.isNotEmpty()) {
+            entity.workFormat.split(",").mapIndexed { i, name -> WorkFormat(id = i.toString(), name) }
+        } else {
+            null
+        }
+        val workSchedule = if (entity.workSchedule.isNotEmpty()) {
+            entity.workSchedule.split(",").mapIndexed { i, name -> WorkSchedule(id = i.toString(), name) }
+        } else {
+            null
+        }
 
         return VacancyDetails(
             id = vacancy.id,
@@ -89,7 +100,7 @@ class VacancyEntityMapper {
             employerId = vacancy.employer?.id ?: "",
             employerName = vacancy.employer?.name ?: "",
             employerLogoUrl = vacancy.employer?.logoUrls?.original ?: "",
-            keySkills = vacancy.keySkills.joinToString(","),
+            keySkills = vacancy.keySkills.map { it.name }.joinToString(","),
             salaryFrom = salary.from ?: 0,
             salaryGross = salary.gross ?: false,
             salaryTo = salary.to ?: 0,

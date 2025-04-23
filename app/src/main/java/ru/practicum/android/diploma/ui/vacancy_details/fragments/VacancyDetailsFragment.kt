@@ -12,7 +12,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterInside
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentVacancyDetailsBinding
@@ -100,7 +99,7 @@ class VacancyDetailsFragment : Fragment() {
         when (state) {
             is VacancyDetailsState.VacanciesDetails -> {
                 binding.vacancyName.text = state.vacancy.name
-                binding.vacancySalary.text = salaryFormat(requireContext(), state.vacancy.salaryRange)
+                binding.vacancySalary.text = salaryFormat(requireContext(), state.vacancy.salary)
                 setEmployer(state.vacancy)
                 setExperience(state.vacancy)
                 binding.workFormatAndSchedule.setTextOrGone(
@@ -120,8 +119,7 @@ class VacancyDetailsFragment : Fragment() {
         if (vacancy.employer != null) {
             binding.employerLayout.isVisible = true
             Glide.with(requireContext())
-                .load(vacancy.employer.logoUrls?.size90).transform(
-                    RoundedCorners(R.dimen.vacancy_logo_corner_radius),
+                .load(vacancy.employer.logoUrls?.original).transform(
                     CenterInside()
                 )
                 .placeholder(R.drawable.ic_placeholder_32px)
@@ -140,7 +138,6 @@ class VacancyDetailsFragment : Fragment() {
     }
 
     private fun setDescription(vacancy: VacancyDetails) {
-        binding.descriptionTitle.isVisible = !vacancy.description.isNullOrEmpty()
         binding.description.apply {
             val html = vacancy.description
             if (html.isNullOrEmpty()) {
@@ -150,14 +147,15 @@ class VacancyDetailsFragment : Fragment() {
                 text = Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
             }
         }
+        binding.descriptionTitle.isVisible = binding.description.isVisible
     }
 
     private fun setKeySkills(vacancy: VacancyDetails) {
-        binding.keySkillsTitle.isVisible = vacancy.keySkills.isNotEmpty()
         binding.keySkills.setTextOrGone(
             vacancy.keySkills
                 .takeIf { it.isNotEmpty() }
                 ?.joinToString(", ") { it.name }
         )
+        binding.keySkillsTitle.isVisible = binding.keySkills.isVisible
     }
 }

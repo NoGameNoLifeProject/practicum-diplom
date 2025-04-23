@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.IFavVacanciesInteractor
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
@@ -25,12 +26,11 @@ class VacancyDetailsViewModel(
     val vacancyDetailsState: LiveData<VacancyDetailsState> get() = _vacancyDetailsState
 
     fun getVacancyDetails(vacancyId: String, isLocal: Boolean) {
-        _vacancyDetailsState.postValue(VacancyDetailsState.Loading)
+        _vacancyDetailsState.value = VacancyDetailsState.Loading
         viewModelScope.launch {
             if (isLocal) {
-                favoriteInteractor.getFavorite().collect { vacancyList ->
-                    getFromDataBase(vacancyList, vacancyId)
-                }
+                val vacancyList = favoriteInteractor.getFavorite().first()
+                getFromDataBase(vacancyList, vacancyId)
             } else {
                 vacancyInteractor.getVacancyDetails(vacancyId).collect { result ->
                     getFromSearch(result)
@@ -43,17 +43,17 @@ class VacancyDetailsViewModel(
     private fun getFromSearch(result: Resource<VacancyDetails>) {
         when (result) {
             is Resource.Success -> {
-                _vacancyDetailsState.postValue(VacancyDetailsState.VacanciesDetails(result.data))
+                _vacancyDetailsState.value = VacancyDetailsState.VacanciesDetails(result.data)
             }
 
             is Resource.Error -> {
                 when (result.errorCode) {
                     HttpURLConnection.HTTP_NOT_FOUND -> {
-                        _vacancyDetailsState.postValue(VacancyDetailsState.NothingFound)
+                        _vacancyDetailsState.value = VacancyDetailsState.NothingFound
                     }
 
                     else -> {
-                        _vacancyDetailsState.postValue(VacancyDetailsState.NetworkError)
+                        _vacancyDetailsState.value = VacancyDetailsState.NetworkError
                     }
                 }
             }
@@ -65,14 +65,14 @@ class VacancyDetailsViewModel(
             is Resource.Success -> {
                 val vacancy = vacancyList.data.find { it.id == vacancyId }
                 if (vacancy != null) {
-                    _vacancyDetailsState.postValue(VacancyDetailsState.VacanciesDetails(vacancy))
+                    _vacancyDetailsState.value = VacancyDetailsState.VacanciesDetails(vacancy)
                 } else {
-                    _vacancyDetailsState.postValue(VacancyDetailsState.NothingFound)
+                    _vacancyDetailsState.value = VacancyDetailsState.NothingFound
                 }
             }
 
             is Resource.Error -> {
-                _vacancyDetailsState.postValue(VacancyDetailsState.NetworkError)
+                _vacancyDetailsState.value = VacancyDetailsState.NetworkError
             }
         }
 
@@ -92,14 +92,15 @@ class VacancyDetailsViewModel(
     private fun checkFavorites() {
         val vacancy = getCurrentVacancy() ?: return
         viewModelScope.launch {
-            val isFavorite = favoriteInteractor.isChecked(vacancy.id)
-            _isFavoriteLiveData.postValue(isFavorite)
+            favoriteInteractor.isChecked(vacancy.id).collect {
+                _isFavoriteLiveData.value = it
+            }
         }
     }
 
     fun onFavoriteClicked() {
         val vacancy = getCurrentVacancy() ?: return
-        val isFavorite = _isFavoriteLiveData.value ?: return
+        val isFavorite = _isFavoriteLiveData.value ?: false
         viewModelScope.launch {
             if (isFavorite) {
                 favoriteInteractor.deleteFromFavorite(vacancy)

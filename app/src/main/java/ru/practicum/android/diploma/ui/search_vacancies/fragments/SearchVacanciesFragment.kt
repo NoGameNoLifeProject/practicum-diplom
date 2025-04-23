@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -23,7 +25,9 @@ class SearchVacanciesFragment : Fragment() {
     private val viewModel: SearchVacanciesViewModel by viewModel<SearchVacanciesViewModel>()
 
     private val adapter = VacancyAdapter {
-        findNavController().navigate(R.id.action_searchVacanciesFragment_to_vacancyDetailsFragment)
+        val action =
+            SearchVacanciesFragmentDirections.actionSearchVacanciesFragmentToVacancyDetailsFragment(it.id, false)
+        findNavController().navigate(action)
     }
 
     override fun onCreateView(
@@ -49,8 +53,17 @@ class SearchVacanciesFragment : Fragment() {
             viewModel.searchVacancies(it)
         }
 
+        binding.searchBar.setOnSearchIconClickListener {
+            viewModel.clearSearchExpression()
+        }
+
         binding.searchToolBar.setOnAction1Click {
             findNavController().navigate(R.id.action_searchVacanciesFragment_to_filterParametersFragment)
+        }
+
+        viewModel.showToast.observe(viewLifecycleOwner) {
+            adapter.isLoadingMore = false
+            showToast(it)
         }
     }
 
@@ -67,7 +80,6 @@ class SearchVacanciesFragment : Fragment() {
         binding.recyclerViewVacancy.isVisible = false
         binding.progressCircular.isVisible = false
         binding.foundedVacancy.isVisible = false
-
     }
 
     private fun showVacancies(state: SearchVacanciesState.Content) {
@@ -123,6 +135,10 @@ class SearchVacanciesFragment : Fragment() {
         binding.errorStateView.setErrorText(getString(R.string.search_vacancies_no_internet))
     }
 
+    private fun showToast(@StringRes resId: Int) {
+        Toast.makeText(context, getString(resId), Toast.LENGTH_SHORT).show()
+    }
+
     private fun configurePagination() {
         binding.recyclerViewVacancy.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -133,7 +149,9 @@ class SearchVacanciesFragment : Fragment() {
                         (binding.recyclerViewVacancy.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                     val itemsCount = binding.recyclerViewVacancy.adapter?.itemCount ?: 0
                     if (pos >= itemsCount - 1) {
-                        viewModel.loadNewVacanciesPage()
+                        binding.recyclerViewVacancy.post {
+                            viewModel.loadNewVacanciesPage()
+                        }
                     }
                 }
             }

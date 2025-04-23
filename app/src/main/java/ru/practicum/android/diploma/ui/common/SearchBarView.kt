@@ -65,6 +65,7 @@ class SearchBarView @JvmOverloads constructor(
             val txt = input.text.toString()
             if (txt.isNotEmpty()) {
                 input.text.clear()
+                onSearchIconClick?.invoke(txt)
             } else {
                 onSearchIconClick?.invoke(txt)
             }

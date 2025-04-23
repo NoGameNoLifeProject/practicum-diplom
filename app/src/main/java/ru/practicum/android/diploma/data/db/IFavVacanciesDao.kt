@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface IFavVacanciesDao {
@@ -15,5 +16,5 @@ interface IFavVacanciesDao {
     suspend fun deleteVacancy(vacancy: FavVacancyEntity)
 
     @Query("SELECT * FROM $FAV_VACANCIES_TABLE_NAME ")
-    suspend fun getAllVacancies(): List<FavVacancyEntity>
+    fun getAllVacancies(): Flow<List<FavVacancyEntity>>
 }

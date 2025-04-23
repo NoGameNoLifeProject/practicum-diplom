@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterInside
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.VacancyItemBinding
 import ru.practicum.android.diploma.databinding.VacancyItemLoadingBinding
@@ -67,7 +66,6 @@ class VacancyAdapter(private val onClick: (Vacancy) -> Unit) :
                         .load(vacancies[position].employer?.logoUrls?.size240)
                         .placeholder(R.drawable.ic_placeholder_32px)
                         .transform(
-                            RoundedCorners(R.dimen.vacancy_logo_corner_radius),
                             CenterInside()
                         )
                         .into(vacancyCardPlaceholder)
