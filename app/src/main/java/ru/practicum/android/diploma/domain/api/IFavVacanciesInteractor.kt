@@ -7,5 +7,5 @@ interface IFavVacanciesInteractor {
     fun getFavorite(): Flow<Resource<List<VacancyDetails>>>
     suspend fun addToFavorite(vacancy: VacancyDetails)
     suspend fun deleteFromFavorite(vacancy: VacancyDetails)
-    suspend fun isChecked(vacancyId: String): Boolean
+    fun isChecked(vacancyId: String): Flow<Boolean>
 }

@@ -120,7 +120,7 @@ class VacancyDetailsFragment : Fragment() {
         if (vacancy.employer != null) {
             binding.employerLayout.isVisible = true
             Glide.with(requireContext())
-                .load(vacancy.employer.logoUrls?.size90).transform(
+                .load(vacancy.employer.logoUrls?.original).transform(
                     RoundedCorners(R.dimen.vacancy_logo_corner_radius),
                     CenterInside()
                 )

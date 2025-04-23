@@ -34,7 +34,7 @@ class FavVacanciesFragment : Fragment() {
 
         adapter = FavVacanciesAdapter {
             val action =
-                FavVacanciesFragmentDirections.actionFavVacanciesFragmentToVacancyDetailsFragment(it.id, false)
+                FavVacanciesFragmentDirections.actionFavVacanciesFragmentToVacancyDetailsFragment(it.id, true)
             findNavController().navigate(action)
         }
         binding.rvVacancies.adapter = adapter

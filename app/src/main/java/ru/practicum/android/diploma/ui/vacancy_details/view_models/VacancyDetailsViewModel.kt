@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.IFavVacanciesInteractor
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
@@ -28,9 +29,8 @@ class VacancyDetailsViewModel(
         _vacancyDetailsState.value = VacancyDetailsState.Loading
         viewModelScope.launch {
             if (isLocal) {
-                favoriteInteractor.getFavorite().collect { vacancyList ->
-                    getFromDataBase(vacancyList, vacancyId)
-                }
+                val vacancyList = favoriteInteractor.getFavorite().first()
+                getFromDataBase(vacancyList, vacancyId)
             } else {
                 vacancyInteractor.getVacancyDetails(vacancyId).collect { result ->
                     getFromSearch(result)
@@ -92,8 +92,9 @@ class VacancyDetailsViewModel(
     private fun checkFavorites() {
         val vacancy = getCurrentVacancy() ?: return
         viewModelScope.launch {
-            val isFavorite = favoriteInteractor.isChecked(vacancy.id)
-            _isFavoriteLiveData.value = isFavorite
+            favoriteInteractor.isChecked(vacancy.id).collect {
+                _isFavoriteLiveData.value = it
+            }
         }
     }
 
