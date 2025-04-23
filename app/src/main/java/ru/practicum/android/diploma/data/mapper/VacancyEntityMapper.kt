@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.data.mapper
 
 import ru.practicum.android.diploma.data.db.FavVacancyEntity
+import ru.practicum.android.diploma.domain.models.Address
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.domain.models.Employer
 import ru.practicum.android.diploma.domain.models.Experience
@@ -9,6 +10,8 @@ import ru.practicum.android.diploma.domain.models.LogoUrls
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.domain.models.VacancyDetails
+import ru.practicum.android.diploma.domain.models.WorkFormat
+import ru.practicum.android.diploma.domain.models.WorkSchedule
 
 class VacancyEntityMapper {
     private fun convertToVacancy(entity: FavVacancyEntity): Vacancy {
@@ -37,6 +40,8 @@ class VacancyEntityMapper {
         val area = Area(id = entity.areaId, name = entity.areaName)
         val experience = Experience(id = entity.experienceId, name = entity.experienceName)
         val keySkills = entity.keySkills.split(",").map { KeySkill(it) }
+        val workFormat = entity.workFormat.split(",").mapIndexed { i, name -> WorkFormat(id = i.toString(), name) }
+        val workSchedule = entity.workSchedule.split(",").mapIndexed { i, name -> WorkSchedule(id = i.toString(), name) }
 
         return VacancyDetails(
             id = vacancy.id,
@@ -48,7 +53,10 @@ class VacancyEntityMapper {
             salary = vacancy.salary,
             salaryRange = vacancy.salaryRange,
             experience = experience,
-            alternateUrl = entity.alternateUrl
+            alternateUrl = entity.alternateUrl,
+            workFormat = workFormat,
+            workSchedule = workSchedule,
+            address = Address(entity.address)
         )
     }
 
@@ -68,13 +76,14 @@ class VacancyEntityMapper {
                 gross = vacancy.salaryRange?.gross ?: false,
                 to = vacancy.salaryRange?.to ?: 0
             )
+
         }
 
         return FavVacancyEntity(
             id = vacancy.id,
             name = vacancy.name,
-            areaId = vacancy.area?.id ?: "",
-            areaName = vacancy.area?.name ?: "",
+            areaId = vacancy.area.id ?: "",
+            areaName = vacancy.area.name ?: "",
             description = vacancy.description ?: "",
             employerId = vacancy.employer?.id ?: "",
             employerName = vacancy.employer?.name ?: "",
@@ -86,7 +95,10 @@ class VacancyEntityMapper {
             salaryCurrency = salary.currency ?: "",
             experienceId = vacancy.experience?.id ?: "",
             experienceName = vacancy.experience?.name ?: "",
-            alternateUrl = vacancy.alternateUrl
+            alternateUrl = vacancy.alternateUrl,
+            workFormat = vacancy.workFormat?.joinToString(",") { it.name } ?: "",
+            workSchedule = vacancy.workSchedule?.joinToString(",") { it.name } ?: "",
+            address = vacancy.address?.address ?: ""
         )
     }
 }
