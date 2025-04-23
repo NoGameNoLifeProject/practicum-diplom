@@ -49,10 +49,14 @@ class VacancyDetailsFragment : Fragment() {
 
         viewModel.isFavoriteLiveData.observe(viewLifecycleOwner) { isFavorite ->
             binding.toolbar.drawableAction1 =
-                if (isFavorite) ContextCompat.getDrawable(
-                    requireContext(),
-                    R.drawable.ic_favorites_on_24px
-                ) else ContextCompat.getDrawable(requireContext(), R.drawable.ic_favorites_off_24px)
+                if (isFavorite) {
+                    ContextCompat.getDrawable(
+                        requireContext(),
+                        R.drawable.ic_favorites_on_24px
+                    )
+                } else {
+                    ContextCompat.getDrawable(requireContext(), R.drawable.ic_favorites_off_24px)
+                }
         }
 
         viewModel.vacancyDetailsState.observe(viewLifecycleOwner) { state ->
@@ -70,21 +74,26 @@ class VacancyDetailsFragment : Fragment() {
     }
 
     private fun setPlaceholder(state: VacancyDetailsState): Boolean {
-        when (state) {
+        val didShow = when (state) {
             is VacancyDetailsState.NothingFound -> {
                 binding.placeholder.setErrorImage(R.drawable.image_error_vacancy_404)
-                binding.placeholder.setErrorText(getString(R.string.vacancy_details_placeholder_not_found))
-                return true
+                binding.placeholder.setErrorText(
+                    getString(R.string.vacancy_details_placeholder_not_found)
+                )
+                true
             }
 
             is VacancyDetailsState.NetworkError -> {
                 binding.placeholder.setErrorImage(R.drawable.image_error_vacancy_500)
-                binding.placeholder.setErrorText(getString(R.string.vacancy_details_placeholder_server_error))
-                return true
+                binding.placeholder.setErrorText(
+                    getString(R.string.vacancy_details_placeholder_server_error)
+                )
+                true
             }
 
-            else -> return false
+            else -> false
         }
+        return didShow
     }
 
     private fun setContent(state: VacancyDetailsState): Boolean {
@@ -101,6 +110,7 @@ class VacancyDetailsFragment : Fragment() {
                 setKeySkills(state.vacancy)
                 return true
             }
+
             else -> return false
         }
     }
@@ -111,14 +121,16 @@ class VacancyDetailsFragment : Fragment() {
             binding.employerLayout.isVisible = true
             Glide.with(requireContext())
                 .load(vacancy.employer.logoUrls?.size90).transform(
-                    RoundedCorners(R.dimen.vacancy_logo_corner_radius), CenterInside()
+                    RoundedCorners(R.dimen.vacancy_logo_corner_radius),
+                    CenterInside()
                 )
                 .placeholder(R.drawable.ic_placeholder_32px)
                 .into(binding.logo)
             binding.employerName.text = vacancy.employer.name
             binding.employerAddress.text = vacancy.address?.address ?: vacancy.area.name
-        }else
+        } else {
             binding.employerLayout.isVisible = false
+        }
     }
 
     private fun setExperience(vacancy: VacancyDetails) {

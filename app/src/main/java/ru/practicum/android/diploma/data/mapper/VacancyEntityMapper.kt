@@ -41,7 +41,8 @@ class VacancyEntityMapper {
         val experience = Experience(id = entity.experienceId, name = entity.experienceName)
         val keySkills = entity.keySkills.split(",").map { KeySkill(it) }
         val workFormat = entity.workFormat.split(",").mapIndexed { i, name -> WorkFormat(id = i.toString(), name) }
-        val workSchedule = entity.workSchedule.split(",").mapIndexed { i, name -> WorkSchedule(id = i.toString(), name) }
+        val workSchedule = entity.workSchedule.split(",")
+            .mapIndexed { i, name -> WorkSchedule(id = i.toString(), name) }
 
         return VacancyDetails(
             id = vacancy.id,
