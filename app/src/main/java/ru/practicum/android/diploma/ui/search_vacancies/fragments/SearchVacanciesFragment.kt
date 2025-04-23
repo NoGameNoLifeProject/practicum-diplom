@@ -23,7 +23,9 @@ class SearchVacanciesFragment : Fragment() {
     private val viewModel: SearchVacanciesViewModel by viewModel<SearchVacanciesViewModel>()
 
     private val adapter = VacancyAdapter {
-        findNavController().navigate(R.id.action_searchVacanciesFragment_to_vacancyDetailsFragment)
+        val action =
+            SearchVacanciesFragmentDirections.actionSearchVacanciesFragmentToVacancyDetailsFragment(it.id, false)
+        findNavController().navigate(action)
     }
 
     override fun onCreateView(
@@ -47,6 +49,10 @@ class SearchVacanciesFragment : Fragment() {
 
         binding.searchBar.setOnQueryTextChangedListener {
             viewModel.searchVacancies(it)
+        }
+
+        binding.searchBar.setOnSearchIconClickListener {
+            viewModel.clearSearchExpression()
         }
 
         binding.searchToolBar.setOnAction1Click {
@@ -133,7 +139,9 @@ class SearchVacanciesFragment : Fragment() {
                         (binding.recyclerViewVacancy.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
                     val itemsCount = binding.recyclerViewVacancy.adapter?.itemCount ?: 0
                     if (pos >= itemsCount - 1) {
-                        viewModel.loadNewVacanciesPage()
+                        binding.recyclerViewVacancy.post {
+                            viewModel.loadNewVacanciesPage()
+                        }
                     }
                 }
             }

@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFavVacanciesBinding
@@ -32,7 +33,9 @@ class FavVacanciesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         adapter = FavVacanciesAdapter {
-            // TODO: Переход на экран вакансии
+            val action =
+                FavVacanciesFragmentDirections.actionFavVacanciesFragmentToVacancyDetailsFragment(it.id, false)
+            findNavController().navigate(action)
         }
         binding.rvVacancies.adapter = adapter
 

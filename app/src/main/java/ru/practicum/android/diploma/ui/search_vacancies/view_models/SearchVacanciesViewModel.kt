@@ -18,6 +18,7 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
     private val _state = MutableLiveData<SearchVacanciesState>()
     private val vacancies = mutableListOf<Vacancy>()
     private var founded = 0
+    private var lastSearchExpression = ""
 
     val state: LiveData<SearchVacanciesState> get() = _state
 
@@ -29,10 +30,12 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
         debounce(SEARCH_DEBOUNCE_DELAY, viewModelScope, true, this::onSearchVacancies)
 
     private fun onSearchVacancies(expression: String) {
+        if (expression == lastSearchExpression) return
         if (expression.isEmpty()) {
             renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.Empty))
             return
         }
+        lastSearchExpression = expression
         renderState(SearchVacanciesState.Loading)
         viewModelScope.launch {
             vacancyInteractor.searchVacancies(expression).collect { result ->
@@ -41,6 +44,10 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
                 processFoundVacancies(result)
             }
         }
+    }
+
+    fun clearSearchExpression() {
+        lastSearchExpression = ""
     }
 
     fun loadNewVacanciesPage() {
@@ -92,6 +99,7 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
                     NO_INTERNET_ERROR_CODE -> {
                         renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NoInternet))
                     }
+
                     else -> {
                         renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NetworkError))
                     }
