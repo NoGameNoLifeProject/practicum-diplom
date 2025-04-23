@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -58,6 +60,11 @@ class SearchVacanciesFragment : Fragment() {
         binding.searchToolBar.setOnAction1Click {
             findNavController().navigate(R.id.action_searchVacanciesFragment_to_filterParametersFragment)
         }
+
+        viewModel.showToast.observe(viewLifecycleOwner) {
+            adapter.isLoadingMore = false
+            showToast(it)
+        }
     }
 
     private fun render(state: SearchVacanciesState) {
@@ -73,7 +80,6 @@ class SearchVacanciesFragment : Fragment() {
         binding.recyclerViewVacancy.isVisible = false
         binding.progressCircular.isVisible = false
         binding.foundedVacancy.isVisible = false
-
     }
 
     private fun showVacancies(state: SearchVacanciesState.Content) {
@@ -127,6 +133,10 @@ class SearchVacanciesFragment : Fragment() {
         binding.errorStateView.isVisible = true
         binding.errorStateView.setErrorImage(R.drawable.image_error_no_internet)
         binding.errorStateView.setErrorText(getString(R.string.search_vacancies_no_internet))
+    }
+
+    private fun showToast(@StringRes resId: Int) {
+        Toast.makeText(context, getString(resId), Toast.LENGTH_SHORT).show()
     }
 
     private fun configurePagination() {

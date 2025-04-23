@@ -1,10 +1,13 @@
 package ru.practicum.android.diploma.ui.search_vacancies.view_models
 
+import androidx.annotation.IdRes
+import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
 import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.ReceivedVacanciesData
@@ -12,15 +15,18 @@ import ru.practicum.android.diploma.domain.models.SearchVacanciesState
 import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.util.NO_INTERNET_ERROR_CODE
 import ru.practicum.android.diploma.util.SEARCH_VACANCY_ITEMS_PER_PAGE
+import ru.practicum.android.diploma.util.SingleLiveEvent
 import ru.practicum.android.diploma.util.debounce
 
 class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor) : ViewModel() {
     private val _state = MutableLiveData<SearchVacanciesState>()
+    private val _showToast = SingleLiveEvent<Int>()
     private val vacancies = mutableListOf<Vacancy>()
     private var founded = 0
-    private var lastSearchExpression = ""
+    private var lastSearchExpression: String? = null
 
     val state: LiveData<SearchVacanciesState> get() = _state
+    val showToast: LiveData<Int> get() = _showToast
 
     private fun renderState(state: SearchVacanciesState) {
         _state.value = state
@@ -47,7 +53,7 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
     }
 
     fun clearSearchExpression() {
-        lastSearchExpression = ""
+        lastSearchExpression = null
     }
 
     fun loadNewVacanciesPage() {
@@ -81,7 +87,6 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
                 }
 
                 val endReached = data.items.size < SEARCH_VACANCY_ITEMS_PER_PAGE || data.page!! >= data.pages!!
-
                 vacancies.addAll(data.items)
 
                 renderState(
@@ -95,13 +100,23 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
             }
 
             is Resource.Error -> {
+                val isOnLoadingMore = _state.value is SearchVacanciesState.Content
+
                 when (result.errorCode) {
                     NO_INTERNET_ERROR_CODE -> {
-                        renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NoInternet))
+                        if (isOnLoadingMore) {
+                            _showToast.value = R.string.search_vacancies_no_internet
+                        } else {
+                            renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NoInternet))
+                        }
                     }
 
                     else -> {
-                        renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NetworkError))
+                        if (isOnLoadingMore) {
+                            _showToast.value = R.string.search_vacancies_placeholder_server_error
+                        } else {
+                            renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NetworkError))
+                        }
                     }
                 }
             }
