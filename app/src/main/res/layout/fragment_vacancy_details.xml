@@ -6,28 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".ui.vacancy_details.fragments.VacancyDetailsFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
+
+    <ru.practicum.android.diploma.ui.common.HHToolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"
-        android:background="?attr/backgroundPrimaryColor"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        app:titleText="@string/vacancy_details_title"
+        app:drawableNavigation="@drawable/ic_arrow_back_24px"
+        app:drawableAction2="@drawable/ic_sharing_24px"
+        app:drawableAction1="@drawable/ic_favorites_off_24px"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            style="@style/ToolbarWithIconAndBackArrowStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingEnd="@dimen/padding8"
-            app:contentInsetStartWithNavigation="56dp"
-            app:menu="@menu/toolbar_menu_vacancy_details"
-            app:navigationIcon="@drawable/ic_arrow_back_24px"
-            app:title="@string/vacancy_details_title"
-            app:titleMarginStart="0dp" />
-    </com.google.android.material.appbar.AppBarLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -38,16 +29,17 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
-    <androidx.constraintlayout.widget.Placeholder
+    <ru.practicum.android.diploma.ui.common.ErrorStateView
+        android:id="@+id/placeholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/content"
@@ -61,7 +53,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar">
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -97,6 +89,7 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/employer_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding16"
@@ -144,6 +137,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/experience_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding24"
@@ -172,6 +166,7 @@
                 tools:text="Полная занятость, Удаленная работа" />
 
             <TextView
+                android:id="@+id/description_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding32"
@@ -193,6 +188,7 @@
 Следить за работоспособностью сервиса и устранять технический долг" />
 
             <TextView
+                android:id="@+id/key_skills_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding24"

@@ -12,20 +12,25 @@ import ru.practicum.android.diploma.domain.models.KeySkill
 import ru.practicum.android.diploma.domain.models.LogoUrls
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.VacancyDetails
+import ru.practicum.android.diploma.domain.models.WorkFormat
+import ru.practicum.android.diploma.domain.models.WorkSchedule
 
 class MapperVacancyDetails {
     fun map(vacancyDetails: VacancyDetailsDto): VacancyDetails {
         return VacancyDetails(
             id = vacancyDetails.id,
             name = vacancyDetails.name,
-            area = vacancyDetails.area?.toDomain(),
+            area = vacancyDetails.area.toDomain(),
             description = vacancyDetails.description,
             employer = vacancyDetails.employer?.let { mapEmployer(it) },
             keySkills = vacancyDetails.keySkills.map { KeySkill(name = it.name) },
             salary = vacancyDetails.salary?.let { mapSalary(it) },
             salaryRange = vacancyDetails.salaryRange?.let { mapSalary(it) },
             experience = vacancyDetails.experience?.let { mapExperience(it) },
-            alternateUrl = vacancyDetails.alternateUrl
+            alternateUrl = vacancyDetails.alternateUrl,
+            workFormat = vacancyDetails.workFormat?.map { WorkFormat(it.id, it.name) },
+            workSchedule = vacancyDetails.workSchedule?.map { WorkSchedule(it.id, it.name) },
+            address = vacancyDetails.address?.toDomain()
         )
     }
 
@@ -44,4 +49,5 @@ class MapperVacancyDetails {
     private fun mapExperience(experience: ExperienceDto): Experience {
         return Experience(id = experience.id, name = experience.name)
     }
+
 }
