@@ -1,4 +1,4 @@
-package ru.practicum.android.diploma.ui.fav_vacancies.adapters
+package ru.practicum.android.diploma.ui.search_vacancies.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,17 +8,17 @@ import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.VacancyItemBinding
-import ru.practicum.android.diploma.domain.models.VacancyDetails
+import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.util.salaryFormat
 
-class FavVacanciesAdapter(private val onClick: (VacancyDetails) -> Unit) :
-    RecyclerView.Adapter<FavVacanciesAdapter.ViewHolder>() {
+class VacancyAdapter(private val onClick: (Vacancy) -> Unit) :
+    RecyclerView.Adapter<VacancyAdapter.ViewHolder>() {
 
-    private val vacancies = mutableListOf<VacancyDetails>()
+    private val vacancies = mutableListOf<Vacancy>()
 
     inner class ViewHolder(val binding: VacancyItemBinding) : RecyclerView.ViewHolder(binding.root)
 
-    fun setVacancies(newVacancies: List<VacancyDetails>) {
+    fun setVacancies(newVacancies: List<Vacancy>) {
         vacancies.clear()
         vacancies.addAll(newVacancies)
         notifyDataSetChanged()
@@ -37,7 +37,7 @@ class FavVacanciesAdapter(private val onClick: (VacancyDetails) -> Unit) :
             vacancySalaryCard.text = salaryFormat(holder.itemView.context, vacancies[position].salary)
 
             Glide.with(holder.itemView)
-                .load(vacancies[position].employer?.logoUrls?.size90)
+                .load(vacancies[position].employer?.logoUrls?.size240)
                 .placeholder(R.drawable.ic_placeholder_32px)
                 .transform(RoundedCorners(R.dimen.vacancy_logo_corner_radius), CenterInside())
                 .into(vacancyCardPlaceholder)
