@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.data
 
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.data.dto.toDomain
 import ru.practicum.android.diploma.data.mapper.MapperSearchVacancyRequestResponse
 import ru.practicum.android.diploma.data.mapper.MapperVacancyDetails
@@ -17,19 +18,25 @@ import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.ReceivedVacanciesData
 import ru.practicum.android.diploma.domain.models.SubIndustry
 import ru.practicum.android.diploma.domain.models.VacancyDetails
+import ru.practicum.android.diploma.util.NO_INTERNET_ERROR_CODE
 import java.net.HttpURLConnection
 
 class VacancyRepositoryImpl(
     private val networkClient: IRetrofitApiClient,
     private val filterParam: IStorageRepository,
     private val searchMapper: MapperSearchVacancyRequestResponse,
-    private val vacancyDetailsMapper: MapperVacancyDetails
+    private val vacancyDetailsMapper: MapperVacancyDetails,
+    private val networkInfo: NetworkInfoDataSource,
 ) : IVacancyRepository {
 
     private var lastRequest: SearchVacanciesRequest? = null
     private var pagesInLastResponse: Int = 0
 
     override fun searchVacancies(expression: String): Flow<Resource<ReceivedVacanciesData>> = flow {
+        if (!networkInfo.isConnected()) {
+            emit(Resource.Error(NO_INTERNET_ERROR_CODE))
+            return@flow
+        }
         val req = searchMapper.mapRequest(expression, filterParam.read())
         lastRequest = req
         val result = networkClient.searchVacancies(req)
@@ -46,6 +53,10 @@ class VacancyRepositoryImpl(
     }
 
     override fun getCountries(): Flow<Resource<List<Area>>> = flow {
+        if (!networkInfo.isConnected()) {
+            emit(Resource.Error(NO_INTERNET_ERROR_CODE))
+            return@flow
+        }
         val result = networkClient.getAreas(GetAreasRequest())
         val body = result.body()
         if (result.isSuccessful && body != null) {
@@ -56,8 +67,12 @@ class VacancyRepositoryImpl(
     }
 
     override fun getVacancyDetails(
-        vacancyId: String
+        vacancyId: String,
     ): Flow<Resource<VacancyDetails>> = flow {
+        if (!networkInfo.isConnected()) {
+            emit(Resource.Error(NO_INTERNET_ERROR_CODE))
+            return@flow
+        }
         val result = networkClient.getVacancyDetails(GetVacancyDetailsRequest(vacancyId))
         val body = result.body()
         if (result.isSuccessful && body != null) {
@@ -91,6 +106,10 @@ class VacancyRepositoryImpl(
     }
 
     override fun getIndustries(): Flow<Resource<List<Industry>>> = flow {
+        if (!networkInfo.isConnected()) {
+            emit(Resource.Error(NO_INTERNET_ERROR_CODE))
+            return@flow
+        }
         val result = networkClient.getIndustries(GetIndustriesRequest())
         val body = result.body()
         if (result.isSuccessful && body != null) {
@@ -100,11 +119,11 @@ class VacancyRepositoryImpl(
                         Industry(
                             id = it1.id,
                             name = it1.name,
-                            subIndustries = it1.subIndustries?.map { SubIndustry(id = it.id, name = it.name) }
+                            subIndustries = it1.subIndustries
+                                ?.map { SubIndustry(id = it.id, name = it.name) }
                         )
                     }
-                )
-            )
+                ))
         } else {
             emit(Resource.Error(result.code()))
         }
