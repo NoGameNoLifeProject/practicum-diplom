@@ -1,7 +1,5 @@
 package ru.practicum.android.diploma.ui.search_vacancies.view_models
 
-import androidx.annotation.IdRes
-import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -79,45 +77,53 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
     private fun processFoundVacancies(result: Resource<ReceivedVacanciesData>) {
         when (result) {
             is Resource.Success -> {
-                val data = result.data
-                founded = data.found ?: 0
-
-                if (data.items.isEmpty()) {
-                    return renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NothingFound))
-                }
-
-                val endReached = data.items.size < SEARCH_VACANCY_ITEMS_PER_PAGE || data.page!! >= data.pages!!
-                vacancies.addAll(data.items)
-
-                renderState(
-                    SearchVacanciesState.Content(
-                        items = vacancies,
-                        founded = founded,
-                        isLoadingMore = false,
-                        endReached = endReached
-                    )
-                )
+                processFoundVacanciesSuccess(result)
             }
 
             is Resource.Error -> {
-                val isOnLoadingMore = _state.value is SearchVacanciesState.Content
+                processFoundVacanciesError(result)
+            }
+        }
+    }
 
-                when (result.errorCode) {
-                    NO_INTERNET_ERROR_CODE -> {
-                        if (isOnLoadingMore) {
-                            _showToast.value = R.string.search_vacancies_no_internet
-                        } else {
-                            renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NoInternet))
-                        }
-                    }
+    private fun processFoundVacanciesSuccess(result: Resource.Success<ReceivedVacanciesData>) {
+        val data = result.data
+        founded = data.found ?: 0
 
-                    else -> {
-                        if (isOnLoadingMore) {
-                            _showToast.value = R.string.search_vacancies_placeholder_server_error
-                        } else {
-                            renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NetworkError))
-                        }
-                    }
+        if (data.items.isEmpty()) {
+            return renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NothingFound))
+        }
+
+        val endReached = data.items.size < SEARCH_VACANCY_ITEMS_PER_PAGE || data.page!! >= data.pages!!
+        vacancies.addAll(data.items)
+
+        renderState(
+            SearchVacanciesState.Content(
+                items = vacancies,
+                founded = founded,
+                isLoadingMore = false,
+                endReached = endReached
+            )
+        )
+    }
+
+    private fun processFoundVacanciesError(result: Resource.Error<ReceivedVacanciesData>) {
+        val isOnLoadingMore = _state.value is SearchVacanciesState.Content
+
+        when (result.errorCode) {
+            NO_INTERNET_ERROR_CODE -> {
+                if (isOnLoadingMore) {
+                    _showToast.value = R.string.search_vacancies_no_internet
+                } else {
+                    renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NoInternet))
+                }
+            }
+
+            else -> {
+                if (isOnLoadingMore) {
+                    _showToast.value = R.string.search_vacancies_placeholder_server_error
+                } else {
+                    renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NetworkError))
                 }
             }
         }
