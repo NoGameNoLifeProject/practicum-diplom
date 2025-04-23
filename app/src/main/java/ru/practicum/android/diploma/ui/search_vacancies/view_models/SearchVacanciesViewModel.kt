@@ -6,12 +6,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
+import ru.practicum.android.diploma.domain.api.Resource
+import ru.practicum.android.diploma.domain.models.ReceivedVacanciesData
 import ru.practicum.android.diploma.domain.models.SearchVacanciesState
+import ru.practicum.android.diploma.domain.models.Vacancy
+import ru.practicum.android.diploma.util.NO_INTERNET_ERROR_CODE
+import ru.practicum.android.diploma.util.SEARCH_VACANCY_ITEMS_PER_PAGE
 import ru.practicum.android.diploma.util.debounce
 
 class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor) : ViewModel() {
     private val _state = MutableLiveData<SearchVacanciesState>()
-    private var isLoadingNewPage = false
+    private val vacancies = mutableListOf<Vacancy>()
+    private var founded = 0
 
     val state: LiveData<SearchVacanciesState> get() = _state
 
@@ -23,45 +29,74 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
         debounce(SEARCH_DEBOUNCE_DELAY, viewModelScope, true, this::onSearchVacancies)
 
     private fun onSearchVacancies(expression: String) {
-        if (expression.isNotEmpty()) {
-            renderState(SearchVacanciesState.Loading)
-            viewModelScope.launch {
-                vacancyInteractor.searchVacancies(expression).collect { (foundedVacancies, errorMessage) ->
-                    vacancies.clear()
-                    // TODO: переделать при добавлении проверки интернета
-                    processFoundVacancies(foundedVacancies, errorMessage)
-                }
+        if (expression.isEmpty()) {
+            renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.Empty))
+            return
+        }
+        renderState(SearchVacanciesState.Loading)
+        viewModelScope.launch {
+            vacancyInteractor.searchVacancies(expression).collect { result ->
+                vacancies.clear()
+                founded = 0
+                processFoundVacancies(result)
             }
-        } else {
-            renderState(SearchVacanciesState.Empty)
         }
     }
 
     fun loadNewVacanciesPage() {
-        renderState(SearchVacanciesState.Loading)
-        viewModelScope.launch(Dispatchers.IO) {
-            vacancyInteractor.loadNewVacanciesPage().collect { (foundedVacancies, errorMessage) ->
-                processFoundVacancies(foundedVacancies, errorMessage)
-        if (!isLoadingNewPage) {
-            isLoadingNewPage = true
-            renderState(SearchVacanciesState.Loading)
-            viewModelScope.launch(Dispatchers.IO) {
-                vacancyInteractor.loadNewVacanciesPage().collect { (foundedVacancies, errorMessage) ->
-                    processFoundVacancies(foundedVacancies, errorMessage)
-                    isLoadingNewPage = false
-                }
+        val current = _state.value
+        if (current is SearchVacanciesState.Content && (current.isLoadingMore || current.endReached)) return
+
+        renderState(
+            SearchVacanciesState.Content(
+                items = vacancies,
+                founded = founded,
+                isLoadingMore = true,
+                endReached = false
+            )
+        )
+
+        viewModelScope.launch {
+            vacancyInteractor.loadNewVacanciesPage().collect { result ->
+                processFoundVacancies(result)
             }
         }
     }
 
-    private fun processFoundVacancies(foundedVacancies: List<Vacancy>?, errorMessage: String?) {
-        if (!foundedVacancies.isNullOrEmpty()) {
-            vacancies.addAll(foundedVacancies)
-            renderState(SearchVacanciesState.VacanciesList(vacancies))
-        } else if (foundedVacancies.isNullOrEmpty() && errorMessage != null) {
-            renderState(SearchVacanciesState.NetworkError)
-        } else {
-            renderState(SearchVacanciesState.NothingFound)
+    private fun processFoundVacancies(result: Resource<ReceivedVacanciesData>) {
+        when (result) {
+            is Resource.Success -> {
+                val data = result.data
+                founded = data.found ?: 0
+
+                if (data.items.isEmpty()) {
+                    return renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NothingFound))
+                }
+
+                val endReached = data.items.size < SEARCH_VACANCY_ITEMS_PER_PAGE || data.page!! >= data.pages!!
+
+                vacancies.addAll(data.items)
+
+                renderState(
+                    SearchVacanciesState.Content(
+                        items = vacancies,
+                        founded = founded,
+                        isLoadingMore = false,
+                        endReached = endReached
+                    )
+                )
+            }
+
+            is Resource.Error -> {
+                when (result.errorCode) {
+                    NO_INTERNET_ERROR_CODE -> {
+                        renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NoInternet))
+                    }
+                    else -> {
+                        renderState(SearchVacanciesState.Error(SearchVacanciesState.ErrorType.NetworkError))
+                    }
+                }
+            }
         }
     }
 

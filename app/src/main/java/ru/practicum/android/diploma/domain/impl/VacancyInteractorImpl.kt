@@ -1,87 +1,32 @@
 package ru.practicum.android.diploma.domain.impl
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
 import ru.practicum.android.diploma.domain.api.IVacancyRepository
 import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.domain.models.Industry
-import ru.practicum.android.diploma.domain.models.Vacancy
+import ru.practicum.android.diploma.domain.models.ReceivedVacanciesData
 import ru.practicum.android.diploma.domain.models.VacancyDetails
 
 class VacancyInteractorImpl(private val repository: IVacancyRepository) : IVacancyInteractor {
-    override fun searchVacancies(expression: String): Flow<Pair<List<Vacancy>?, String?>> {
-        return repository.searchVacancies(expression).map { result ->
-            when (result) {
-                is Resource.Error -> {
-                    Pair(null, result.message)
-                }
-
-                is Resource.Success -> {
-                    Pair(result.data?.items?.toList(), null)
-                }
-            }
-        }
+    override fun searchVacancies(expression: String): Flow<Resource<ReceivedVacanciesData>> {
+        return repository.searchVacancies(expression)
     }
 
-    override fun getCountries(): Flow<Pair<List<Area>?, String?>> {
-        return repository.getCountries().map { result ->
-            when (result) {
-                is Resource.Error -> {
-                    Pair(null, result.message)
-                }
-
-                is Resource.Success -> {
-                    Pair(result.data, null)
-                }
-            }
-        }
+    override fun getCountries(): Flow<Resource<List<Area>>> {
+        return repository.getCountries()
     }
 
-    override fun getIndustries(): Flow<Pair<List<Industry>?, String?>> {
-        return repository.getIndustries().map { result ->
-            when (result) {
-                is Resource.Error -> {
-                    Pair(null, result.message)
-                }
-
-                is Resource.Success -> {
-                    Pair(result.data, null)
-                }
-            }
-        }
+    override fun getIndustries(): Flow<Resource<List<Industry>>> {
+        return repository.getIndustries()
     }
 
-    override fun getVacancyDetails(vacancyId: String): Flow<Pair<VacancyDetails?, String?>> {
-        return repository.getVacancyDetails(vacancyId).map { result ->
-            when (result) {
-                is Resource.Error -> {
-                    Pair(null, result.message)
-                }
-
-                is Resource.Success -> {
-                    if (result.data == null) {
-                        Pair(null, result.message)
-                    } else {
-                        Pair(result.data, null)
-                    }
-                }
-            }
-        }
+    override fun getVacancyDetails(vacancyId: String): Flow<Resource<VacancyDetails>> {
+        return repository.getVacancyDetails(vacancyId)
     }
 
-    override fun loadNewVacanciesPage(): Flow<Pair<List<Vacancy>?, String?>> {
-        return repository.loadNewVacanciesPage().map { result ->
-            when (result) {
-                is Resource.Error -> {
-                    Pair(null, result.message)
-                }
-
-                is Resource.Success -> {
-                    Pair(result.data?.items?.toList(), null)
-                }
-            }
-        }
+    override fun loadNewVacanciesPage(): Flow<Resource<ReceivedVacanciesData>> {
+        return repository.loadNewVacanciesPage()
     }
 }

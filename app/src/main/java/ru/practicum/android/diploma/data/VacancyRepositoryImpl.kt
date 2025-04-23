@@ -17,6 +17,7 @@ import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.ReceivedVacanciesData
 import ru.practicum.android.diploma.domain.models.SubIndustry
 import ru.practicum.android.diploma.domain.models.VacancyDetails
+import java.net.HttpURLConnection
 
 class VacancyRepositoryImpl(
     private val networkClient: IRetrofitApiClient,
@@ -40,7 +41,7 @@ class VacancyRepositoryImpl(
             }
             emit(Resource.Success(vacanciesData))
         } else {
-            emit(Resource.Error(result.errorBody()?.string().orEmpty(), null))
+            emit(Resource.Error(result.code()))
         }
     }
 
@@ -50,7 +51,7 @@ class VacancyRepositoryImpl(
         if (result.isSuccessful && body != null) {
             emit(Resource.Success(body.toList().map { it.toDomain() }))
         } else {
-            emit(Resource.Error(result.errorBody()?.string().orEmpty(), null))
+            emit(Resource.Error(result.code()))
         }
     }
 
@@ -62,16 +63,16 @@ class VacancyRepositoryImpl(
         if (result.isSuccessful && body != null) {
             emit(Resource.Success(vacancyDetailsMapper.map(body)))
         } else {
-            emit(Resource.Error(result.errorBody()?.string().orEmpty(), null))
+            emit(Resource.Error(result.code()))
         }
     }
 
     override fun loadNewVacanciesPage(): Flow<Resource<ReceivedVacanciesData>> = flow {
         val lastReq = lastRequest
         if (lastReq == null) {
-            emit(Resource.Error("No search request", null))
-        } else if (lastReq.page >= pagesInLastResponse) {
-            emit(Resource.Error("No more results", null))
+            emit(Resource.Error(HttpURLConnection.HTTP_INTERNAL_ERROR))
+//        } else if (lastReq.page >= pagesInLastResponse) { // Вообще этого быть не должно, если что пусть апи ошибку шлет
+//            emit(Resource.Error("No more results", null))
         } else {
             lastReq.page += 1
 //            lastRequest = lastReq
@@ -84,7 +85,7 @@ class VacancyRepositoryImpl(
                 }
                 emit(Resource.Success(vacanciesData))
             } else {
-                emit(Resource.Error(result.errorBody()?.string().orEmpty(), null))
+                emit(Resource.Error(result.code()))
             }
         }
     }
@@ -105,7 +106,7 @@ class VacancyRepositoryImpl(
                 )
             )
         } else {
-            emit(Resource.Error(result.errorBody()?.string().orEmpty(), null))
+            emit(Resource.Error(result.code()))
         }
     }
 }

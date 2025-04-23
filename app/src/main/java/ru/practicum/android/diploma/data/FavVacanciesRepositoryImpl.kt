@@ -7,6 +7,7 @@ import ru.practicum.android.diploma.data.mapper.VacancyEntityMapper
 import ru.practicum.android.diploma.domain.api.IFavVacanciesRepository
 import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.VacancyDetails
+import java.net.HttpURLConnection
 
 class FavVacanciesRepositoryImpl(val dataBase: AppDatabase, val mapper: VacancyEntityMapper) : IFavVacanciesRepository {
     override suspend fun add(vacancy: VacancyDetails) {
@@ -23,7 +24,7 @@ class FavVacanciesRepositoryImpl(val dataBase: AppDatabase, val mapper: VacancyE
             val vacancies = dataBase.favVacanciesDao().getAllVacancies()
             emit(Resource.Success(vacancies.map { mapper.convertToVacancyDetails(it) }))
         } catch (e: Exception) {
-            emit(Resource.Error(e.message.toString()))
+            emit(Resource.Error(HttpURLConnection.HTTP_INTERNAL_ERROR))
         }
     }
 }
