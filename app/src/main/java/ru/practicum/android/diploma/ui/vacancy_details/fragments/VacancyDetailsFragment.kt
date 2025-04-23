@@ -100,7 +100,7 @@ class VacancyDetailsFragment : Fragment() {
         when (state) {
             is VacancyDetailsState.VacanciesDetails -> {
                 binding.vacancyName.text = state.vacancy.name
-                binding.vacancySalary.text = salaryFormat(requireContext(), state.vacancy.salaryRange)
+                binding.vacancySalary.text = salaryFormat(requireContext(), state.vacancy.salary)
                 setEmployer(state.vacancy)
                 setExperience(state.vacancy)
                 binding.workFormatAndSchedule.setTextOrGone(
