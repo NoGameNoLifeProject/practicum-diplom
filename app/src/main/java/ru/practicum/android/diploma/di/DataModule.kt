@@ -71,7 +71,8 @@ val dataModule = module {
             networkClient = get(),
             filterParam = get(),
             searchMapper = get(),
-            vacancyDetailsMapper = get()
+            vacancyDetailsMapper = get(),
+            networkInfo = get()
         )
     }
 
