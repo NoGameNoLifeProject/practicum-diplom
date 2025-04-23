@@ -49,6 +49,7 @@
     <string name="vacancy_details_experience">Требуемый опыт</string>
     <string name="vacancy_details_description">Описание вакансии</string>
     <string name="vacancy_details_key_skills">Ключевые навыки</string>
+    <string name="vacancy_details_work_format_work_schedule">%s, %s</string>
 
     <!--   Вакансия "Зарплата" -->
     <string name="vacancy_salary_from">от %s %s</string>
