@@ -1,7 +1,11 @@
 package ru.practicum.android.diploma.data
 
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.cancel
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onStart
 import ru.practicum.android.diploma.data.dto.toDomain
 import ru.practicum.android.diploma.data.mapper.MapperSearchVacancyRequestResponse
 import ru.practicum.android.diploma.data.mapper.MapperVacancyDetails
@@ -17,13 +21,15 @@ import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.ReceivedVacanciesData
 import ru.practicum.android.diploma.domain.models.SubIndustry
 import ru.practicum.android.diploma.domain.models.VacancyDetails
+import ru.practicum.android.diploma.util.NO_INTERNET_ERROR_CODE
 import java.net.HttpURLConnection
 
 class VacancyRepositoryImpl(
     private val networkClient: IRetrofitApiClient,
     private val filterParam: IStorageRepository,
     private val searchMapper: MapperSearchVacancyRequestResponse,
-    private val vacancyDetailsMapper: MapperVacancyDetails
+    private val vacancyDetailsMapper: MapperVacancyDetails,
+    private val networkInfo: NetworkInfoDataSource,
 ) : IVacancyRepository {
 
     private var lastRequest: SearchVacanciesRequest? = null
@@ -43,6 +49,11 @@ class VacancyRepositoryImpl(
         } else {
             emit(Resource.Error(result.code()))
         }
+    }.onStart {
+        if (!networkInfo.isConnected()) {
+            emit(Resource.Error(NO_INTERNET_ERROR_CODE))
+            currentCoroutineContext().cancel()
+        }
     }
 
     override fun getCountries(): Flow<Resource<List<Area>>> = flow {
@@ -53,10 +64,15 @@ class VacancyRepositoryImpl(
         } else {
             emit(Resource.Error(result.code()))
         }
+    }.onStart {
+        if (!networkInfo.isConnected()) {
+            emit(Resource.Error(NO_INTERNET_ERROR_CODE))
+            currentCoroutineContext().cancel()
+        }
     }
 
     override fun getVacancyDetails(
-        vacancyId: String
+        vacancyId: String,
     ): Flow<Resource<VacancyDetails>> = flow {
         val result = networkClient.getVacancyDetails(GetVacancyDetailsRequest(vacancyId))
         val body = result.body()
@@ -65,14 +81,17 @@ class VacancyRepositoryImpl(
         } else {
             emit(Resource.Error(result.code()))
         }
+    }.onStart {
+        if (!networkInfo.isConnected()) {
+            emit(Resource.Error(NO_INTERNET_ERROR_CODE))
+            currentCoroutineContext().cancel()
+        }
     }
 
     override fun loadNewVacanciesPage(): Flow<Resource<ReceivedVacanciesData>> = flow {
         val lastReq = lastRequest
         if (lastReq == null) {
             emit(Resource.Error(HttpURLConnection.HTTP_INTERNAL_ERROR))
-//        } else if (lastReq.page >= pagesInLastResponse) { // Вообще этого быть не должно, если что пусть апи ошибку шлет
-//            emit(Resource.Error("No more results", null))
         } else {
             lastReq.page += 1
 //            lastRequest = lastReq
@@ -88,6 +107,11 @@ class VacancyRepositoryImpl(
                 emit(Resource.Error(result.code()))
             }
         }
+    }.onStart {
+        if (!networkInfo.isConnected()) {
+            emit(Resource.Error(NO_INTERNET_ERROR_CODE))
+            currentCoroutineContext().cancel()
+        }
     }
 
     override fun getIndustries(): Flow<Resource<List<Industry>>> = flow {
@@ -100,13 +124,19 @@ class VacancyRepositoryImpl(
                         Industry(
                             id = it1.id,
                             name = it1.name,
-                            subIndustries = it1.subIndustries?.map { SubIndustry(id = it.id, name = it.name) }
+                            subIndustries = it1.subIndustries
+                                ?.map { SubIndustry(id = it.id, name = it.name) }
                         )
                     }
                 )
             )
         } else {
             emit(Resource.Error(result.code()))
+        }
+    }.onStart {
+        if (!networkInfo.isConnected()) {
+            emit(Resource.Error(NO_INTERNET_ERROR_CODE))
+            currentCoroutineContext().cancel()
         }
     }
 }

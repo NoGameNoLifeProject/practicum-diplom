@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.di
 
 import org.koin.dsl.module
+import ru.practicum.android.diploma.domain.CheckInternetConnectionUseCase
 import ru.practicum.android.diploma.domain.api.IFavVacanciesInteractor
 import ru.practicum.android.diploma.domain.api.ISharingInteractor
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
@@ -22,4 +23,7 @@ val domainModule = module {
         SharingInteractorImpl(get())
     }
 
+    single {
+        CheckInternetConnectionUseCase(get())
+    }
 }
