@@ -1,8 +1,10 @@
 package ru.practicum.android.diploma.data
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import ru.practicum.android.diploma.data.db.AppDatabase
+import ru.practicum.android.diploma.data.db.FavVacancyEntity
 import ru.practicum.android.diploma.data.mapper.VacancyEntityMapper
 import ru.practicum.android.diploma.domain.api.IFavVacanciesRepository
 import ru.practicum.android.diploma.domain.api.Resource
@@ -19,12 +21,18 @@ class FavVacanciesRepositoryImpl(val dataBase: AppDatabase, val mapper: VacancyE
     }
 
     @Suppress("TooGenericExceptionCaught")
-    override fun getAll(): Flow<Resource<List<VacancyDetails>>> = flow {
-        try {
-            val vacancies = dataBase.favVacanciesDao().getAllVacancies()
-            emit(Resource.Success(vacancies.map { mapper.convertToVacancyDetails(it) }))
-        } catch (e: Exception) {
-            emit(Resource.Error(HttpURLConnection.HTTP_INTERNAL_ERROR))
-        }
+    override fun getAll(): Flow<Resource<List<VacancyDetails>>> {
+        return dataBase.favVacanciesDao().getAllVacancies()
+            .map<List<FavVacancyEntity>, Resource<List<VacancyDetails>>> { entities ->
+                Resource.Success(
+                    entities.map { entity ->
+                        mapper.convertToVacancyDetails(entity)
+                    }
+                )
+            }.catch {
+                emit(
+                    Resource.Error(HttpURLConnection.HTTP_INTERNAL_ERROR)
+                )
+            }
     }
 }
