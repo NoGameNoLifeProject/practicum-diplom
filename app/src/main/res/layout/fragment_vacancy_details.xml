@@ -201,6 +201,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/padding16"
+                android:layout_marginBottom="@dimen/padding24"
                 android:textAppearance="@style/Regular16TextAppearance"
                 android:textColor="?attr/textColorPrimary"
                 tools:text="Знание классических алгоритмов и структуры данных
