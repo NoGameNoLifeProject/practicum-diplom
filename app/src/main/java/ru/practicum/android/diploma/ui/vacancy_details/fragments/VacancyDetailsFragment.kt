@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterInside
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentVacancyDetailsBinding
@@ -118,7 +119,9 @@ class VacancyDetailsFragment : Fragment() {
         if (vacancy.employer != null) {
             binding.employerLayout.isVisible = true
             Glide.with(requireContext())
-                .load(vacancy.employer.logoUrls?.original)
+                .load(vacancy.employer.logoUrls?.original).transform(
+                    CenterInside()
+                )
                 .placeholder(R.drawable.ic_placeholder_32px)
                 .into(binding.logo)
             binding.employerName.text = vacancy.employer.name
