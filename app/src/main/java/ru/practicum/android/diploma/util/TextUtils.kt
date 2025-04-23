@@ -36,6 +36,13 @@ fun salaryFormat(context: Context, salary: Salary?): String {
 }
 
 fun getCurrency(currency: String?): String {
-    if (currency == null) return ""
-    return Currency.getInstance(currency).symbol
+    if (currency == null) {
+        return ""
+    }
+
+    return if (currency == "RUR") {
+        "₽"
+    } else {
+        Currency.getInstance(currency).symbol
+    }
 }
