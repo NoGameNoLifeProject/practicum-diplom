@@ -19,10 +19,7 @@
         android:id="@+id/search_bar"
         style="@style/Regular16TextAppearance"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/padding16"
-        android:layout_marginTop="@dimen/padding8"
-        android:layout_marginBottom="@dimen/padding8" />
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/founded_vacancy"

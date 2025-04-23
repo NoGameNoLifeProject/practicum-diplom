@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchVacanciesBinding
@@ -37,6 +39,7 @@ class SearchVacanciesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.recyclerViewVacancy.adapter = adapter
+        configurePagination()
 
         viewModel.state.observe(viewLifecycleOwner) {
             render(it)
@@ -53,12 +56,9 @@ class SearchVacanciesFragment : Fragment() {
 
     private fun render(state: SearchVacanciesState) {
         when (state) {
-            is SearchVacanciesState.VacanciesList -> showVacancies(state)
+            is SearchVacanciesState.Content -> showVacancies(state)
             is SearchVacanciesState.Loading -> showLoadingPage()
-            is SearchVacanciesState.Empty -> showEmpty()
-            is SearchVacanciesState.NetworkError -> showNetworkError()
-            is SearchVacanciesState.NoInternet -> showNoInternet()
-            is SearchVacanciesState.NothingFound -> showNothingFound()
+            is SearchVacanciesState.Error -> showError(state)
         }
     }
 
@@ -70,13 +70,14 @@ class SearchVacanciesFragment : Fragment() {
 
     }
 
-    private fun showVacancies(state: SearchVacanciesState.VacanciesList) {
+    private fun showVacancies(state: SearchVacanciesState.Content) {
         hideAll()
         binding.recyclerViewVacancy.isVisible = true
         binding.foundedVacancy.isVisible = true
         binding.foundedVacancy.text =
-            String.format(getString(R.string.search_vacancies_chip_found_vacancies), state.vacancies.size.toString())
-        adapter.setVacancies(state.vacancies)
+            String.format(getString(R.string.search_vacancies_chip_found_vacancies), state.founded.toString())
+        adapter.setVacancies(state.items)
+        adapter.isLoadingMore = state.isLoadingMore
     }
 
     private fun showLoadingPage() {
@@ -84,22 +85,29 @@ class SearchVacanciesFragment : Fragment() {
         binding.progressCircular.isVisible = true
     }
 
-    private fun showEmpty() {
+    private fun showError(state: SearchVacanciesState.Error) {
         hideAll()
+        when (state.errorType) {
+            SearchVacanciesState.ErrorType.Empty -> showEmpty()
+            SearchVacanciesState.ErrorType.NetworkError -> showNetworkError()
+            SearchVacanciesState.ErrorType.NothingFound -> showNothingFound()
+            SearchVacanciesState.ErrorType.NoInternet -> showNoInternet()
+        }
+    }
+
+    private fun showEmpty() {
         binding.errorStateView.isVisible = true
         binding.errorStateView.setErrorImage(R.drawable.image_search)
         binding.errorStateView.setErrorText("")
     }
 
     private fun showNetworkError() {
-        hideAll()
         binding.errorStateView.isVisible = true
         binding.errorStateView.setErrorImage(R.drawable.image_error_500)
         binding.errorStateView.setErrorText(getString(R.string.search_vacancies_placeholder_server_error))
     }
 
     private fun showNothingFound() {
-        hideAll()
         binding.foundedVacancy.isVisible = true
         binding.foundedVacancy.text =
             String.format(getString(R.string.search_vacancies_chip_not_found))
@@ -110,10 +118,25 @@ class SearchVacanciesFragment : Fragment() {
     }
 
     private fun showNoInternet() {
-        hideAll()
         binding.errorStateView.isVisible = true
         binding.errorStateView.setErrorImage(R.drawable.image_error_no_internet)
         binding.errorStateView.setErrorText(getString(R.string.search_vacancies_no_internet))
     }
 
+    private fun configurePagination() {
+        binding.recyclerViewVacancy.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if (dy > 0) {
+                    val pos =
+                        (binding.recyclerViewVacancy.layoutManager as LinearLayoutManager).findLastVisibleItemPosition()
+                    val itemsCount = binding.recyclerViewVacancy.adapter?.itemCount ?: 0
+                    if (pos >= itemsCount - 1) {
+                        viewModel.loadNewVacanciesPage()
+                    }
+                }
+            }
+        })
+    }
 }

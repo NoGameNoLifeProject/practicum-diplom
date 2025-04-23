@@ -12,10 +12,11 @@ import ru.practicum.android.diploma.domain.api.IVacancyInteractor
 import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.VacancyDetails
 import ru.practicum.android.diploma.domain.models.VacancyDetailsState
+import java.net.HttpURLConnection
 
 class VacancyDetailsViewModel(
     private val vacancyInteractor: IVacancyInteractor,
-    private val favoriteInteractor: IFavVacanciesInteractor
+    private val favoriteInteractor: IFavVacanciesInteractor,
 ) : ViewModel() {
 
     private val _isFavoriteLiveData = MutableLiveData<Boolean>()
@@ -31,35 +32,45 @@ class VacancyDetailsViewModel(
                     getFromDataBase(vacancyList, vacancyId)
                 }
             } else {
-                vacancyInteractor.getVacancyDetails(vacancyId).collect { (vacancy, errorMassage) ->
-                    getFromSearch(vacancy, errorMassage)
+                vacancyInteractor.getVacancyDetails(vacancyId).collect { result ->
+                    getFromSearch(result)
                 }
             }
             checkFavorites()
         }
     }
 
-    private fun getFromSearch(vacancy: VacancyDetails?, errorMassage: String?) {
-        if (vacancy != null) {
-            _vacancyDetailsState.postValue(VacancyDetailsState.VacanciesDetails(vacancy))
-        }
-        if (errorMassage.isNullOrEmpty()) {
-            _vacancyDetailsState.postValue(VacancyDetailsState.NetworkError)
-        } else {
-            _vacancyDetailsState.postValue(VacancyDetailsState.NothingFound)
+    private fun getFromSearch(result: Resource<VacancyDetails>) {
+        when (result) {
+            is Resource.Success -> {
+                _vacancyDetailsState.postValue(VacancyDetailsState.VacanciesDetails(result.data))
+            }
+
+            is Resource.Error -> {
+                when (result.errorCode) {
+                    HttpURLConnection.HTTP_NOT_FOUND -> {
+                        _vacancyDetailsState.postValue(VacancyDetailsState.NothingFound)
+                    }
+
+                    else -> {
+                        _vacancyDetailsState.postValue(VacancyDetailsState.NetworkError)
+                    }
+                }
+            }
         }
     }
 
     private fun getFromDataBase(vacancyList: Resource<List<VacancyDetails>>, vacancyId: String) {
         when (vacancyList) {
             is Resource.Success -> {
-                val vacancy = vacancyList.data?.find { it.id == vacancyId }
+                val vacancy = vacancyList.data.find { it.id == vacancyId }
                 if (vacancy != null) {
                     _vacancyDetailsState.postValue(VacancyDetailsState.VacanciesDetails(vacancy))
                 } else {
                     _vacancyDetailsState.postValue(VacancyDetailsState.NothingFound)
                 }
             }
+
             is Resource.Error -> {
                 _vacancyDetailsState.postValue(VacancyDetailsState.NetworkError)
             }
