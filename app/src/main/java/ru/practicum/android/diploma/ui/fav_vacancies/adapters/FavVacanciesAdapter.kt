@@ -37,7 +37,7 @@ class FavVacanciesAdapter(private val onClick: (VacancyDetails) -> Unit) :
             vacancySalaryCard.text = salaryFormat(holder.itemView.context, vacancies[position].salary)
 
             Glide.with(holder.itemView)
-                .load(vacancies[position].employer?.logoUrls?.size90)
+                .load(vacancies[position].employer?.logoUrls?.original)
                 .placeholder(R.drawable.ic_placeholder_32px)
                 .transform(RoundedCorners(R.dimen.vacancy_logo_corner_radius), CenterInside())
                 .into(vacancyCardPlaceholder)
