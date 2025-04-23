@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.FitCenter
+import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.VacancyItemBinding
@@ -20,9 +20,8 @@ class FavVacanciesAdapter(private val onClick: (VacancyDetails) -> Unit) :
 
     fun setVacancies(newVacancies: List<VacancyDetails>) {
         vacancies.clear()
-        notifyItemRangeRemoved(0, vacancies.size)
         vacancies.addAll(newVacancies)
-        notifyItemRangeInserted(0, vacancies.size)
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -40,7 +39,7 @@ class FavVacanciesAdapter(private val onClick: (VacancyDetails) -> Unit) :
             Glide.with(holder.itemView)
                 .load(vacancies[position].employer?.logoUrls?.size90)
                 .placeholder(R.drawable.ic_placeholder_32px)
-                .transform(RoundedCorners(R.dimen.vacancy_logo_corner_radius), FitCenter())
+                .transform(RoundedCorners(R.dimen.vacancy_logo_corner_radius), CenterInside())
                 .into(vacancyCardPlaceholder)
 
             holder.itemView.setOnClickListener {

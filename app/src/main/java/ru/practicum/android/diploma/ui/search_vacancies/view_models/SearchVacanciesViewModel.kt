@@ -7,37 +7,29 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
 import ru.practicum.android.diploma.domain.models.SearchVacanciesState
-import ru.practicum.android.diploma.domain.models.Vacancy
 import ru.practicum.android.diploma.util.debounce
 
 class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor) : ViewModel() {
-    private val stateLiveData = MutableLiveData<SearchVacanciesState>()
-    private val vacancies = ArrayList<Vacancy>()
+    private val _state = MutableLiveData<SearchVacanciesState>()
 
-    fun observeState(): LiveData<SearchVacanciesState> = stateLiveData
-
-    fun searchDebounce(changedText: String) {
-        debounce<String>(SEARCH_DEBOUNCE_DELAY, viewModelScope, true) {
-            searchVacancies(
-                changedText
-            )
-        }
-    }
+    val state: LiveData<SearchVacanciesState> get() = _state
 
     private fun renderState(state: SearchVacanciesState) {
-        stateLiveData.postValue(state)
+        _state.value = state
     }
 
-    private fun searchVacancies(expression: String) {
+    val searchVacancies: (String) -> Unit =
+        debounce(SEARCH_DEBOUNCE_DELAY, viewModelScope, true, this::onSearchVacancies)
+
+    private fun onSearchVacancies(expression: String) {
         if (expression.isNotEmpty()) {
             renderState(SearchVacanciesState.Loading)
             viewModelScope.launch {
                 vacancyInteractor.searchVacancies(expression).collect { (foundedVacancies, errorMessage) ->
-                    vacancies.clear()
+                    // TODO: переделать при добавлении проверки интернета
                     if (!foundedVacancies.isNullOrEmpty()) {
-                        vacancies.addAll(foundedVacancies)
-                        renderState(SearchVacanciesState.VacanciesList(vacancies))
-                    } else if (errorMessage.isNullOrEmpty()) {
+                        renderState(SearchVacanciesState.VacanciesList(foundedVacancies))
+                    } else if (foundedVacancies.isNullOrEmpty() && errorMessage != null) {
                         renderState(SearchVacanciesState.NetworkError)
                     } else {
                         renderState(SearchVacanciesState.NothingFound)
@@ -50,6 +42,6 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
     }
 
     companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val SEARCH_DEBOUNCE_DELAY = 500L
     }
 }

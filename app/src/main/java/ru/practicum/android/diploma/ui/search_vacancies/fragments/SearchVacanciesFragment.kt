@@ -7,117 +7,113 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchVacanciesBinding
 import ru.practicum.android.diploma.domain.models.SearchVacanciesState
-import ru.practicum.android.diploma.domain.models.Vacancy
-import ru.practicum.android.diploma.ui.common.SearchBarView
 import ru.practicum.android.diploma.ui.search_vacancies.adapter.VacancyAdapter
 import ru.practicum.android.diploma.ui.search_vacancies.view_models.SearchVacanciesViewModel
 
 class SearchVacanciesFragment : Fragment() {
-
-    companion object {
-        fun newInstance() = SearchVacanciesFragment()
-    }
+    private var _binding: FragmentSearchVacanciesBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: SearchVacanciesViewModel by viewModel<SearchVacanciesViewModel>()
-    private lateinit var binding: FragmentSearchVacanciesBinding
-    private val vacancies = mutableListOf<Vacancy>()
-    private val searchBar = SearchBarView(requireContext())
-    private var input: String? = null
-    private val adapter = VacancyAdapter(vacancies) {
+
+    private val adapter = VacancyAdapter {
         findNavController().navigate(R.id.action_searchVacanciesFragment_to_vacancyDetailsFragment)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        return inflater.inflate(R.layout.fragment_search_vacancies, container, false)
+        _binding = FragmentSearchVacanciesBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setupToolBar()
-        setupRecyclerViews()
-        viewModel.observeState().observe(viewLifecycleOwner) { render(it) }
-        input = searchBar.getQuery()
-        searchBar.setOnQueryTextChangedListener { viewModel.searchDebounce(input!!) }
-        binding.filterButton.setOnClickListener {
-            binding.filterButton.setImageResource(R.drawable.ic_filter_on_24px)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.recyclerViewVacancy.adapter = adapter
+
+        viewModel.state.observe(viewLifecycleOwner) {
+            render(it)
+        }
+
+        binding.searchBar.setOnQueryTextChangedListener {
+            viewModel.searchVacancies(it)
+        }
+
+        binding.searchToolBar.setOnAction1Click {
             findNavController().navigate(R.id.action_searchVacanciesFragment_to_filterParametersFragment)
         }
-        binding.foundedVacancy.text =
-            String.format(getString(R.string.search_vacancies_chip_found_vacancies), vacancies.size.toString())
-    }
-
-    private fun setupToolBar() {
-        binding.searchToolBar.setNavigationOnClickListener {
-            findNavController().navigateUp()
-        }
-    }
-
-    private fun setupRecyclerViews() {
-        binding.recyclerViewVacancy.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerViewVacancy.adapter = adapter
     }
 
     private fun render(state: SearchVacanciesState) {
         when (state) {
-            is SearchVacanciesState.VacanciesList -> {
-                adapter.updateVacancy(state.vacancies)
-                showVacancies()
-            }
-
+            is SearchVacanciesState.VacanciesList -> showVacancies(state)
             is SearchVacanciesState.Loading -> showLoadingPage()
             is SearchVacanciesState.Empty -> showEmpty()
             is SearchVacanciesState.NetworkError -> showNetworkError()
+            is SearchVacanciesState.NoInternet -> showNoInternet()
             is SearchVacanciesState.NothingFound -> showNothingFound()
         }
     }
 
-    private fun showVacancies() {
+    private fun hideAll() {
+        binding.errorStateView.isVisible = false
+        binding.recyclerViewVacancy.isVisible = false
+        binding.progressCircular.isVisible = false
+        binding.foundedVacancy.isVisible = false
+
+    }
+
+    private fun showVacancies(state: SearchVacanciesState.VacanciesList) {
+        hideAll()
         binding.recyclerViewVacancy.isVisible = true
         binding.foundedVacancy.isVisible = true
-        binding.placeholderLayout.isVisible = false
-        binding.progressCircular.isVisible = false
+        binding.foundedVacancy.text =
+            String.format(getString(R.string.search_vacancies_chip_found_vacancies), state.vacancies.size.toString())
+        adapter.setVacancies(state.vacancies)
     }
 
     private fun showLoadingPage() {
-        binding.recyclerViewVacancy.isVisible = false
-        binding.foundedVacancy.isVisible = false
-        binding.placeholderLayout.isVisible = false
+        hideAll()
         binding.progressCircular.isVisible = true
     }
 
     private fun showEmpty() {
-        binding.recyclerViewVacancy.isVisible = false
-        binding.foundedVacancy.isVisible = false
-        binding.placeholderLayout.isVisible = true
-        binding.vacancyTextPlaceholder.isVisible = false
-        binding.progressCircular.isVisible = false
+        hideAll()
+        binding.errorStateView.isVisible = true
+        binding.errorStateView.setErrorImage(R.drawable.image_search)
+        binding.errorStateView.setErrorText("")
     }
 
     private fun showNetworkError() {
-        binding.recyclerViewVacancy.isVisible = false
-        binding.foundedVacancy.isVisible = false
-        binding.placeholderLayout.isVisible = true
-        binding.vacancyImagePlaceholder.setImageResource(R.drawable.image_error_no_internet)
-        binding.vacancyTextPlaceholder.setText(R.string.search_vacancies_no_internet)
-        binding.progressCircular.isVisible = false
+        hideAll()
+        binding.errorStateView.isVisible = true
+        binding.errorStateView.setErrorImage(R.drawable.image_error_500)
+        binding.errorStateView.setErrorText(getString(R.string.search_vacancies_placeholder_server_error))
     }
 
     private fun showNothingFound() {
-        binding.recyclerViewVacancy.isVisible = false
+        hideAll()
         binding.foundedVacancy.isVisible = true
-        binding.placeholderLayout.isVisible = true
-        binding.vacancyImagePlaceholder.setImageResource(R.drawable.image_error_404)
-        binding.vacancyTextPlaceholder.setText(R.string.search_vacancies_placeholder_not_found)
-        binding.progressCircular.isVisible = false
+        binding.foundedVacancy.text =
+            String.format(getString(R.string.search_vacancies_chip_not_found))
+
+        binding.errorStateView.isVisible = true
+        binding.errorStateView.setErrorImage(R.drawable.image_error_404)
+        binding.errorStateView.setErrorText(getString(R.string.search_vacancies_placeholder_not_found))
+    }
+
+    private fun showNoInternet() {
+        hideAll()
+        binding.errorStateView.isVisible = true
+        binding.errorStateView.setErrorImage(R.drawable.image_error_no_internet)
+        binding.errorStateView.setErrorText(getString(R.string.search_vacancies_no_internet))
     }
 
 }
