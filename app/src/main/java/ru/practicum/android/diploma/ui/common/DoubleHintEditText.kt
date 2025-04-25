@@ -38,7 +38,8 @@ class DoubleHintEditText @JvmOverloads constructor(
         context.theme.obtainStyledAttributes(
             attrs,
             R.styleable.DoubleHintEditText,
-            0, 0
+            0,
+            0
         ).apply {
             val hintInner = getString(R.styleable.DoubleHintEditText_hintInner)
             val hintOuter = getString(R.styleable.DoubleHintEditText_hintOuter)
