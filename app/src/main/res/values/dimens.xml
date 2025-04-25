@@ -26,5 +26,10 @@
 
     <dimen name="error_image_width">328dp</dimen>
     <dimen name="error_image_height">223dp</dimen>
+
+    <dimen name="view_double_hint_edit_text">51dp</dimen>
+    <dimen name="view_floating_label_textview.xml">60dp</dimen>
+    <dimen name="button_size">59dp</dimen>
+
 </resources>
 

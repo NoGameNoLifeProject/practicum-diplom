@@ -58,4 +58,13 @@
         <item name="android:textColor">?attr/textColorPrimary</item>
     </style>
 
+    <style name="FilterButton" parent ="Widget.AppCompat.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">59dp</item>
+        <item name="android:textColor">@color/yp_white</item>
+        <item name="android:textAppearance">@style/Medium16TextAppearance</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:text">@string/filter_parameters_apply_button</item>
+    </style>
+
 </resources>
