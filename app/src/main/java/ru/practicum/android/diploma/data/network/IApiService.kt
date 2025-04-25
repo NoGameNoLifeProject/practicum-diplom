@@ -2,11 +2,12 @@ package ru.practicum.android.diploma.data.network
 
 import retrofit2.Response
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 import retrofit2.http.QueryMap
 import ru.practicum.android.diploma.data.dto.AreaDto
 import ru.practicum.android.diploma.data.dto.IndustryDto
-import ru.practicum.android.diploma.data.network.dto.GetVacancyDetailsResponse
+import ru.practicum.android.diploma.data.dto.VacancyDetailsDto
 import ru.practicum.android.diploma.data.network.dto.SearchVacanciesResponse
 
 interface IApiService {
@@ -20,5 +21,5 @@ interface IApiService {
     suspend fun getIndustries(@Query("locale") locale: String): Response<ArrayList<IndustryDto>>
 
     @GET("/vacancies/{id}")
-    suspend fun getVacancyDetails(id: String): Response<GetVacancyDetailsResponse>
+    suspend fun getVacancyDetails(@Path("id") id: String): Response<VacancyDetailsDto>
 }

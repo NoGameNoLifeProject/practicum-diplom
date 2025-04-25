@@ -5,11 +5,26 @@
     <dimen name="text_size_lg">22sp</dimen>
     <dimen name="text_size_xl">32sp</dimen>
 
+    <dimen name="padding4">4dp</dimen>
     <dimen name="padding8">8dp</dimen>
     <dimen name="padding16">16dp</dimen>
+    <dimen name="padding12">12dp</dimen>
     <dimen name="padding24">24dp</dimen>
+    <dimen name="padding32">32dp</dimen>
 
+    <dimen name="vacancy_logo_corner_radius">12dp</dimen>
 
+    <dimen name="toolbar_no_nav_padding">12dp</dimen>
     <dimen name="toolbar_height">64dp</dimen>
+    <dimen name="placeholder_height">223dp</dimen>
+    <dimen name="filter_panel_margin">60dp</dimen>
 
+    <dimen name="vacancy_item_size">48dp</dimen>
+    <dimen name="standard_icon_size">48dp</dimen>
+
+    <dimen name="search_bar_height">56dp</dimen>
+
+    <dimen name="error_image_width">328dp</dimen>
+    <dimen name="error_image_height">223dp</dimen>
 </resources>
+

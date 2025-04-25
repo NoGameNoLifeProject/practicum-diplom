@@ -2,9 +2,9 @@ package ru.practicum.android.diploma.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
-import ru.practicum.android.diploma.BuildConfig
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.ActivityRootBinding
 
@@ -20,12 +20,18 @@ class RootActivity : AppCompatActivity() {
 
         binding.bottomNav.setupWithNavController(navController)
 
-        // Пример использования access token для HeadHunter API
-        networkRequestExample(accessToken = BuildConfig.HH_ACCESS_TOKEN)
-    }
-
-    private fun networkRequestExample(accessToken: String) {
-        // ...
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.vacancyDetailsFragment -> {
+                    binding.bottomNav.isVisible = false
+                    binding.bottomNavDelimiter.isVisible = false
+                }
+                else -> {
+                    binding.bottomNav.isVisible = true
+                    binding.bottomNavDelimiter.isVisible = true
+                }
+            }
+        }
     }
 
 }

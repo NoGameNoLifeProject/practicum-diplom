@@ -5,11 +5,11 @@ import androidx.room.Room
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import ru.practicum.android.diploma.APP_PREFERENCES
 import ru.practicum.android.diploma.data.FavVacanciesRepositoryImpl
 import ru.practicum.android.diploma.data.IRetrofitApiClient
+import ru.practicum.android.diploma.data.NetworkInfoDataSource
+import ru.practicum.android.diploma.data.NetworkInfoDataSourceImpl
 import ru.practicum.android.diploma.data.StorageRepositoryImpl
 import ru.practicum.android.diploma.data.VacancyRepositoryImpl
 import ru.practicum.android.diploma.data.db.AppDatabase
@@ -19,6 +19,7 @@ import ru.practicum.android.diploma.data.mapper.MapperVacancyDetails
 import ru.practicum.android.diploma.data.mapper.VacancyEntityMapper
 import ru.practicum.android.diploma.data.network.IApiService
 import ru.practicum.android.diploma.data.network.RetrofitApiClient
+import ru.practicum.android.diploma.data.network.RetrofitClient
 import ru.practicum.android.diploma.domain.api.IFavVacanciesRepository
 import ru.practicum.android.diploma.domain.api.ISharingProvider
 import ru.practicum.android.diploma.domain.api.IStorageRepository
@@ -32,11 +33,11 @@ val dataModule = module {
     }
 
     single<IApiService> {
-        Retrofit.Builder()
-            .baseUrl("https://api.hh.ru/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(IApiService::class.java)
+        RetrofitClient.create()
+    }
+
+    single<NetworkInfoDataSource> {
+        NetworkInfoDataSourceImpl(androidContext())
     }
 
     single {
@@ -70,7 +71,8 @@ val dataModule = module {
             networkClient = get(),
             filterParam = get(),
             searchMapper = get(),
-            vacancyDetailsMapper = get()
+            vacancyDetailsMapper = get(),
+            networkInfo = get()
         )
     }
 

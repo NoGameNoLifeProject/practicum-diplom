@@ -12,7 +12,7 @@ suspend fun <T> handleRequest(request: suspend () -> Response<T>): Response<T> {
             request.invoke()
         } catch (e: Exception) {
             // Обрабатываем возможные сетевые ошибки
-            Response.error<T>(-1, e.message?.toResponseBody() ?: "Network error".toResponseBody())
+            Response.error<T>(NETWORK_ERROR_CODE, e.message?.toResponseBody() ?: "Network error".toResponseBody())
         }
     }
 }

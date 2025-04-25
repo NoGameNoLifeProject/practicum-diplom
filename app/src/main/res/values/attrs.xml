@@ -4,4 +4,22 @@
     <attr name="textColorPrimary" format="reference|color" />
     <attr name="textColorSecondary" format="reference|color" />
     <attr name="iconColorPrimary" format="reference|color" />
+    <declare-styleable name="SearchBarView">
+        <attr name="searchBackgroundColor" format="color"/>
+        <attr name="searchTextColor" format="color"/>
+        <attr name="searchHintColor" format="color"/>
+        <attr name="searchHint" format="string"/>
+    </declare-styleable>
+    <declare-styleable name="ErrorStateView">
+        <attr name="errorImage"     format="reference"/>
+        <attr name="errorText"      format="string"/>
+        <attr name="errorTextColor" format="reference|color"/>
+    </declare-styleable>
+
+    <declare-styleable name="HHToolbar">
+        <attr name="drawableNavigation" format="integer"/>
+        <attr name="titleText" format="string"/>
+        <attr name="drawableAction1" format="integer"/>
+        <attr name="drawableAction2" format="integer"/>
+    </declare-styleable>
 </resources>

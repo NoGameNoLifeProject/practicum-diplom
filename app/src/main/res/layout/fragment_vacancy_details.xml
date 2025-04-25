@@ -1,13 +1,227 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.vacancy_details.fragments.VacancyDetailsFragment">
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
 
-</FrameLayout>
+    <ru.practicum.android.diploma.ui.common.HHToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:titleText="@string/vacancy_details_title"
+        app:drawableNavigation="@drawable/ic_arrow_back_24px"
+        app:drawableAction2="@drawable/ic_sharing_24px"
+        app:drawableAction1="@drawable/ic_favorites_off_24px"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="@dimen/standard_icon_size"
+        android:layout_height="@dimen/standard_icon_size"
+        android:indeterminateTint="@color/yp_blue"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <ru.practicum.android.diploma.ui.common.ErrorStateView
+        android:id="@+id/placeholder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/content"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipToPadding="false"
+        android:fillViewport="true"
+        android:focusableInTouchMode="true"
+        android:paddingHorizontal="@dimen/padding16"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding16"
+                android:orientation="vertical"
+                android:paddingVertical="@dimen/padding8"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/vacancy_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/Bold32TextAppearance"
+                    android:textColor="?attr/textColorPrimary"
+                    tools:text="Android-разработчик" />
+
+                <TextView
+                    android:id="@+id/vacancy_salary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding4"
+                    android:textAppearance="@style/Medium22TextAppearance"
+                    android:textColor="?attr/textColorPrimary"
+                    tools:text="от 100 000 ₽" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/employer_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding16"
+                android:background="@drawable/background"
+                android:orientation="horizontal"
+                android:padding="@dimen/padding16">
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="@dimen/vacancy_item_size"
+                    android:layout_height="@dimen/vacancy_item_size"
+                    android:layout_gravity="top"
+                    android:backgroundTint="@android:color/transparent"
+                    app:cardCornerRadius="@dimen/vacancy_logo_corner_radius"
+                    app:cardElevation="0dp"
+                    app:cardPreventCornerOverlap="false"
+                    app:cardUseCompatPadding="false"
+                   >
+
+                    <ImageView
+                        android:id="@+id/logo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@null"
+                        android:scaleType="centerInside"
+                        android:src="@drawable/ic_placeholder_32px" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/padding8"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/employer_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textAppearance="@style/Medium22TextAppearance"
+                        android:textColor="@color/yp_black"
+                        tools:text="Еда" />
+
+                    <TextView
+                        android:id="@+id/employer_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:textAppearance="@style/Regular16TextAppearance"
+                        android:textColor="@color/yp_black"
+                        tools:text="Москва" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/experience_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding24"
+                android:text="@string/vacancy_details_experience"
+                android:textAppearance="@style/Medium16TextAppearance"
+                android:textColor="?attr/textColorPrimary" />
+
+            <TextView
+                android:id="@+id/experience"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding4"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:textAppearance="@style/Regular16TextAppearance"
+                android:textColor="?attr/textColorPrimary"
+                tools:text="От 1 года до 3 лет" />
+
+            <TextView
+                android:id="@+id/work_format_and_schedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding8"
+                android:textAppearance="@style/Regular16TextAppearance"
+                android:textColor="?attr/textColorPrimary"
+                tools:text="Полная занятость, Удаленная работа" />
+
+            <TextView
+                android:id="@+id/description_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding32"
+                android:text="@string/vacancy_details_description"
+                android:textAppearance="@style/Medium22TextAppearance"
+                android:textColor="?attr/textColorPrimary" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding16"
+                android:textAppearance="@style/Regular16TextAppearance"
+                android:textColor="?attr/textColorPrimary"
+                tools:text="Разрабатывать новую функциональность приложения
+Помогать с интеграцией нашего SDK в другие приложения
+Проектировать большие новые модули
+Писать UI- и unit-тесты
+Следить за работоспособностью сервиса и устранять технический долг" />
+
+            <TextView
+                android:id="@+id/key_skills_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding24"
+                android:text="@string/vacancy_details_key_skills"
+                android:textAppearance="@style/Medium22TextAppearance"
+                android:textColor="?attr/textColorPrimary" />
+
+            <TextView
+                android:id="@+id/key_skills"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding16"
+                android:layout_marginBottom="@dimen/padding24"
+                android:textAppearance="@style/Regular16TextAppearance"
+                android:textColor="?attr/textColorPrimary"
+                tools:text="Знание классических алгоритмов и структуры данных
+Программирование для Android больше одного года
+Знание WebRTC" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

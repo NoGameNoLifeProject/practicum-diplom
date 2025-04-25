@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.data.network.dto
 
 import com.google.gson.annotations.SerializedName
+import ru.practicum.android.diploma.util.SEARCH_VACANCY_ITEMS_PER_PAGE
 
 //  @SerializedName  по сути не используется, просто оставил, чтобы не забыть, как вставлять в запрос
 
@@ -22,7 +23,7 @@ data class SearchVacanciesRequest(
     var page: Int, //  оставил var, чтобы переиспользовать запрос при дозагрузке страниц
 
     @SerializedName("per_page")
-    val perPage: Int = 20,
+    val perPage: Int = SEARCH_VACANCY_ITEMS_PER_PAGE,
 
 )
 
