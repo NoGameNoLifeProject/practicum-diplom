@@ -12,7 +12,8 @@
         android:textAppearance="@style/Regular16TextAppearance"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="@dimen/padding16"
-        tools:text="Россия"/>
+        tools:text="Россия"
+        android:textColor="?attr/textColorPrimary"/>
 
     <ImageView
         android:layout_width="wrap_content"
