@@ -23,6 +23,7 @@
         app:searchHint="@string/select_area_search_hint"/>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/area_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/select_area_searchbar"
