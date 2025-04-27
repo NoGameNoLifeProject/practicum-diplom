@@ -3,7 +3,6 @@ package ru.practicum.android.diploma.data
 import android.content.SharedPreferences
 import ru.practicum.android.diploma.ui.filter_settings.view_models.FilterState
 
-
 class FilterStorageRepositoryImpl(
     prefs: SharedPreferences
 ) : FilterStorageRepository {
