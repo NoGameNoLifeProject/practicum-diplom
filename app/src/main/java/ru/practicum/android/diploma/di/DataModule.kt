@@ -1,12 +1,16 @@
 package ru.practicum.android.diploma.di
 
 import android.app.Application.MODE_PRIVATE
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import ru.practicum.android.diploma.APP_PREFERENCES
 import ru.practicum.android.diploma.data.FavVacanciesRepositoryImpl
+import ru.practicum.android.diploma.data.FilterStorageRepository
+import ru.practicum.android.diploma.data.FilterStorageRepositoryImpl
 import ru.practicum.android.diploma.data.IRetrofitApiClient
 import ru.practicum.android.diploma.data.NetworkInfoDataSource
 import ru.practicum.android.diploma.data.NetworkInfoDataSourceImpl
@@ -78,6 +82,14 @@ val dataModule = module {
 
     single<ISharingProvider> { params ->
         SharingProviderImpl(params.get())
+    }
+
+    single<SharedPreferences> {
+        get<Context>().getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE)
+    }
+
+    single<FilterStorageRepository> {
+        FilterStorageRepositoryImpl(get())
     }
 
 }

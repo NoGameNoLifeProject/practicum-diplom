@@ -17,7 +17,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        FilterParametersViewModel()
+        FilterParametersViewModel(storage = get())
     }
 
     viewModel {
@@ -39,5 +39,4 @@ val viewModelModule = module {
     viewModel {
         VacancyDetailsViewModel(vacancyInteractor = get(), favoriteInteractor = get())
     }
-
 }
