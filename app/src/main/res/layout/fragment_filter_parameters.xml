@@ -1,13 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.filter_settings.fragments.FilterParametersFragment">
 
-    <TextView
+    <ru.practicum.android.diploma.ui.common.HHToolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:drawableNavigation="@drawable/ic_arrow_back_24px"
+        app:titleText="@string/filter_parameters_title" />
+
+    <ru.practicum.android.diploma.ui.common.FloatingLabelTextView
+        android:id="@+id/area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding16"
+        app:flt_hint="@string/filter_parameters_location_hint"
+        app:flt_iconEmpty="@drawable/ic_arrow_forward_24px"
+        app:flt_iconFilled="@drawable/ic_clear_24px" />
+
+    <ru.practicum.android.diploma.ui.common.FloatingLabelTextView
+        android:id="@+id/industries"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:flt_hint="@string/filter_parameters_industries_hint"
+        app:flt_iconEmpty="@drawable/ic_arrow_forward_24px"
+        app:flt_iconFilled="@drawable/ic_clear_24px" />
+
+    <ru.practicum.android.diploma.ui.common.DoubleHintEditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/padding16"
+        android:layout_marginTop="@dimen/padding24"
+        app:hintInner="@string/filter_parameters_salary_bottom_hint"
+        app:hintOuter="@string/filter_parameters_salary_top_hint"
+        app:hintOuterColor="?attr/searchHintColor"
+        app:hintOuterFocusedColor="@color/yp_blue" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/view_floating_label_textview.xml"
+        android:layout_marginTop="@dimen/padding24"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding16"
+            android:layout_weight="1"
+            android:text="@string/filter_parameters_not_show_without_salary"
+            android:textAppearance="@style/Regular16TextAppearance"
+            android:textColor="?attr/textColorPrimary" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/padding4"
+            app:buttonTint="@color/yp_blue" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello" />
+        android:gravity="bottom"
+        android:orientation="vertical">
 
-</FrameLayout>
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_apply"
+            style="@style/FilterButton"
+            android:layout_marginBottom="@dimen/padding8"
+            android:layout_marginHorizontal="@dimen/padding16"
+            android:background="@drawable/btn_background"
+            android:backgroundTint="@color/yp_blue" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_reset"
+            style="@style/FilterButton"
+            android:layout_marginBottom="@dimen/padding24"
+            android:text="@string/filter_parameters_reset_button"
+            android:textColor="@color/yp_red"
+            android:layout_marginHorizontal="@dimen/padding16"
+            android:background="@null"
+            android:backgroundTint="@color/yp_blue" />
+    </LinearLayout>
+
+
+</LinearLayout>
