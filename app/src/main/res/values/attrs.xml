@@ -22,4 +22,17 @@
         <attr name="drawableAction1" format="integer"/>
         <attr name="drawableAction2" format="integer"/>
     </declare-styleable>
+
+    <declare-styleable name="FloatingLabelTextView">
+        <attr name="flt_hint" format="string"/>
+        <attr name="flt_iconEmpty" format="reference"/>
+        <attr name="flt_iconFilled" format="reference"/>
+    </declare-styleable>
+
+    <declare-styleable name="DoubleHintEditText">
+        <attr name="hintInner" format="string" />
+        <attr name="hintOuter" format="string" />
+        <attr name="hintOuterColor" format="color|reference" />
+        <attr name="hintOuterFocusedColor" format="color|reference" />
+    </declare-styleable>
 </resources>
