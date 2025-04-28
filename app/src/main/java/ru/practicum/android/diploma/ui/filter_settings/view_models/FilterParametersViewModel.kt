@@ -5,13 +5,22 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.practicum.android.diploma.domain.api.IStorageRepository
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
-import ru.practicum.android.diploma.domain.models.FilterParametersState
+import ru.practicum.android.diploma.domain.models.AreaFilterState
+import ru.practicum.android.diploma.domain.models.IndustryFilterState
+import ru.practicum.android.diploma.domain.models.OnlyWithSalaryFilterState
+import ru.practicum.android.diploma.domain.models.SalaryFilterState
 import ru.practicum.android.diploma.domain.models.SearchVacanciesParam
 
 class FilterParametersViewModel(private val interactor: IVacancyInteractor, private val storage: IStorageRepository) :
     ViewModel() {
-    private val stateLiveData = MutableLiveData<FilterParametersState>()
-    fun observeState(): LiveData<FilterParametersState> = stateLiveData
+    private val areaLiveData = MutableLiveData<AreaFilterState>()
+    fun areaObserveState(): LiveData<AreaFilterState> = areaLiveData
+    private val industryLiveData = MutableLiveData<IndustryFilterState>()
+    fun industryObserveState(): LiveData<IndustryFilterState> = industryLiveData
+    private val salaryLiveData = MutableLiveData<SalaryFilterState>()
+    fun salaryObserveState(): LiveData<SalaryFilterState> = salaryLiveData
+    private val onlyWithSalaryLiveData = MutableLiveData<OnlyWithSalaryFilterState>()
+    fun observeOnlyWithSalary(): LiveData<OnlyWithSalaryFilterState> = onlyWithSalaryLiveData
     private var country = SearchVacanciesParam().country
     private var area = SearchVacanciesParam().areaIDs
     private var industry = SearchVacanciesParam().industryIDs
@@ -22,29 +31,56 @@ class FilterParametersViewModel(private val interactor: IVacancyInteractor, priv
         getPram()
     }
 
-    private fun renderState(state: FilterParametersState) {
-        stateLiveData.postValue(state)
+    private fun renderAreaState(state: AreaFilterState) {
+        areaLiveData.postValue(state)
     }
 
-    fun getArea() {
+    private fun renderIndustryState(state: IndustryFilterState) {
+        industryLiveData.postValue(state)
+    }
+
+    private fun renderSalaryState(state: SalaryFilterState) {
+        salaryLiveData.postValue(state)
+    }
+
+    private fun renderOnlyWithSalaryState(state: OnlyWithSalaryFilterState) {
+        onlyWithSalaryLiveData.postValue(state)
+    }
+
+    fun setArea() {
         if (area?.name?.isEmpty() == true) {
-            renderState(FilterParametersState.SavedCountry(country))
+            renderAreaState(AreaFilterState.ContentCountry(country))
+        } else if (country?.name?.isEmpty() == true) {
+            renderAreaState(AreaFilterState.ContentArea(area))
+        } else {
+            renderAreaState(AreaFilterState.EmptyArea)
         }
-        renderState(FilterParametersState.SavedArea(area))
     }
 
-    fun getIndustry() {
-        renderState(FilterParametersState.SavedIndustry(industry))
+    fun setIndustry() {
+        if (industry?.name?.isNotEmpty() == true) {
+            renderIndustryState(IndustryFilterState.ContentIndustry(industry))
+        } else {
+            renderIndustryState(IndustryFilterState.EmptyIndustry)
+        }
     }
 
-    fun getSalary(expression: Int) {
-        salary = expression.toUInt()
-        renderState(FilterParametersState.SavedSalary(salary))
+    fun setSalary(expression: Int) {
+        if (expression != 0) {
+            salary = expression.toUInt()
+            renderSalaryState(SalaryFilterState.ContentSalary(salary))
+        } else {
+            renderIndustryState(IndustryFilterState.EmptyIndustry)
+        }
     }
 
-    fun filterOnlyWithSalary() {
-        onlyWithSalary = true
-        renderState(FilterParametersState.OnlyWithSalary(onlyWithSalary))
+    fun setOnlyWithSalary(isChecked: Boolean) {
+        if (isChecked) {
+            onlyWithSalary = true
+            renderOnlyWithSalaryState(OnlyWithSalaryFilterState.ContentOnlyWithSalary(onlyWithSalary))
+        } else {
+            renderOnlyWithSalaryState(OnlyWithSalaryFilterState.EmptyOnlyWithSalary)
+        }
     }
 
     private fun getPram() {
@@ -58,6 +94,7 @@ class FilterParametersViewModel(private val interactor: IVacancyInteractor, priv
 
     fun saveParam() {
         val searchStateParam = SearchVacanciesParam(
+            country = country,
             areaIDs = area,
             industryIDs = industry,
             salary = salary,
