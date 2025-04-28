@@ -49,7 +49,7 @@ class FilterParametersViewModel(private val interactor: IVacancyInteractor, priv
         }
     }
 
-    private fun filterIndustry() {
+    fun filterIndustry() {
         viewModelScope.launch {
             interactor.getIndustries().collect { result ->
                 when (result) {
