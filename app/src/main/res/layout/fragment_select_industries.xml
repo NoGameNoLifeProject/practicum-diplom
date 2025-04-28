@@ -1,13 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".ui.filter_settings.fragments.SelectIndustriesFragment">
 
-    <TextView
+    <Toolbar
+        android:id="@+id/toolbar"
+        style="@style/Medium22TextAppearance"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+        android:layout_height="wrap_content"
+        android:navigationIcon="@drawable/ic_arrow_back_24px"
+        android:title="@string/select_location_title" />
 
-</FrameLayout>
+    <ru.practicum.android.diploma.ui.common.FloatingLabelTextView
+        android:id="@+id/country"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:flt_hint="@string/select_location_country_hint"
+        app:flt_iconEmpty="@drawable/ic_arrow_forward_24px"
+        app:flt_iconFilled="@drawable/ic_clear_24px" />
+
+    <ru.practicum.android.diploma.ui.common.FloatingLabelTextView
+        android:id="@+id/area"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:flt_hint="@string/select_location_area_hint"
+        app:flt_iconEmpty="@drawable/ic_arrow_forward_24px"
+        app:flt_iconFilled="@drawable/ic_clear_24px" />
+
+</LinearLayout>
+
