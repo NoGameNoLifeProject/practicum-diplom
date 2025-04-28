@@ -21,9 +21,11 @@ class SelectIndustriesViewModel(
         updateIndustries()
     }
 
+    @Suppress("VariableNaming")
     var _selectedIndustry = MutableLiveData<LoadingState<Industry>>(LoadingState.Loading())
     val selectedIndustry: LiveData<LoadingState<Industry>> get() = _selectedIndustry
 
+    @Suppress("VariableNaming")
     var _industries: MutableLiveData<LoadingState<List<Industry>>> = MutableLiveData(LoadingState.Loading())
     val industries: LiveData<LoadingState<List<Industry>>> get() = _industries
 

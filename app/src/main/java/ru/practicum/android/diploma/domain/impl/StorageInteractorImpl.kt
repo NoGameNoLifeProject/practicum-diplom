@@ -6,7 +6,7 @@ import ru.practicum.android.diploma.domain.models.SearchVacanciesParam
 
 class StorageInteractorImpl(
     private val repository: IStorageRepository
-): IStorageInteractor {
+) : IStorageInteractor {
     override fun read(): SearchVacanciesParam {
         return repository.read()
     }
