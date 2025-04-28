@@ -25,6 +25,18 @@ class FilterParametersViewModel(private val storage: IStorageRepository) :
         getPram()
     }
 
+    fun setCountry(country: Area) {
+        _areaLiveData.postValue(country)
+    }
+
+    fun setArea(area: Area) {
+        _areaLiveData.postValue(area)
+    }
+
+    fun setIndustry(industry: Industry) {
+        _industryLiveData.postValue(industry)
+    }
+
     fun setSalary(expression: Int) {
         _salaryLiveData.postValue(expression.toUInt())
     }
