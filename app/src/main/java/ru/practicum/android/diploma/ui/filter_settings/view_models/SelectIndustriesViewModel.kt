@@ -46,11 +46,6 @@ class SelectIndustriesViewModel(
     fun selectIndustry(industry: Industry) {
         viewModelScope.launch(Dispatchers.IO) {
             _selectedIndustry.postValue(LoadingState.Content(industry))
-
-            val params = storageInteractor.read().apply {
-                industryIDs = mutableListOf(industry.id)
-            }
-            storageInteractor.write(params)
         }
     }
 
