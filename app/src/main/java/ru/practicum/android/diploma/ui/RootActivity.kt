@@ -22,13 +22,14 @@ class RootActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.vacancyDetailsFragment -> {
-                    binding.bottomNav.isVisible = false
-                    binding.bottomNavDelimiter.isVisible = false
-                }
-                else -> {
+                R.id.searchVacanciesFragment, R.id.favVacanciesFragment, R.id.creatorsFragment -> {
                     binding.bottomNav.isVisible = true
                     binding.bottomNavDelimiter.isVisible = true
+                }
+
+                else -> {
+                    binding.bottomNav.isVisible = false
+                    binding.bottomNavDelimiter.isVisible = false
                 }
             }
         }
