@@ -1,9 +1,9 @@
 package ru.practicum.android.diploma.domain.models
 
 sealed class FilterParametersState {
-    data class AreaFiltered(val areas: List<Area>) : FilterParametersState()
-    data object Error : FilterParametersState()
-    data class IndustryFiltered(val industries: List<Industry>) : FilterParametersState()
-    data class SalaryFiltered(val salary: List<Vacancy>) : FilterParametersState()
-    data class OnlyWithSalaryFiltered(val salary: List<Vacancy>) : FilterParametersState()
+    data class SavedCountry(val area: String?) : FilterParametersState()
+    data class SavedArea(val area: Area?) : FilterParametersState()
+    data class SavedIndustry(val industries: MutableList<Industry>?) : FilterParametersState()
+    data class SavedSalary(val salary: UInt?) : FilterParametersState()
+    data class OnlyWithSalary(val salary: Boolean?) : FilterParametersState()
 }
