@@ -34,14 +34,16 @@
         tools:listitem="@layout/industry_item"
         tools:itemCount="5"/>
 
-    <com.google.android.material.button.MaterialButton
-        style="@style/SelectButtonStyle"
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/select_industry_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        style="@style/FilterButton"
         android:text="@string/select_industries_select_button"
+        android:layout_marginBottom="@dimen/padding24"
+        android:layout_marginHorizontal="@dimen/padding16"
+        android:background="@drawable/btn_background"
+        android:backgroundTint="@color/yp_blue"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="gone"
-        tools:visibility="visible"/>
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
