@@ -29,7 +29,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        SelectIndustriesViewModel()
+        SelectIndustriesViewModel(vacancyInteractor = get(), storageInteractor = get())
     }
 
     viewModel {
