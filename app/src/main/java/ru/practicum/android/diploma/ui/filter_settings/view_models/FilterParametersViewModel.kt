@@ -4,101 +4,51 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.practicum.android.diploma.domain.api.IStorageRepository
-import ru.practicum.android.diploma.domain.api.IVacancyInteractor
-import ru.practicum.android.diploma.domain.models.AreaFilterState
-import ru.practicum.android.diploma.domain.models.IndustryFilterState
-import ru.practicum.android.diploma.domain.models.OnlyWithSalaryFilterState
-import ru.practicum.android.diploma.domain.models.SalaryFilterState
+import ru.practicum.android.diploma.domain.models.Area
+import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.SearchVacanciesParam
 
-class FilterParametersViewModel(private val interactor: IVacancyInteractor, private val storage: IStorageRepository) :
+class FilterParametersViewModel(private val storage: IStorageRepository) :
     ViewModel() {
-    private val areaLiveData = MutableLiveData<AreaFilterState>()
-    fun areaObserveState(): LiveData<AreaFilterState> = areaLiveData
-    private val industryLiveData = MutableLiveData<IndustryFilterState>()
-    fun industryObserveState(): LiveData<IndustryFilterState> = industryLiveData
-    private val salaryLiveData = MutableLiveData<SalaryFilterState>()
-    fun salaryObserveState(): LiveData<SalaryFilterState> = salaryLiveData
-    private val onlyWithSalaryLiveData = MutableLiveData<OnlyWithSalaryFilterState>()
-    fun observeOnlyWithSalary(): LiveData<OnlyWithSalaryFilterState> = onlyWithSalaryLiveData
-    private var country = SearchVacanciesParam().country
-    private var area = SearchVacanciesParam().areaIDs
-    private var industry = SearchVacanciesParam().industryIDs
-    private var salary = SearchVacanciesParam().salary
-    private var onlyWithSalary = SearchVacanciesParam().onlyWithSalary
+    private val _areaLiveData = MutableLiveData<Area?>()
+    val areaLiveData: LiveData<Area?> get() = _areaLiveData
+    private val _countryLiveData = MutableLiveData<Area?>()
+    val countryLiveData: LiveData<Area?> get() = _countryLiveData
+    private val _industryLiveData = MutableLiveData<Industry?>()
+    val industryLiveData: LiveData<Industry?> get() = _industryLiveData
+    private val _salaryLiveData = MutableLiveData<UInt?>()
+    val salaryLiveData: LiveData<UInt?> get() = _salaryLiveData
+    private val _onlyWithSalaryLiveData = MutableLiveData<Boolean?>()
+    val onlyWithSalaryLiveData: MutableLiveData<Boolean?> get() = _onlyWithSalaryLiveData
 
     init {
         getPram()
     }
 
-    private fun renderAreaState(state: AreaFilterState) {
-        areaLiveData.postValue(state)
-    }
-
-    private fun renderIndustryState(state: IndustryFilterState) {
-        industryLiveData.postValue(state)
-    }
-
-    private fun renderSalaryState(state: SalaryFilterState) {
-        salaryLiveData.postValue(state)
-    }
-
-    private fun renderOnlyWithSalaryState(state: OnlyWithSalaryFilterState) {
-        onlyWithSalaryLiveData.postValue(state)
-    }
-
-    fun setArea() {
-        if (area?.name?.isEmpty() == true) {
-            renderAreaState(AreaFilterState.ContentCountry(country))
-        } else if (country?.name?.isEmpty() == true) {
-            renderAreaState(AreaFilterState.ContentArea(area))
-        } else {
-            renderAreaState(AreaFilterState.EmptyArea)
-        }
-    }
-
-    fun setIndustry() {
-        if (industry?.name?.isNotEmpty() == true) {
-            renderIndustryState(IndustryFilterState.ContentIndustry(industry))
-        } else {
-            renderIndustryState(IndustryFilterState.EmptyIndustry)
-        }
-    }
-
     fun setSalary(expression: Int) {
-        if (expression != 0) {
-            salary = expression.toUInt()
-            renderSalaryState(SalaryFilterState.ContentSalary(salary))
-        } else {
-            renderIndustryState(IndustryFilterState.EmptyIndustry)
-        }
+        _salaryLiveData.postValue(expression.toUInt())
     }
 
     fun setOnlyWithSalary(isChecked: Boolean) {
-        if (isChecked) {
-            onlyWithSalary = true
-            renderOnlyWithSalaryState(OnlyWithSalaryFilterState.ContentOnlyWithSalary(onlyWithSalary))
-        } else {
-            renderOnlyWithSalaryState(OnlyWithSalaryFilterState.EmptyOnlyWithSalary)
-        }
+        _onlyWithSalaryLiveData.postValue(isChecked)
     }
 
     private fun getPram() {
         val param = storage.read()
-        country = param.country
-        area = param.areaIDs
-        industry = param.industryIDs
-        salary = param.salary
-        onlyWithSalary = param.onlyWithSalary
+        _countryLiveData.postValue(param.country)
+        _areaLiveData.postValue(param.areaIDs)
+        _industryLiveData.postValue(param.industryIDs)
+        _salaryLiveData.postValue(param.salary)
+        _onlyWithSalaryLiveData.postValue(param.onlyWithSalary)
     }
 
     fun saveParam() {
         val searchStateParam = SearchVacanciesParam(
-            country = country,
-            areaIDs = area,
-            industryIDs = industry,
-            salary = salary,
-            onlyWithSalary = onlyWithSalary
+            country = _countryLiveData.value,
+            areaIDs = _areaLiveData.value,
+            industryIDs = _industryLiveData.value,
+            salary = _salaryLiveData.value,
+            onlyWithSalary = _onlyWithSalaryLiveData.value
         )
         storage.write(searchStateParam)
     }
