@@ -23,6 +23,10 @@ class StorageRepositoryImpl(
         storageSharedPreferences.edit() { putString(STORAGE_PREFERENCES_KEY, json) }
     }
 
+    override fun clear() {
+        storageSharedPreferences.edit() { putString(STORAGE_PREFERENCES_KEY, null) }
+    }
+
     companion object {
         const val STORAGE_PREFERENCES = "storage_preferences"
         const val STORAGE_PREFERENCES_KEY = "key_for_storage_preferences"
