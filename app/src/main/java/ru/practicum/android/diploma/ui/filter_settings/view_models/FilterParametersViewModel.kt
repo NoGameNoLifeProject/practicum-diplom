@@ -83,11 +83,6 @@ class FilterParametersViewModel(private val interactor: IVacancyInteractor, priv
         industrySaved = param.industryIDs
         salarySaved = param.salary
         onlyWithSalarySaved = param.onlyWithSalary
-        renderState(FilterParametersState.AreaSaved(param.areaIDs))
-        renderState(FilterParametersState.IndustrySaved(param.industryIDs))
-        renderState(FilterParametersState.Salary(param.salary))
-        renderState(FilterParametersState.OnlyWithSalary(param.onlyWithSalary))
-
     }
 
     fun saveParam() {
