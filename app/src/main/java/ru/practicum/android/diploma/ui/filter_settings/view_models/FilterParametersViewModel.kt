@@ -28,8 +28,6 @@ class FilterParametersViewModel(private val storage: IStorageInteractor) :
     private val _storageFilterParam = MutableLiveData<SearchVacanciesParam?>()
     val storageFilterParam: LiveData<SearchVacanciesParam?> get() = _storageFilterParam
 
-    var isNewState: Boolean? = null
-
     init {
         getPram()
     }
@@ -53,9 +51,6 @@ class FilterParametersViewModel(private val storage: IStorageInteractor) :
 
     fun setOnlyWithSalary(isChecked: Boolean?) {
         _onlyWithSalaryLiveData.postValue(isChecked)
-    }
-    fun setFilterParam(filterParam: SearchVacanciesParam?) {
-        _filterParam.postValue(filterParam)
     }
 
     fun getPram() {

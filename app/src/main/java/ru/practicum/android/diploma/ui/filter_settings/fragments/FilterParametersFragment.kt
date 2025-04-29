@@ -35,7 +35,10 @@ class FilterParametersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.toolbar.setOnNavigationClick { setNewStateAndGoUp() }
+        binding.toolbar.setOnNavigationClick {
+            viewModel.saveParam()
+            setNewStateAndGoUp()
+        }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) { setNewStateAndGoUp() }
 
         binding.area.setOnClickListener {
