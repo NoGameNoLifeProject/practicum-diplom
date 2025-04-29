@@ -3,7 +3,6 @@ package ru.practicum.android.diploma.data
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.cancel
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import ru.practicum.android.diploma.data.dto.toDomain
@@ -56,7 +55,7 @@ class VacancyRepositoryImpl(
         }
     }
 
-    override fun getCountries(): Flow<Resource<List<Area>>> = flow {
+    override fun getAreas(): Flow<Resource<List<Area>>> = flow {
         val result = networkClient.getAreas(GetAreasRequest())
         val body = result.body()
         if (result.isSuccessful && body != null) {
