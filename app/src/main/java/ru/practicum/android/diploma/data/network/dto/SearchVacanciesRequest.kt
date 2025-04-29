@@ -9,10 +9,10 @@ data class SearchVacanciesRequest(
     val text: String,
 
     @SerializedName("area")
-    val areaIDs: MutableList<String>? = null,
+    val areaIDs: String? = null,
 
     @SerializedName("industry")
-    val industryIDs: MutableList<String>? = null,
+    val industryIDs: String? = null,
 
     val salary: UInt? = null,
 
@@ -38,11 +38,11 @@ fun SearchVacanciesRequest.toQueryParams(): Map<String, String> {
     }
 
     if (!areaIDs.isNullOrEmpty()) {
-        params["area"] = areaIDs.joinToString(",")
+        params["area"] = areaIDs
     }
 
     if (!industryIDs.isNullOrEmpty()) {
-        params["industry"] = industryIDs.joinToString(",")
+        params["industry"] = industryIDs
     }
 
     if (salary != null && salary > 0u) {
