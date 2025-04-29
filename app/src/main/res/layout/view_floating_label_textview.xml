@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/view_floating_label_textview.xml"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/view_floating_label_textview.xml"
             android:orientation="horizontal"
             android:gravity="center_vertical">
 

@@ -9,6 +9,7 @@ import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -74,6 +75,10 @@ class SearchVacanciesFragment : Fragment() {
         viewModel.showToast.observe(viewLifecycleOwner) {
             adapter.isLoadingMore = false
             showToast(it)
+        }
+
+        setFragmentResultListener("updateSearch") { _, _ ->
+            viewModel.reLastSearch()
         }
     }
 

@@ -22,9 +22,11 @@ class FilterParametersViewModel(private val storage: IStorageInteractor) :
     private val _onlyWithSalaryLiveData = MutableLiveData<Boolean?>()
     val onlyWithSalaryLiveData: LiveData<Boolean?> get() = _onlyWithSalaryLiveData
 
-    // 1) Создаём MediatorLiveData
-    private val _filterParam = MediatorLiveData<SearchVacanciesParam>()
-    val filterParam: LiveData<SearchVacanciesParam> get() = _filterParam
+    private val _filterParam = MediatorLiveData<SearchVacanciesParam?>()
+    val filterParam: LiveData<SearchVacanciesParam?> get() = _filterParam
+
+    private val _storageFilterParam = MutableLiveData<SearchVacanciesParam?>()
+    val storageFilterParam: LiveData<SearchVacanciesParam?> get() = _storageFilterParam
 
     init {
         getPram()
@@ -51,13 +53,13 @@ class FilterParametersViewModel(private val storage: IStorageInteractor) :
         _onlyWithSalaryLiveData.postValue(isChecked)
     }
 
-    private fun getPram() {
+    fun getPram() {
         val param = storage.read()
-        _countryLiveData.postValue(param.country)
-        _areaLiveData.postValue(param.areaIDs)
-        _industryLiveData.postValue(param.industryIDs)
-        _salaryLiveData.postValue(param.salary)
-        _onlyWithSalaryLiveData.postValue(param.onlyWithSalary)
+        _countryLiveData.value = param.country
+        _areaLiveData.value = param.areaIDs
+        _industryLiveData.value = param.industryIDs
+        _salaryLiveData.value = param.salary
+        _onlyWithSalaryLiveData.value = param.onlyWithSalary
 
         //  Подключаем каждую часть к MediatorLiveData
         listOf(
@@ -71,6 +73,7 @@ class FilterParametersViewModel(private val storage: IStorageInteractor) :
         }
         //  Первоначальная сборка
         rebuildFilterParam()
+        setStorageParam()
     }
 
     private fun rebuildFilterParam() {
@@ -84,6 +87,16 @@ class FilterParametersViewModel(private val storage: IStorageInteractor) :
         )
         _filterParam.value = combined
     }
+    private fun setStorageParam() {
+        val combined = SearchVacanciesParam(
+            country = _countryLiveData.value,
+            areaIDs = _areaLiveData.value,
+            industryIDs = _industryLiveData.value,
+            salary = _salaryLiveData.value,
+            onlyWithSalary = _onlyWithSalaryLiveData.value
+        )
+        _storageFilterParam.value = combined
+    }
 
     fun saveParam() {
         val savedParam = filterParam.value
@@ -95,9 +108,9 @@ class FilterParametersViewModel(private val storage: IStorageInteractor) :
     fun clear() {
         _countryLiveData.value = null
         _areaLiveData.value = null
+        _industryLiveData.value = null
         _salaryLiveData.value = null
         _onlyWithSalaryLiveData.value = null
-        storage.clear()
     }
 
 }

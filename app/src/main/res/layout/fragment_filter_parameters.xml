@@ -72,7 +72,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/padding24">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_apply"
@@ -80,16 +81,17 @@
             android:layout_marginBottom="@dimen/padding8"
             android:layout_marginHorizontal="@dimen/padding16"
             android:background="@drawable/btn_background"
-            android:backgroundTint="@color/yp_blue" />
+            android:backgroundTint="@color/yp_blue"
+            android:visibility="gone"/>
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_reset"
             style="@style/FilterButton"
-            android:layout_marginBottom="@dimen/padding24"
             android:text="@string/filter_parameters_reset_button"
             android:textColor="@color/yp_red"
             android:layout_marginHorizontal="@dimen/padding16"
             android:background="@null"
-            android:backgroundTint="@color/yp_blue" />
+            android:backgroundTint="@color/yp_blue"
+            android:visibility="gone"/>
     </LinearLayout>
 
 
