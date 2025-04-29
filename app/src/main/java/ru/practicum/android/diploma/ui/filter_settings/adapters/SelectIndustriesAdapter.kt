@@ -40,7 +40,7 @@ class SelectIndustriesAdapter(private val onClick: (Industry) -> Unit) :
             holder.itemView.setOnClickListener {
                 onClick(filteredIndustries[position])
                 selectedId = filteredIndustries[position].id
-                industryRadioButton.isChecked = true
+                notifyDataSetChanged()
             }
         }
     }
