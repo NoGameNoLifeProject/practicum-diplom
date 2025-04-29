@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:tools="http://schemas.android.com/tools"
-    android:maxHeight="60dp"
     android:orientation="horizontal">
 
     <TextView
@@ -20,7 +19,7 @@
     <RadioButton
         android:id="@+id/industry_radio_button"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_height="@dimen/standard_icon_size"
         android:button="@null"
         android:scaleX="0.5"
         android:scaleY="0.5"
