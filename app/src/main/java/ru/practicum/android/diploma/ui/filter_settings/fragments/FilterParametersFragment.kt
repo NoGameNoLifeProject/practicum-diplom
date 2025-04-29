@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import org.koin.androidx.navigation.koinNavGraphViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterParametersBinding
-import ru.practicum.android.diploma.domain.models.SearchVacanciesParam
+import ru.practicum.android.diploma.domain.models.FilterParamsState
 import ru.practicum.android.diploma.ui.filter_settings.view_models.FilterParametersViewModel
 
 class FilterParametersFragment : Fragment() {
@@ -63,7 +63,7 @@ class FilterParametersFragment : Fragment() {
             viewModel.clear()
             binding.salary.text = viewModel.salaryLiveData.value?.toString()
         }
-        viewModel.filterParam.observe(viewLifecycleOwner) { param ->
+        viewModel.filterParamsState.observe(viewLifecycleOwner) { param ->
             renderState(param)
         }
 
@@ -73,17 +73,18 @@ class FilterParametersFragment : Fragment() {
 
     }
 
-    private fun renderState(param: SearchVacanciesParam) {
-        val areaText = listOfNotNull(param.country?.name, param.areaIDs?.name).joinToString(", ")
+    private fun renderState(state: FilterParamsState?) {
+        if (state == null) {
+            return
+        }
+
+        val areaText = listOfNotNull(state.country?.name, state.area?.name).joinToString(", ")
         binding.area.setText(areaText)
-        binding.industries.setText(param.industryIDs?.name)
+        binding.industries.setText(state.industry?.name)
 
-        binding.onlyWithSalary.isChecked = param.onlyWithSalary ?: false
-        val filterParamIsNotEmpty =
-            listOf(param.areaIDs, param.industryIDs, param.salary).any { it != null }
-                || param.onlyWithSalary == true
-
-        binding.btnLayout.isVisible = filterParamIsNotEmpty
+        binding.onlyWithSalary.isChecked = state.onlyWithSalary ?: false
+        binding.btnApply.isVisible = state.hasDiffs
+        binding.btnReset.isVisible = !state.isEmpty
 
     }
 }
