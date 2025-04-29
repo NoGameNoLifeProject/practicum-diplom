@@ -54,6 +54,21 @@ class SearchVacanciesViewModel(
         }
     }
 
+    fun reLastSearch() {
+        if (lastSearchExpression.isNullOrEmpty()) {
+            return
+        }
+
+        renderState(SearchVacanciesState.Loading)
+        viewModelScope.launch {
+            vacancyInteractor.searchVacancies(lastSearchExpression!!).collect { result ->
+                vacancies.clear()
+                founded = 0
+                processFoundVacancies(result)
+            }
+        }
+    }
+
     fun clearSearchExpression() {
         lastSearchExpression = null
     }
