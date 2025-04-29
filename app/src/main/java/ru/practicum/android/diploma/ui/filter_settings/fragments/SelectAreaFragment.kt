@@ -23,7 +23,7 @@ class SelectAreaFragment : Fragment() {
     private var _binding: FragmentSelectAreaBinding? = null
     val binding get() = _binding!!
     private val args: SelectAreaFragmentArgs by navArgs()
-    private val mainViewModel: SelectLocationViewModel by koinNavGraphViewModel<SelectLocationViewModel>(
+    private val locationViewModel: SelectLocationViewModel by koinNavGraphViewModel<SelectLocationViewModel>(
         R.id.navigation
     )
     private val viewModel by viewModel<SelectAreaViewModel>()
@@ -39,14 +39,11 @@ class SelectAreaFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSelectAreaBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.selectAreaToolbar.titleText = getString(R.string.select_area_title)
-        binding.selectAreaSearchbar.isVisible = true
         binding.areaRecyclerview.adapter = adapter
         viewModel.getAreas(args.countryId)
         viewModel.areaState.observe(viewLifecycleOwner) { state ->
@@ -63,8 +60,8 @@ class SelectAreaFragment : Fragment() {
 
     private fun onAreaClick(area: Area) {
         val country = viewModel.getCountryByArea(area)
-        mainViewModel.setCountry(country)
-        mainViewModel.setArea(area)
+        locationViewModel.setCountry(country)
+        locationViewModel.setArea(area)
         findNavController().popBackStack(R.id.selectLocationFragment, false)
     }
 

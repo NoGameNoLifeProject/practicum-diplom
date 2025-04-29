@@ -59,7 +59,7 @@ class SelectAreaViewModel(private val interactor: IVacancyInteractor) : ViewMode
                         } else {
                             val areas = res.data
                             allAreas = areas
-                            val flattenAreas = res.data.flattenDescendantsOf(countryId)
+                            val flattenAreas = res.data.flattenDescendantsOf(countryId).sortedBy { it.name }
                             _areaState.postValue(AreaState.ListAreas(flattenAreas))
                         }
                     }

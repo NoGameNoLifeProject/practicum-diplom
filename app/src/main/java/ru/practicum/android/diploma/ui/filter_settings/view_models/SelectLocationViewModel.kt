@@ -17,5 +17,6 @@ class SelectLocationViewModel : ViewModel() {
 
     fun setCountry(country: Area?) {
         _country.postValue(country)
+        _area.postValue(null)
     }
 }
