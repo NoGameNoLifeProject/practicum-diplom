@@ -21,12 +21,15 @@ class FloatingLabelTextView @JvmOverloads constructor(
     private val ivIcon: ImageView
 
     private var hintText: String = ""
+
     @DrawableRes
     private var iconEmptyRes: Int = R.drawable.ic_arrow_forward_24px
+
     @DrawableRes
     private var iconFilledRes: Int = R.drawable.ic_clear_24px
 
     private var primaryClickListener: OnClickListener? = null
+    private var clearClickListener: OnClickListener? = null
 
     init {
         inflate(context, R.layout.view_floating_label_textview, this)
@@ -63,32 +66,33 @@ class FloatingLabelTextView @JvmOverloads constructor(
             if (etContent.text.isNullOrEmpty()) {
                 primaryClickListener?.onClick(this)
             } else {
+                // если есть текст – очищаем и вызываем отдельный listener
                 setText(null)
+                clearClickListener?.onClick(this)
             }
         }
 
-        // подстраиваем hint/иконку после первого layout
         post {
             updateFloatingLabel()
             updateIcon()
         }
     }
 
+    /** Устанавливает текст и обновляет вид */
     fun setText(text: String?) {
         etContent.setText(text)
         updateFloatingLabel()
         updateIcon()
     }
 
+    /** Возвращает текущий текст */
     fun getText(): String = etContent.text.toString()
 
     private fun updateFloatingLabel() {
         val hasText = !etContent.text.isNullOrEmpty()
         if (hasText) {
-            tvFloatingHint.apply {
-                text = hintText
-                visibility = View.VISIBLE
-            }
+            tvFloatingHint.text = hintText
+            tvFloatingHint.visibility = View.VISIBLE
             etContent.hint = ""
         } else {
             tvFloatingHint.visibility = View.GONE
@@ -103,5 +107,10 @@ class FloatingLabelTextView @JvmOverloads constructor(
 
     override fun setOnClickListener(l: OnClickListener?) {
         primaryClickListener = l
+    }
+
+    /** Устанавливает listener для клика на крестик (очистки) */
+    fun setOnClearClickListener(l: OnClickListener?) {
+        clearClickListener = l
     }
 }

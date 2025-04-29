@@ -13,6 +13,7 @@
     <dimen name="padding20">20dp</dimen>
     <dimen name="padding24">24dp</dimen>
     <dimen name="padding32">32dp</dimen>
+    <dimen name="padding57">57dp</dimen>
 
     <dimen name="vacancy_logo_corner_radius">12dp</dimen>
 

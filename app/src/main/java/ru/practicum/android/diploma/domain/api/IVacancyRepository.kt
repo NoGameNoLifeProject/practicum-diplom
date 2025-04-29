@@ -8,7 +8,7 @@ import ru.practicum.android.diploma.domain.models.VacancyDetails
 
 interface IVacancyRepository {
     fun searchVacancies(expression: String): Flow<Resource<ReceivedVacanciesData>>
-    fun getCountries(): Flow<Resource<List<Area>>>
+    fun getAreas(): Flow<Resource<List<Area>>>
     fun getIndustries(): Flow<Resource<List<Industry>>>
     fun getVacancyDetails(vacancyId: String): Flow<Resource<VacancyDetails>>
     fun loadNewVacanciesPage(): Flow<Resource<ReceivedVacanciesData>>

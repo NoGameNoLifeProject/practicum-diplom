@@ -1,6 +1,7 @@
 package ru.practicum.android.diploma.ui.filter_settings.view_models
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.practicum.android.diploma.domain.api.IStorageRepository
@@ -19,29 +20,34 @@ class FilterParametersViewModel(private val storage: IStorageRepository) :
     private val _salaryLiveData = MutableLiveData<UInt?>()
     val salaryLiveData: LiveData<UInt?> get() = _salaryLiveData
     private val _onlyWithSalaryLiveData = MutableLiveData<Boolean?>()
-    val onlyWithSalaryLiveData: MutableLiveData<Boolean?> get() = _onlyWithSalaryLiveData
+    val onlyWithSalaryLiveData: LiveData<Boolean?> get() = _onlyWithSalaryLiveData
+
+    // 1) Создаём MediatorLiveData
+    private val _filterParam = MediatorLiveData<SearchVacanciesParam>()
+    val filterParam: LiveData<SearchVacanciesParam> get() = _filterParam
 
     init {
         getPram()
     }
 
-    fun setCountry(country: Area) {
-        _areaLiveData.postValue(country)
+    fun setCountry(country: Area?) {
+        _countryLiveData.postValue(country)
+        _areaLiveData.postValue(null)
     }
 
-    fun setArea(area: Area) {
+    fun setArea(area: Area?) {
         _areaLiveData.postValue(area)
     }
 
-    fun setIndustry(industry: Industry) {
+    fun setIndustry(industry: Industry?) {
         _industryLiveData.postValue(industry)
     }
 
-    fun setSalary(expression: Int) {
-        _salaryLiveData.postValue(expression.toUInt())
+    fun setSalary(expression: Int?) {
+        _salaryLiveData.postValue(expression?.toUInt())
     }
 
-    fun setOnlyWithSalary(isChecked: Boolean) {
+    fun setOnlyWithSalary(isChecked: Boolean?) {
         _onlyWithSalaryLiveData.postValue(isChecked)
     }
 
@@ -52,20 +58,45 @@ class FilterParametersViewModel(private val storage: IStorageRepository) :
         _industryLiveData.postValue(param.industryIDs)
         _salaryLiveData.postValue(param.salary)
         _onlyWithSalaryLiveData.postValue(param.onlyWithSalary)
+
+        //  Подключаем каждую часть к MediatorLiveData
+        listOf(
+            _countryLiveData,
+            _areaLiveData,
+            _industryLiveData,
+            _salaryLiveData,
+            _onlyWithSalaryLiveData
+        ).forEach { source ->
+            _filterParam.addSource(source) { rebuildFilterParam() }
+        }
+        //  Первоначальная сборка
+        rebuildFilterParam()
     }
 
-    fun saveParam() {
-        val searchStateParam = SearchVacanciesParam(
+    private fun rebuildFilterParam() {
+        //  Собираем полный объект из текущих значений
+        val combined = SearchVacanciesParam(
             country = _countryLiveData.value,
             areaIDs = _areaLiveData.value,
             industryIDs = _industryLiveData.value,
             salary = _salaryLiveData.value,
             onlyWithSalary = _onlyWithSalaryLiveData.value
         )
-        storage.write(searchStateParam)
+        _filterParam.value = combined
+    }
+
+    fun saveParam() {
+        val savedParam = filterParam.value
+        if (savedParam != null) {
+            storage.write(savedParam)
+        }
     }
 
     fun clear() {
+        _countryLiveData.value = null
+        _areaLiveData.value = null
+        _salaryLiveData.value = null
+        _onlyWithSalaryLiveData.value = null
         storage.clear()
     }
 

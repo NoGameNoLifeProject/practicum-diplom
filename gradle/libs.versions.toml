@@ -14,6 +14,7 @@ retrofit = "2.11.0"
 okhttp3 = "4.12.0"
 roomVersion = "2.7.0"
 targetSdk = "33"
+koinNavigation = "3.5.0"
 
 # Detekt
 detekt = "1.23.3"
@@ -52,6 +53,7 @@ staticAnalysis-detektTwitterComposeRules = { module = "com.twitter.compose.rules
 # AndroidX
 androidX-core = "androidx.core:core-ktx:1.12.0"
 androidX-appCompat = "androidx.appcompat:appcompat:1.6.1"
+koin-androidx-navigation = { module = "io.insert-koin:koin-androidx-navigation", version.ref = "koinNavigation" }
 
 # UI layer libraries
 ui-material = "com.google.android.material:material:1.10.0"

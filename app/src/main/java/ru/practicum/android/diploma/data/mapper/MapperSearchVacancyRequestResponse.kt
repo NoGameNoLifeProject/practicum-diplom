@@ -14,17 +14,10 @@ import ru.practicum.android.diploma.domain.models.Vacancy
 
 class MapperSearchVacancyRequestResponse {
     fun mapRequest(expression: String, searchVacanciesParam: SearchVacanciesParam): SearchVacanciesRequest {
-        val area: MutableList<String> = mutableListOf()
-        if (searchVacanciesParam.country?.toString()?.isNotEmpty() == true) {
-            area.addAll(listOf(searchVacanciesParam.country.toString()))
-        }
-        area.addAll(listOf(searchVacanciesParam.areaIDs.toString()))
-        val industry: MutableList<String> = mutableListOf()
-        industry.addAll(listOf(searchVacanciesParam.industryIDs.toString()))
         return SearchVacanciesRequest(
             text = expression,
-            areaIDs = area,
-            industryIDs = industry,
+            areaIDs = searchVacanciesParam.areaIDs?.id ?: searchVacanciesParam.country?.id,
+            industryIDs = searchVacanciesParam.industryIDs?.id,
             salary = searchVacanciesParam.salary,
             onlyWithSalary = searchVacanciesParam.onlyWithSalary,
             page = searchVacanciesParam.page,

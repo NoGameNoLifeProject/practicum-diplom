@@ -7,6 +7,7 @@ import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.models.Salary
 import ru.practicum.android.diploma.domain.models.WorkFormat
 import ru.practicum.android.diploma.domain.models.WorkSchedule
+import java.text.NumberFormat
 import java.util.Currency
 
 fun salaryFormat(context: Context, salary: Salary?): String {
@@ -18,20 +19,20 @@ fun salaryFormat(context: Context, salary: Salary?): String {
     } else if (salary.from != null && salary.to != null) {
         result = context.getString(
             R.string.vacancy_salary_from_to,
-            salary.from.toString(),
-            salary.to.toString(),
+            NumberFormat.getInstance().format(salary.from).toString(),
+            NumberFormat.getInstance().format(salary.to).toString(),
             getCurrency(salary.currency)
         )
     } else if (salary.from != null) {
         result = context.getString(
             R.string.vacancy_salary_from,
-            salary.from.toString(),
+            NumberFormat.getInstance().format(salary.from).toString(),
             getCurrency(salary.currency)
         )
     } else if (salary.to != null) {
         result = context.getString(
             R.string.vacancy_salary_to,
-            salary.to.toString(),
+            NumberFormat.getInstance().format(salary.to).toString(),
             getCurrency(salary.currency)
         )
     }
