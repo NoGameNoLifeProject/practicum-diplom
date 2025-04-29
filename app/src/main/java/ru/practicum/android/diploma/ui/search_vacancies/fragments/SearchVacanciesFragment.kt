@@ -6,14 +6,18 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchVacanciesBinding
+import ru.practicum.android.diploma.domain.api.IStorageRepository
+import ru.practicum.android.diploma.domain.models.SearchVacanciesParam
 import ru.practicum.android.diploma.domain.models.SearchVacanciesState
 import ru.practicum.android.diploma.ui.search_vacancies.adapter.VacancyAdapter
 import ru.practicum.android.diploma.ui.search_vacancies.view_models.SearchVacanciesViewModel
@@ -21,6 +25,7 @@ import ru.practicum.android.diploma.ui.search_vacancies.view_models.SearchVacanc
 class SearchVacanciesFragment : Fragment() {
     private var _binding: FragmentSearchVacanciesBinding? = null
     private val binding get() = _binding!!
+    private val storage: IStorageRepository by inject()
 
     private val viewModel: SearchVacanciesViewModel by viewModel<SearchVacanciesViewModel>()
 
@@ -41,6 +46,10 @@ class SearchVacanciesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.searchToolBar.setOnAction1Click {
+            findNavController().navigate(R.id.action_searchVacanciesFragment_to_filterParametersFragment)
+        }
 
         binding.recyclerViewVacancy.adapter = adapter
         configurePagination()
@@ -65,6 +74,12 @@ class SearchVacanciesFragment : Fragment() {
             adapter.isLoadingMore = false
             showToast(it)
         }
+        updateFilterIcon()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateFilterIcon()
     }
 
     private fun render(state: SearchVacanciesState) {
@@ -156,5 +171,24 @@ class SearchVacanciesFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun updateFilterIcon() {
+        val params: SearchVacanciesParam = storage.read()
+        val applied = listOf(
+            params.areaIDs?.isNotEmpty() == true,
+            params.industryIDs?.isNotEmpty() == true,
+            params.salary != null,
+            params.onlyWithSalary == true
+        ).any { it }
+
+        val iconRes = if (applied) {
+            R.drawable.ic_filter_on_24px
+        } else {
+            R.drawable.ic_filter_off_24px
+        }
+
+        val drawable = ContextCompat.getDrawable(requireContext(), iconRes)!!
+        binding.searchToolBar.drawableAction1 = drawable
     }
 }
