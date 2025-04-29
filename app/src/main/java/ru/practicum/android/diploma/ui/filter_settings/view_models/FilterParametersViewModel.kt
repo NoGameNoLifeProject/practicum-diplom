@@ -28,13 +28,17 @@ class FilterParametersViewModel(
     fun setSalary(from: Int?) = update { copy(salaryFrom = from) }
     fun setHideWithoutSalary(hide: Boolean) = update { copy(hideWithoutSalary = hide) }
 
-    fun clearFilters() = update {
+    fun clearFilters() {
+        _state.value = FilterState()
         storage.clearFilters()
-        FilterState()
     }
 
     fun saveFilters() = viewModelScope.launch {
         storage.saveFilters(_state.value)
+    }
+
+    fun getCurrentFilters(): FilterState {
+        return _state.value
     }
 
     private fun update(block: FilterState.() -> FilterState) {

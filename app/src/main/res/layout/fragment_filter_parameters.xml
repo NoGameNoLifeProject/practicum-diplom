@@ -32,6 +32,7 @@
         app:flt_iconFilled="@drawable/ic_clear_24px" />
 
     <ru.practicum.android.diploma.ui.common.DoubleHintEditText
+        android:id="@+id/salaryInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/padding16"
@@ -59,6 +60,7 @@
             android:textColor="?attr/textColorPrimary" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkboxNoSalary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/padding4"

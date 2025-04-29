@@ -12,22 +12,23 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchVacanciesBinding
-import ru.practicum.android.diploma.domain.api.IStorageRepository
-import ru.practicum.android.diploma.domain.models.SearchVacanciesParam
 import ru.practicum.android.diploma.domain.models.SearchVacanciesState
 import ru.practicum.android.diploma.ui.search_vacancies.adapter.VacancyAdapter
 import ru.practicum.android.diploma.ui.search_vacancies.view_models.SearchVacanciesViewModel
+import org.koin.android.ext.android.inject
+import ru.practicum.android.diploma.domain.api.IStorageRepository
+
 
 class SearchVacanciesFragment : Fragment() {
     private var _binding: FragmentSearchVacanciesBinding? = null
     private val binding get() = _binding!!
     private val storage: IStorageRepository by inject()
 
-    private val viewModel: SearchVacanciesViewModel by viewModel<SearchVacanciesViewModel>()
+    val viewModel: SearchVacanciesViewModel by viewModel { parametersOf(storage) }
 
     private val adapter = VacancyAdapter {
         val action =
@@ -74,12 +75,15 @@ class SearchVacanciesFragment : Fragment() {
             adapter.isLoadingMore = false
             showToast(it)
         }
-        updateFilterIcon()
+
+        viewModel.filterIcon.observe(viewLifecycleOwner) {
+            updateFilterIcon(it)
+        }
     }
 
     override fun onResume() {
         super.onResume()
-        updateFilterIcon()
+        viewModel.updateFilterIcon()
     }
 
     private fun render(state: SearchVacanciesState) {
@@ -173,21 +177,7 @@ class SearchVacanciesFragment : Fragment() {
         })
     }
 
-    private fun updateFilterIcon() {
-        val params: SearchVacanciesParam = storage.read()
-        val applied = listOf(
-            params.areaIDs?.isNotEmpty() == true,
-            params.industryIDs?.isNotEmpty() == true,
-            params.salary != null,
-            params.onlyWithSalary == true
-        ).any { it }
-
-        val iconRes = if (applied) {
-            R.drawable.ic_filter_on_24px
-        } else {
-            R.drawable.ic_filter_off_24px
-        }
-
+    private fun updateFilterIcon(iconRes: Int) {
         val drawable = ContextCompat.getDrawable(requireContext(), iconRes)!!
         binding.searchToolBar.drawableAction1 = drawable
     }

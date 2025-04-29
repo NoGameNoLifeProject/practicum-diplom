@@ -2,6 +2,7 @@ package ru.practicum.android.diploma.di
 
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import ru.practicum.android.diploma.domain.api.IStorageRepository
 import ru.practicum.android.diploma.ui.fav_vacancies.view_models.FavVacanciesViewModel
 import ru.practicum.android.diploma.ui.filter_settings.view_models.FilterParametersViewModel
 import ru.practicum.android.diploma.ui.filter_settings.view_models.SelectAreaViewModel
@@ -32,9 +33,7 @@ val viewModelModule = module {
         SelectLocationViewModel()
     }
 
-    viewModel {
-        SearchVacanciesViewModel(get())
-    }
+    viewModel { (storage: IStorageRepository) -> SearchVacanciesViewModel(get(), storage) }
 
     viewModel {
         VacancyDetailsViewModel(vacancyInteractor = get(), favoriteInteractor = get())
