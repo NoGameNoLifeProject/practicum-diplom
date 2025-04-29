@@ -116,7 +116,6 @@ class FilterParametersViewModel(private val storage: IStorageInteractor) :
         _industryLiveData.value = null
         _salaryLiveData.value = null
         _onlyWithSalaryLiveData.value = null
-        storage.clear()
     }
 
 }
