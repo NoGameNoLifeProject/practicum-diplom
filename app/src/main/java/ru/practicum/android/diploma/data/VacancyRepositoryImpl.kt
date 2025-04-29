@@ -18,7 +18,6 @@ import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.ReceivedVacanciesData
-import ru.practicum.android.diploma.domain.models.SubIndustry
 import ru.practicum.android.diploma.domain.models.VacancyDetails
 import ru.practicum.android.diploma.util.NO_INTERNET_ERROR_CODE
 import java.net.HttpURLConnection
@@ -123,8 +122,8 @@ class VacancyRepositoryImpl(
                         Industry(
                             id = it1.id,
                             name = it1.name,
-                            subIndustries = it1.subIndustries
-                                ?.map { SubIndustry(id = it.id, name = it.name) }
+                            subIndustries = it1.industries
+                                ?.map { Industry(id = it.id, name = it.name, subIndustries = null) }
                         )
                     }
                 )
