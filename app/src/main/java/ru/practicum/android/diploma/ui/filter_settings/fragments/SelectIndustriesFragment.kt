@@ -11,6 +11,7 @@ import org.koin.androidx.navigation.koinNavGraphViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSelectIndustriesBinding
+import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.SelectIndustriesScreenState
 import ru.practicum.android.diploma.ui.filter_settings.adapters.SelectIndustriesAdapter
 import ru.practicum.android.diploma.ui.filter_settings.view_models.FilterParametersViewModel
@@ -25,8 +26,11 @@ class SelectIndustriesFragment : Fragment() {
     private val viewModel: SelectIndustriesViewModel by viewModel<SelectIndustriesViewModel>()
 
     private val adapter = SelectIndustriesAdapter {
-        mainViewModel.setIndustry(it)
+        selectedIndustry = it
+        showSelectButton(true)
     }
+
+    private var selectedIndustry: Industry? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,6 +48,8 @@ class SelectIndustriesFragment : Fragment() {
 
         mainViewModel.industryLiveData.observe(viewLifecycleOwner) {
             adapter.setSelected(it?.id)
+            selectedIndustry = it
+            showSelectButton(it != null)
         }
 
         viewModel.state.observe(viewLifecycleOwner) {
@@ -55,6 +61,13 @@ class SelectIndustriesFragment : Fragment() {
         }
 
         binding.selectIndustryToolbar.setOnNavigationClick {
+            findNavController().navigateUp()
+        }
+
+        binding.selectIndustryButton.setOnClickListener {
+            if (selectedIndustry != null) {
+                mainViewModel.setIndustry(selectedIndustry!!)
+            }
             findNavController().navigateUp()
         }
     }
@@ -89,6 +102,10 @@ class SelectIndustriesFragment : Fragment() {
         binding.errorView.isVisible = true
         binding.errorView.setErrorImage(R.drawable.image_error_region_500)
         binding.errorView.setErrorText(getString(R.string.select_industries_placeholder_error))
+    }
+
+    private fun showSelectButton(show: Boolean) {
+        binding.selectIndustryButton.isVisible = show
     }
 
     override fun onDestroy() {
