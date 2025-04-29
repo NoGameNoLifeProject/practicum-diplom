@@ -14,10 +14,9 @@ import ru.practicum.android.diploma.domain.models.Vacancy
 
 class MapperSearchVacancyRequestResponse {
     fun mapRequest(expression: String, searchVacanciesParam: SearchVacanciesParam): SearchVacanciesRequest {
-
         return SearchVacanciesRequest(
             text = expression,
-            areaIDs = searchVacanciesParam.areaIDs?.id ?: searchVacanciesParam.country?.id ,
+            areaIDs = searchVacanciesParam.areaIDs?.id ?: searchVacanciesParam.country?.id,
             industryIDs = searchVacanciesParam.industryIDs?.id,
             salary = searchVacanciesParam.salary,
             onlyWithSalary = searchVacanciesParam.onlyWithSalary,
