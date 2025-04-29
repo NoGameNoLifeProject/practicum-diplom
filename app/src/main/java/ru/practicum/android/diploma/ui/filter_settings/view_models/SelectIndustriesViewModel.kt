@@ -6,68 +6,40 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ru.practicum.android.diploma.domain.api.IStorageInteractor
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
 import ru.practicum.android.diploma.domain.api.Resource
-import ru.practicum.android.diploma.domain.models.Industry
-import ru.practicum.android.diploma.domain.models.LoadingState
+import ru.practicum.android.diploma.domain.models.SelectIndustriesScreenState
+import ru.practicum.android.diploma.domain.models.flatten
 
 class SelectIndustriesViewModel(
     private val vacancyInteractor: IVacancyInteractor,
-    private val storageInteractor: IStorageInteractor
 ) : ViewModel() {
+    private val _state = MutableLiveData<SelectIndustriesScreenState>(SelectIndustriesScreenState.Loading)
+    val state: LiveData<SelectIndustriesScreenState> get() = _state
 
     init {
         updateIndustries()
     }
 
-    @Suppress("VariableNaming")
-    var _selectedIndustry = MutableLiveData<LoadingState<Industry>>(LoadingState.Loading())
-    val selectedIndustry: LiveData<LoadingState<Industry>> get() = _selectedIndustry
-
-    @Suppress("VariableNaming")
-    var _industries: MutableLiveData<LoadingState<List<Industry>>> = MutableLiveData(LoadingState.Loading())
-    val industries: LiveData<LoadingState<List<Industry>>> get() = _industries
-
-    private var loadedIndustries: List<Industry> = listOf()
-
-    fun loadSelectedIndustry() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val industriesParam = storageInteractor.read().industryIDs
-            if (!industriesParam.isNullOrEmpty() && loadedIndustries.isNotEmpty()) {
-                val selected = loadedIndustries.find { it.id == industriesParam[0] }
-                if (selected != null) {
-                    _selectedIndustry.postValue(LoadingState.Content(selected))
-                }
-            } else {
-                _selectedIndustry.postValue(LoadingState.Error(LoadingState.ErrorType.Empty))
-            }
-        }
+    private fun renderState(newState: SelectIndustriesScreenState) {
+        _state.postValue(newState)
     }
 
-    fun selectIndustry(industry: Industry) {
-        viewModelScope.launch(Dispatchers.IO) {
-            _selectedIndustry.postValue(LoadingState.Content(industry))
-        }
-    }
-
-    fun updateIndustries() {
+    private fun updateIndustries() {
         viewModelScope.launch(Dispatchers.IO) {
             vacancyInteractor.getIndustries().collect { response ->
                 when (response) {
                     is Resource.Error -> {
-                        _industries.postValue(LoadingState.Error(LoadingState.ErrorType.NetworkError))
+                        renderState(SelectIndustriesScreenState.Error)
                     }
+
                     is Resource.Success -> {
-                        loadedIndustries = response.data
-                        if (loadedIndustries.isEmpty()) {
-                            _industries.postValue(LoadingState.Error(LoadingState.ErrorType.Empty))
-                        } else {
-                            _industries.postValue(LoadingState.Content(loadedIndustries))
+                        val flatten = response.data.flatMap {
+                            it.flatten()
                         }
+                        renderState(SelectIndustriesScreenState.Content(flatten))
                     }
                 }
-                loadSelectedIndustry()
             }
         }
     }

@@ -15,16 +15,15 @@ import ru.practicum.android.diploma.ui.filter_settings.view_models.FilterParamet
 
 class FilterParametersFragment : Fragment() {
 
-    private val viewModel: FilterParametersViewModel by koinNavGraphViewModel<FilterParametersViewModel>(
-        R.id.navigation
-    )
+    private val viewModel: FilterParametersViewModel
+        by koinNavGraphViewModel<FilterParametersViewModel>(R.id.navigation)
 
     private var _binding: FragmentFilterParametersBinding? = null
     private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentFilterParametersBinding.inflate(inflater, container, false)
         return binding.root
@@ -41,7 +40,7 @@ class FilterParametersFragment : Fragment() {
         }
 
         binding.industries.setOnClickListener {
-            findNavController().navigate(R.id.selectIndustriesFragment)
+            findNavController().navigate(R.id.action_filterParametersFragment_to_selectIndustriesFragment)
         }
         binding.industries.setOnClearClickListener {
             viewModel.setIndustry(null)

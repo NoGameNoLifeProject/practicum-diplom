@@ -25,6 +25,7 @@ lifecycleLivedataKtx = "2.8.7"
 lifecycleViewmodelKtx = "2.8.7"
 fragmentKtx = "1.8.6"
 navigationFragment = "2.8.9"
+koinNavigation = "3.5.0"
 
 [libraries]
 

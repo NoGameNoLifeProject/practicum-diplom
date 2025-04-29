@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ru.practicum.android.diploma.domain.api.IStorageRepository
+import ru.practicum.android.diploma.domain.api.IStorageInteractor
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.SearchVacanciesParam
 
-class FilterParametersViewModel(private val storage: IStorageRepository) :
+class FilterParametersViewModel(private val storage: IStorageInteractor) :
     ViewModel() {
     private val _areaLiveData = MutableLiveData<Area?>()
     val areaLiveData: LiveData<Area?> get() = _areaLiveData

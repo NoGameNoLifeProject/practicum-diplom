@@ -14,4 +14,8 @@ class StorageInteractorImpl(
     override fun write(filterParam: SearchVacanciesParam) {
         repository.write(filterParam)
     }
+
+    override fun clear() {
+        repository.clear()
+    }
 }
