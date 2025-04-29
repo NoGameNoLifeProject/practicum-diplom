@@ -133,7 +133,7 @@ class SearchVacanciesViewModel(
         }
     }
 
-    fun filterParamIsNotEmpty(): Boolean{
+    fun filterParamIsNotEmpty(): Boolean {
         val param = storage.read()
         return listOf(param.areaIDs, param.industryIDs, param.salary).any { it != null }
             || param.onlyWithSalary == true

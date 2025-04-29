@@ -46,7 +46,6 @@ class SearchVacanciesFragment : Fragment() {
         binding.recyclerViewVacancy.adapter = adapter
         configurePagination()
 
-
         binding.searchToolBar.drawableAction1 = if (viewModel.filterParamIsNotEmpty()) {
             ContextCompat.getDrawable(
                 requireContext(),
@@ -55,7 +54,6 @@ class SearchVacanciesFragment : Fragment() {
         } else {
             ContextCompat.getDrawable(requireContext(), R.drawable.ic_filter_off_24px)
         }
-
 
         viewModel.state.observe(viewLifecycleOwner) {
             render(it)
