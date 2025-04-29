@@ -19,29 +19,29 @@ class FilterParametersViewModel(private val storage: IStorageRepository) :
     private val _salaryLiveData = MutableLiveData<UInt?>()
     val salaryLiveData: LiveData<UInt?> get() = _salaryLiveData
     private val _onlyWithSalaryLiveData = MutableLiveData<Boolean?>()
-    val onlyWithSalaryLiveData: MutableLiveData<Boolean?> get() = _onlyWithSalaryLiveData
+    val onlyWithSalaryLiveData: LiveData<Boolean?> get() = _onlyWithSalaryLiveData
 
     init {
         getPram()
     }
 
-    fun setCountry(country: Area) {
-        _areaLiveData.postValue(country)
+    fun setCountry(country: Area?) {
+        _countryLiveData.postValue(country)
     }
 
-    fun setArea(area: Area) {
+    fun setArea(area: Area?) {
         _areaLiveData.postValue(area)
     }
 
-    fun setIndustry(industry: Industry) {
+    fun setIndustry(industry: Industry?) {
         _industryLiveData.postValue(industry)
     }
 
-    fun setSalary(expression: Int) {
-        _salaryLiveData.postValue(expression.toUInt())
+    fun setSalary(expression: Int?) {
+        _salaryLiveData.postValue(expression?.toUInt())
     }
 
-    fun setOnlyWithSalary(isChecked: Boolean) {
+    fun setOnlyWithSalary(isChecked: Boolean?) {
         _onlyWithSalaryLiveData.postValue(isChecked)
     }
 
