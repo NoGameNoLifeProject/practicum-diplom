@@ -31,4 +31,21 @@
         app:flt_iconEmpty="@drawable/ic_arrow_forward_24px"
         app:flt_iconFilled="@drawable/ic_clear_24px" />
 
+    <LinearLayout
+        android:id="@+id/btn_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="bottom"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_apply"
+            style="@style/FilterButton"
+            android:layout_marginHorizontal="@dimen/padding16"
+            android:layout_marginBottom="@dimen/padding24"
+            android:background="@drawable/btn_background"
+            android:backgroundTint="@color/yp_blue"
+            android:text="@string/select_location_select_button" />
+    </LinearLayout>
+
 </LinearLayout>
