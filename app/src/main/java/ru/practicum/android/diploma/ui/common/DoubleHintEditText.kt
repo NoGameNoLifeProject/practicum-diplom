@@ -27,6 +27,9 @@ class DoubleHintEditText @JvmOverloads constructor(
     private var hintOuterColor: Int = Color.GRAY
     private var hintOuterFocusedColor: Int = Color.BLUE
 
+    // Listener для изменений текста
+    private var onTextChangedListener: ((String) -> Unit)? = null
+
     init {
         LayoutInflater.from(context)
             .inflate(R.layout.view_double_hint_edit_text, this, true)
@@ -71,14 +74,18 @@ class DoubleHintEditText @JvmOverloads constructor(
         // Начальное состояние: крестик скрыт
         ivClear.visibility = View.GONE
 
-        // Слушаем изменения текста, показываем/скрываем крестик
+        // Слушаем изменения текста, показываем/скрываем крестик и уведомляем listener
         etInner.addTextChangedListener { editable ->
-            ivClear.visibility = if (!editable.isNullOrEmpty()) View.VISIBLE else View.GONE
+            val text = editable?.toString().orEmpty()
+            ivClear.visibility = if (text.isNotEmpty()) View.VISIBLE else View.GONE
+            onTextChangedListener?.invoke(text)
         }
 
         // Клик по иконке — очистка текста
         ivClear.setOnClickListener {
             etInner.text?.clear()
+            // После очистки уведомляем listener об ""
+            onTextChangedListener?.invoke("")
         }
     }
 
@@ -87,9 +94,14 @@ class DoubleHintEditText @JvmOverloads constructor(
         get() = etInner.text?.toString()
         set(value) {
             etInner.setText(value)
-            // Обновляем крестик в зависимости от текста
-            ivClear.visibility = if (!value.isNullOrEmpty()) View.VISIBLE else View.GONE
+            val text = value.orEmpty()
+            ivClear.visibility = if (text.isNotEmpty()) View.VISIBLE else View.GONE
         }
+
+    /** Позволяет подписаться на изменения текста */
+    fun setOnTextChangedListener(listener: (String) -> Unit) {
+        onTextChangedListener = listener
+    }
 
     fun addTextChangedListener(watcher: TextWatcher) {
         etInner.addTextChangedListener(watcher)

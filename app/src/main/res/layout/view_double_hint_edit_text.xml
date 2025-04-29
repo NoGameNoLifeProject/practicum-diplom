@@ -36,6 +36,7 @@
                 android:textColor="?attr/textColorPrimary"
                 android:textColorHint="?attr/searchHintColor"
                 android:inputType="number"
+                android:maxLength="8"
                 android:textAppearance="@style/Regular16TextAppearance"
                 android:hint="@string/filter_parameters_salary_bottom_hint"
                 android:textCursorDrawable="@drawable/cursor_blue"
