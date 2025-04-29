@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterParametersBinding
 import ru.practicum.android.diploma.ui.filter_settings.view_models.FilterParametersViewModel
 
@@ -27,7 +29,7 @@ class FilterParametersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.area.setOnClickListener {
-            binding.area.setText("Россия")
+            findNavController().navigate(R.id.action_filterParametersFragment_to_selectLocationFragment)
         }
         binding.industries.setOnClickListener {
             binding.industries.setText("Россия")
