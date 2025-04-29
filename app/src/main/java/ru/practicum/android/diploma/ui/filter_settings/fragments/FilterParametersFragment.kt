@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import org.koin.androidx.navigation.koinNavGraphViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterParametersBinding
@@ -13,7 +14,9 @@ import ru.practicum.android.diploma.ui.filter_settings.view_models.FilterParamet
 
 class FilterParametersFragment : Fragment() {
 
-    private val viewModel: FilterParametersViewModel by viewModel<FilterParametersViewModel>()
+    private val viewModel: FilterParametersViewModel by koinNavGraphViewModel<FilterParametersViewModel>(
+        R.id.navigation
+    )
 
     private var _binding: FragmentFilterParametersBinding? = null
     private val binding get() = _binding!!
@@ -28,6 +31,13 @@ class FilterParametersFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.countryLiveData.observe(viewLifecycleOwner) {
+            val areaText = listOfNotNull(it?.name, viewModel.areaLiveData.value?.name).joinToString(", ")
+            binding.area.setText(areaText)
+        }
+        viewModel.industryLiveData.observe(viewLifecycleOwner) {
+            binding.industries.setText(it?.name)
+        }
         binding.area.setOnClickListener {
             findNavController().navigate(R.id.action_filterParametersFragment_to_selectLocationFragment)
         }
