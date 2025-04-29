@@ -1,11 +1,11 @@
 package ru.practicum.android.diploma.ui.filter_settings.view_models
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ru.practicum.android.diploma.domain.api.IStorageInteractor
 import ru.practicum.android.diploma.domain.models.Area
-import ru.practicum.android.diploma.domain.models.FilterParamsState
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.SearchVacanciesParam
 
@@ -22,11 +22,13 @@ class FilterParametersViewModel(private val storage: IStorageInteractor) :
     private val _onlyWithSalaryLiveData = MutableLiveData<Boolean?>()
     val onlyWithSalaryLiveData: LiveData<Boolean?> get() = _onlyWithSalaryLiveData
 
-    private var filterParamsInitial: SearchVacanciesParam? = null
-    private var filterParamsActual: SearchVacanciesParam? = null
+    private val _filterParam = MediatorLiveData<SearchVacanciesParam?>()
+    val filterParam: LiveData<SearchVacanciesParam?> get() = _filterParam
 
-    private val _filterParamsState = MutableLiveData<FilterParamsState?>()
-    val filterParamsState: LiveData<FilterParamsState?> get() = _filterParamsState
+    private val _storageFilterParam = MutableLiveData<SearchVacanciesParam?>()
+    val storageFilterParam: LiveData<SearchVacanciesParam?> get() = _storageFilterParam
+
+    var isNewState: Boolean? = null
 
     init {
         getPram()
@@ -35,77 +37,74 @@ class FilterParametersViewModel(private val storage: IStorageInteractor) :
     fun setCountry(country: Area?) {
         _countryLiveData.postValue(country)
         _areaLiveData.postValue(null)
-        filterParamsActual = filterParamsActual?.copy(country = country, areaIDs = null)
-        checkFilterParamsState()
     }
 
     fun setArea(area: Area?) {
         _areaLiveData.postValue(area)
-        filterParamsActual = filterParamsActual?.copy(areaIDs = area)
-        checkFilterParamsState()
     }
 
     fun setIndustry(industry: Industry?) {
         _industryLiveData.postValue(industry)
-        filterParamsActual = filterParamsActual?.copy(industryIDs = industry)
-        checkFilterParamsState()
     }
 
     fun setSalary(expression: Int?) {
         _salaryLiveData.postValue(expression?.toUInt())
-        filterParamsActual = filterParamsActual?.copy(salary = expression?.toUInt())
-        checkFilterParamsState()
     }
 
     fun setOnlyWithSalary(isChecked: Boolean?) {
         _onlyWithSalaryLiveData.postValue(isChecked)
-        filterParamsActual = filterParamsActual?.copy(onlyWithSalary = isChecked)
-        checkFilterParamsState()
+    }
+    fun setFilterParam(filterParam: SearchVacanciesParam?) {
+        _filterParam.postValue(filterParam)
     }
 
-    private fun getPram() {
+    fun getPram() {
         val param = storage.read()
-        _countryLiveData.postValue(param.country)
-        _areaLiveData.postValue(param.areaIDs)
-        _industryLiveData.postValue(param.industryIDs)
-        _salaryLiveData.postValue(param.salary)
-        _onlyWithSalaryLiveData.postValue(param.onlyWithSalary)
+        _countryLiveData.value = param.country
+        _areaLiveData.value = param.areaIDs
+        _industryLiveData.value = param.industryIDs
+        _salaryLiveData.value = param.salary
+        _onlyWithSalaryLiveData.value = param.onlyWithSalary
 
-        filterParamsInitial = param
-        filterParamsActual = param
-        checkFilterParamsState()
+        //  Подключаем каждую часть к MediatorLiveData
+        listOf(
+            _countryLiveData,
+            _areaLiveData,
+            _industryLiveData,
+            _salaryLiveData,
+            _onlyWithSalaryLiveData
+        ).forEach { source ->
+            _filterParam.addSource(source) { rebuildFilterParam() }
+        }
+        //  Первоначальная сборка
+        rebuildFilterParam()
+        setStorageParam()
     }
 
-    @Suppress("detekt.UnnecessaryParentheses", "detekt.CyclomaticComplexMethod")
-    private fun checkFilterParamsState() {
-        val hasDiffs = filterParamsActual?.salary != filterParamsInitial?.salary ||
-            filterParamsActual?.country != filterParamsInitial?.country ||
-            filterParamsActual?.areaIDs != filterParamsInitial?.areaIDs ||
-            filterParamsActual?.industryIDs != filterParamsInitial?.industryIDs ||
-            (filterParamsActual?.onlyWithSalary ?: false) != (filterParamsInitial?.onlyWithSalary ?: false)
-
-        val isEmpty = filterParamsActual?.salary == null &&
-            filterParamsActual?.country == null &&
-            filterParamsActual?.areaIDs == null &&
-            filterParamsActual?.industryIDs == null &&
-            (filterParamsActual?.onlyWithSalary == null || filterParamsActual?.onlyWithSalary == false)
-
-        _filterParamsState.postValue(
-            FilterParamsState(
-                area = filterParamsActual?.areaIDs,
-                country = filterParamsActual?.country,
-                industry = filterParamsActual?.industryIDs,
-                salary = filterParamsActual?.salary,
-                onlyWithSalary = filterParamsActual?.onlyWithSalary,
-                hasDiffs = hasDiffs,
-                isEmpty = isEmpty
-            )
+    private fun rebuildFilterParam() {
+        //  Собираем полный объект из текущих значений
+        val combined = SearchVacanciesParam(
+            country = _countryLiveData.value,
+            areaIDs = _areaLiveData.value,
+            industryIDs = _industryLiveData.value,
+            salary = _salaryLiveData.value,
+            onlyWithSalary = _onlyWithSalaryLiveData.value
         )
+        _filterParam.value = combined
+    }
+    private fun setStorageParam() {
+        val combined = SearchVacanciesParam(
+            country = _countryLiveData.value,
+            areaIDs = _areaLiveData.value,
+            industryIDs = _industryLiveData.value,
+            salary = _salaryLiveData.value,
+            onlyWithSalary = _onlyWithSalaryLiveData.value
+        )
+        _storageFilterParam.value = combined
     }
 
     fun saveParam() {
-        val savedParam = filterParamsActual
-        filterParamsInitial = savedParam
+        val savedParam = filterParam.value
         if (savedParam != null) {
             storage.write(savedParam)
         }
@@ -114,20 +113,10 @@ class FilterParametersViewModel(private val storage: IStorageInteractor) :
     fun clear() {
         _countryLiveData.value = null
         _areaLiveData.value = null
-        _salaryLiveData.value = null
         _industryLiveData.value = null
+        _salaryLiveData.value = null
         _onlyWithSalaryLiveData.value = null
         storage.clear()
-
-        filterParamsActual = SearchVacanciesParam(
-            country = _countryLiveData.value,
-            areaIDs = _areaLiveData.value,
-            industryIDs = _industryLiveData.value,
-            salary = _salaryLiveData.value,
-            onlyWithSalary = _onlyWithSalaryLiveData.value
-        )
-        filterParamsInitial = filterParamsActual
-        checkFilterParamsState()
     }
 
 }

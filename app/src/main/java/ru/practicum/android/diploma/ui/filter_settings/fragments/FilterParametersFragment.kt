@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.addCallback
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -12,7 +13,7 @@ import androidx.navigation.fragment.findNavController
 import org.koin.androidx.navigation.koinNavGraphViewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFilterParametersBinding
-import ru.practicum.android.diploma.domain.models.FilterParamsState
+import ru.practicum.android.diploma.domain.models.SearchVacanciesParam
 import ru.practicum.android.diploma.ui.filter_settings.view_models.FilterParametersViewModel
 
 class FilterParametersFragment : Fragment() {
@@ -34,6 +35,9 @@ class FilterParametersFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.toolbar.setOnNavigationClick { setNewStateAndGoUp() }
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) { setNewStateAndGoUp() }
+
         binding.area.setOnClickListener {
             findNavController().navigate(R.id.action_filterParametersFragment_to_selectLocationFragment)
         }
@@ -47,6 +51,7 @@ class FilterParametersFragment : Fragment() {
         binding.industries.setOnClearClickListener {
             viewModel.setIndustry(null)
         }
+        binding.salary.text = viewModel.filterParam.value?.salary?.toString()
         binding.salary.setOnTextChangedListener { text ->
             viewModel.setSalary(text.takeIf { it.isNotEmpty() }?.toInt())
         }
@@ -57,35 +62,39 @@ class FilterParametersFragment : Fragment() {
         binding.btnApply.setOnClickListener {
             viewModel.saveParam()
             setFragmentResult("updateSearch", bundleOf())
-            findNavController().navigateUp()
+            setNewStateAndGoUp()
         }
         binding.btnReset.setOnClickListener {
             viewModel.clear()
             binding.salary.text = viewModel.salaryLiveData.value?.toString()
         }
-        viewModel.filterParamsState.observe(viewLifecycleOwner) { param ->
+        viewModel.filterParam.observe(viewLifecycleOwner) { param ->
             renderState(param)
         }
 
-        binding.toolbar.setOnNavigationClick {
-            findNavController().navigateUp()
-        }
-
     }
 
-    private fun renderState(state: FilterParamsState?) {
-        if (state == null) {
-            return
-        }
-
-        val areaText = listOfNotNull(state.country?.name, state.area?.name).joinToString(", ")
+    private fun renderState(param: SearchVacanciesParam?) {
+        val storageParam = viewModel.storageFilterParam.value
+        val areaText = listOfNotNull(param?.country?.name, param?.areaIDs?.name).joinToString(", ")
         binding.area.setText(areaText)
-        binding.industries.setText(state.industry?.name)
-        binding.salary.text = state.salary?.toString()
-
-        binding.onlyWithSalary.isChecked = state.onlyWithSalary ?: false
-        binding.btnApply.isVisible = state.hasDiffs
-        binding.btnReset.isVisible = !state.isEmpty
-
+        binding.industries.setText(param?.industryIDs?.name)
+        binding.onlyWithSalary.isChecked = param?.onlyWithSalary ?: false
+        val filterParamIsChen = param != storageParam
+        binding.btnApply.isVisible = filterParamIsChen
+        val isEmpty = listOf(param?.areaIDs, param?.industryIDs, param?.salary).any { it != null }
+            || param?.onlyWithSalary == true
+        binding.btnReset.isVisible = isEmpty
     }
+
+    private fun setNewStateAndGoUp() {
+        clearGraphViewModel()
+        findNavController().navigateUp()
+    }
+    private fun clearGraphViewModel() {
+        val navController = findNavController()
+        val entry = navController.getBackStackEntry(R.id.navigation)
+        entry.viewModelStore.clear()
+    }
+
 }
