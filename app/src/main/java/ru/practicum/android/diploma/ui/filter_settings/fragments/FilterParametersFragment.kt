@@ -64,7 +64,6 @@ class FilterParametersFragment : Fragment() {
         viewModel.filterParam.observe(viewLifecycleOwner) { param ->
             renderState(param)
 
-
         }
 
     }
