@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -44,6 +45,15 @@ class SearchVacanciesFragment : Fragment() {
 
         binding.recyclerViewVacancy.adapter = adapter
         configurePagination()
+
+        binding.searchToolBar.drawableAction1 = if (viewModel.filterParamIsNotEmpty()) {
+            ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.ic_filter_on_24px
+            )
+        } else {
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_filter_off_24px)
+        }
 
         viewModel.state.observe(viewLifecycleOwner) {
             render(it)
