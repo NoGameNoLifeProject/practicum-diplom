@@ -26,6 +26,7 @@
         android:background="@drawable/selector_radio_button"
         android:layout_marginVertical="@dimen/padding6"
         android:layout_marginHorizontal="@dimen/padding4"
+        android:clickable="false"
         tools:checked="false"
         />
 </LinearLayout>
