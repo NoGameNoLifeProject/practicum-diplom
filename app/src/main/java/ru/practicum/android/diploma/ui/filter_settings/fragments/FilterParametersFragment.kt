@@ -65,7 +65,10 @@ class FilterParametersFragment : Fragment() {
         }
         viewModel.filterParam.observe(viewLifecycleOwner) { param ->
             renderState(param)
+        }
 
+        binding.toolbar.setOnNavigationClick {
+            findNavController().navigateUp()
         }
 
     }
