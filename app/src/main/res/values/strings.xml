@@ -41,6 +41,7 @@
     <string name="select_industries_title">Выбор отрасли</string>
     <string name="select_industries_search_hint">Введите отрасль</string>
     <string name="select_industries_select_button">Выбрать</string>
+    <string name="select_industries_placeholder_error">Не удалось получить список</string>
 
     <!--    Экран "Вакансия"-->
     <string name="vacancy_details_title">Вакансия</string>
