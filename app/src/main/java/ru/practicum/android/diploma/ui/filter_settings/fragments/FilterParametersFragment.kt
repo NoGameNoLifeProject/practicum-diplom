@@ -81,6 +81,7 @@ class FilterParametersFragment : Fragment() {
         val areaText = listOfNotNull(state.country?.name, state.area?.name).joinToString(", ")
         binding.area.setText(areaText)
         binding.industries.setText(state.industry?.name)
+        binding.salary.text = state.salary?.toString()
 
         binding.onlyWithSalary.isChecked = state.onlyWithSalary ?: false
         binding.btnApply.isVisible = state.hasDiffs
