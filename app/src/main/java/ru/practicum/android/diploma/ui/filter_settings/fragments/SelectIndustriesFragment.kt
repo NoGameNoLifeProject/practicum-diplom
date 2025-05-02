@@ -25,11 +25,18 @@ class SelectIndustriesFragment : Fragment() {
         by koinNavGraphViewModel<FilterParametersViewModel>(R.id.navigation)
     private val viewModel: SelectIndustriesViewModel by viewModel<SelectIndustriesViewModel>()
 
-    private val onSelectionFilteredOut = {
-        showSelectButton(false)
+    private val onFilterResult = { isEmpty: Boolean, isSelectionFilteredOut: Boolean ->
+        if (isEmpty) {
+            showFilteredEmpty()
+            showSelectButton(false)
+        } else {
+            showFiltered()
+            val shouldShowButton = selectedIndustry != null && !isSelectionFilteredOut
+            showSelectButton(shouldShowButton)
+        }
     }
 
-    private val adapter = SelectIndustriesAdapter(onSelectionFilteredOut) {
+    private val adapter = SelectIndustriesAdapter(onFilterResult) {
         selectedIndustry = it
         showSelectButton(true)
     }
@@ -102,6 +109,18 @@ class SelectIndustriesFragment : Fragment() {
         hideAll()
         binding.industryRecyclerview.isVisible = true
         adapter.setIndustries(state.industries)
+    }
+
+    private fun showFiltered() {
+        hideAll()
+        binding.industryRecyclerview.isVisible = true
+    }
+
+    private fun showFilteredEmpty() {
+        hideAll()
+        binding.errorView.isVisible = true
+        binding.errorView.setErrorImage(R.drawable.image_error_404)
+        binding.errorView.setErrorText(getString(R.string.select_industries_placeholder_not_found))
     }
 
     private fun showError() {

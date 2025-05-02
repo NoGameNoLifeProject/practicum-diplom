@@ -7,7 +7,7 @@ import ru.practicum.android.diploma.databinding.IndustryItemBinding
 import ru.practicum.android.diploma.domain.models.Industry
 
 class SelectIndustriesAdapter(
-    private val onSelectionFilteredOut: () -> Unit,
+    private val onFilterResult: (isEmpty: Boolean, isFilteredOut: Boolean) -> Unit,
     private val onClick: (Industry) -> Unit
 ) :
     RecyclerView.Adapter<SelectIndustriesAdapter.ViewHolder>() {
@@ -54,11 +54,13 @@ class SelectIndustriesAdapter(
         val selected = selectedId
         val filtered = industries.filter { it.name.contains(expression, true) }
         filteredIndustries.clear()
-        filteredIndustries.addAll(filtered)
-        notifyDataSetChanged()
-        // обработка случая, когда выбраный элемент отсеивается фильтром
-        if (selected != null && (filteredIndustries.find { it.id == selected } == null)) {
-            onSelectionFilteredOut()
+        if (filtered.isEmpty()) {
+            onFilterResult(true, true)
+        } else {
+            filteredIndustries.addAll(filtered)
+            val isSelectionFilteredOut = selected != null && filteredIndustries.find { it.id == selected } == null
+            onFilterResult(false, isSelectionFilteredOut)
         }
+        notifyDataSetChanged()
     }
 }
