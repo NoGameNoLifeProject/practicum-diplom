@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.R
+import ru.practicum.android.diploma.domain.api.IStorageInteractor
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
 import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.ReceivedVacanciesData
@@ -16,7 +17,10 @@ import ru.practicum.android.diploma.util.SEARCH_VACANCY_ITEMS_PER_PAGE
 import ru.practicum.android.diploma.util.SingleLiveEvent
 import ru.practicum.android.diploma.util.debounce
 
-class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor) : ViewModel() {
+class SearchVacanciesViewModel(
+    private val vacancyInteractor: IVacancyInteractor,
+    private val storage: IStorageInteractor
+) : ViewModel() {
     private val _state = MutableLiveData<SearchVacanciesState>()
     private val _showToast = SingleLiveEvent<Int>()
     private val vacancies = mutableListOf<Vacancy>()
@@ -43,6 +47,21 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
         renderState(SearchVacanciesState.Loading)
         viewModelScope.launch {
             vacancyInteractor.searchVacancies(expression).collect { result ->
+                vacancies.clear()
+                founded = 0
+                processFoundVacancies(result)
+            }
+        }
+    }
+
+    fun reLastSearch() {
+        if (lastSearchExpression.isNullOrEmpty()) {
+            return
+        }
+
+        renderState(SearchVacanciesState.Loading)
+        viewModelScope.launch {
+            vacancyInteractor.searchVacancies(lastSearchExpression!!).collect { result ->
                 vacancies.clear()
                 founded = 0
                 processFoundVacancies(result)
@@ -127,6 +146,12 @@ class SearchVacanciesViewModel(private val vacancyInteractor: IVacancyInteractor
                 }
             }
         }
+    }
+
+    fun filterParamIsNotEmpty(): Boolean {
+        val param = storage.read()
+        return listOf(param.areaIDs, param.industryIDs, param.salary).any { it != null }
+            || param.onlyWithSalary == true
     }
 
     companion object {

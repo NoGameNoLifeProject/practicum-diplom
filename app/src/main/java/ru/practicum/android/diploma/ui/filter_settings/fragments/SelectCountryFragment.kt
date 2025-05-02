@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import org.koin.androidx.navigation.koinNavGraphViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
@@ -15,21 +14,23 @@ import ru.practicum.android.diploma.databinding.FragmentSelectAreaBinding
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.domain.models.AreaState
 import ru.practicum.android.diploma.ui.filter_settings.adapters.SelectAreaAdapter
-import ru.practicum.android.diploma.ui.filter_settings.view_models.SelectAreaViewModel
+import ru.practicum.android.diploma.ui.filter_settings.view_models.SelectCountryViewModel
 import ru.practicum.android.diploma.ui.filter_settings.view_models.SelectLocationViewModel
 
-class SelectAreaFragment : Fragment() {
+open class SelectCountryFragment : Fragment() {
+    companion object {
+        const val OTHER_REGIONS_ID = "1001"
+    }
 
     private var _binding: FragmentSelectAreaBinding? = null
     val binding get() = _binding!!
-    private val args: SelectAreaFragmentArgs by navArgs()
-    private val locationViewModel: SelectLocationViewModel by koinNavGraphViewModel<SelectLocationViewModel>(
+    private val mainViewModel: SelectLocationViewModel by koinNavGraphViewModel<SelectLocationViewModel>(
         R.id.navigation
     )
-    private val viewModel by viewModel<SelectAreaViewModel>()
+    private val viewModel by viewModel<SelectCountryViewModel>()
     private val adapter by lazy {
-        SelectAreaAdapter { area ->
-            onAreaClick(area)
+        SelectAreaAdapter { country ->
+            onCountryClick(country)
         }
     }
 
@@ -44,25 +45,25 @@ class SelectAreaFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.selectAreaToolbar.titleText = getString(R.string.select_country_title)
+        binding.selectAreaSearchbar.isVisible = false
         binding.areaRecyclerview.adapter = adapter
-        viewModel.getAreas(args.countryId)
+        viewModel.getCountries()
         viewModel.areaState.observe(viewLifecycleOwner) { state ->
             render(state)
-        }
-        binding.selectAreaSearchbar.setOnQueryTextChangedListener {
-            adapter.filter(it)
-            if (viewModel.areaState.value is AreaState.ListAreas) {
-                setEmptyPlaceholder(adapter.itemCount)
-            }
         }
         binding.selectAreaToolbar.setOnNavigationClick { findNavController().navigateUp() }
     }
 
-    private fun onAreaClick(area: Area) {
-        val country = viewModel.getCountryByArea(area)
-        locationViewModel.setCountry(country)
-        locationViewModel.setArea(area)
-        findNavController().popBackStack(R.id.selectLocationFragment, false)
+    private fun onCountryClick(country: Area) {
+        if (country.id == OTHER_REGIONS_ID) {
+            val action = SelectCountryFragmentDirections.actionSelectCountryFragmentToSelectAreaFragment(country.id)
+            findNavController().navigate(action)
+        } else {
+            mainViewModel.setCountry(country)
+            findNavController().navigateUp()
+        }
+
     }
 
     private fun render(state: AreaState) {
@@ -82,18 +83,6 @@ class SelectAreaFragment : Fragment() {
         }
     }
 
-    private fun setEmptyPlaceholder(size: Int) {
-        if (size == 0) {
-            binding.areaRecyclerview.isVisible = false
-            binding.placeholder.isVisible = true
-            binding.placeholder.setErrorText(getString(R.string.select_area_placeholder_not_found))
-            binding.placeholder.setErrorImage(R.drawable.image_error_404)
-        } else {
-            binding.placeholder.isVisible = false
-            binding.areaRecyclerview.isVisible = true
-        }
-    }
-
     private fun setData(state: AreaState): Boolean {
         if (state is AreaState.ListAreas) {
             adapter.setAreas(state.listAreas)
@@ -102,5 +91,4 @@ class SelectAreaFragment : Fragment() {
             return false
         }
     }
-
 }

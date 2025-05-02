@@ -9,7 +9,7 @@
         android:id="@+id/searchVacanciesFragment"
         android:name="ru.practicum.android.diploma.ui.search_vacancies.fragments.SearchVacanciesFragment"
         android:label="fragment_search_vacancies"
-        tools:layout="@layout/fragment_search_vacancies" >
+        tools:layout="@layout/fragment_search_vacancies">
         <action
             android:id="@+id/action_searchVacanciesFragment_to_filterParametersFragment"
             app:destination="@id/filterParametersFragment" />
@@ -26,7 +26,7 @@
         android:id="@+id/favVacanciesFragment"
         android:name="ru.practicum.android.diploma.ui.fav_vacancies.fragments.FavVacanciesFragment"
         android:label="fragment_fav_vacancies"
-        tools:layout="@layout/fragment_fav_vacancies" >
+        tools:layout="@layout/fragment_fav_vacancies">
         <action
             android:id="@+id/action_favVacanciesFragment_to_vacancyDetailsFragment"
             app:destination="@id/vacancyDetailsFragment" />
@@ -35,7 +35,7 @@
         android:id="@+id/filterParametersFragment"
         android:name="ru.practicum.android.diploma.ui.filter_settings.fragments.FilterParametersFragment"
         android:label="fragment_filter_parameters"
-        tools:layout="@layout/fragment_filter_parameters" >
+        tools:layout="@layout/fragment_filter_parameters">
         <action
             android:id="@+id/action_filterParametersFragment_to_selectLocationFragment"
             app:destination="@id/selectLocationFragment" />
@@ -47,7 +47,7 @@
         android:id="@+id/vacancyDetailsFragment"
         android:name="ru.practicum.android.diploma.ui.vacancy_details.fragments.VacancyDetailsFragment"
         android:label="fragment_vacancy_details"
-        tools:layout="@layout/fragment_vacancy_details" >
+        tools:layout="@layout/fragment_vacancy_details">
         <argument
             android:name="vacancyId"
             app:argType="string" />
@@ -59,19 +59,37 @@
         android:id="@+id/selectAreaFragment"
         android:name="ru.practicum.android.diploma.ui.filter_settings.fragments.SelectAreaFragment"
         android:label="fragment_select_area"
-        tools:layout="@layout/fragment_select_area" />
+        tools:layout="@layout/fragment_select_area">
+        <argument
+            android:name="countryId"
+            android:defaultValue=""
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
     <fragment
         android:id="@+id/selectLocationFragment"
         android:name="ru.practicum.android.diploma.ui.filter_settings.fragments.SelectLocationFragment"
         android:label="fragment_select_location"
-        tools:layout="@layout/fragment_select_location" >
+        tools:layout="@layout/fragment_select_location">
         <action
             android:id="@+id/action_selectLocationFragment_to_selectAreaFragment"
             app:destination="@id/selectAreaFragment" />
+        <action
+            android:id="@+id/action_selectLocationFragment_to_selectCountryFragment"
+            app:destination="@id/selectCountryFragment" />
     </fragment>
     <fragment
         android:id="@+id/selectIndustriesFragment"
         android:name="ru.practicum.android.diploma.ui.filter_settings.fragments.SelectIndustriesFragment"
         android:label="fragment_select_industries"
         tools:layout="@layout/fragment_select_industries" />
+    <fragment
+        android:id="@+id/selectCountryFragment"
+        android:name="ru.practicum.android.diploma.ui.filter_settings.fragments.SelectCountryFragment"
+        android:label="fragment_select_area"
+        tools:layout="@layout/fragment_select_area">
+        <action
+            android:id="@+id/action_selectCountryFragment_to_selectAreaFragment"
+            app:destination="@id/selectAreaFragment" />
+    </fragment>
 </navigation>

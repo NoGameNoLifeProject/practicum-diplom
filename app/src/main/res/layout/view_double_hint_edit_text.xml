@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:id="@+id/employer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/view_double_hint_edit_text"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:background="@drawable/background">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding16"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <!-- Внешний hint -->
+            <TextView
+                android:id="@+id/tvOuterHint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/filter_parameters_salary_top_hint"
+                android:textColorHint="?attr/searchHintColor"
+                android:textAppearance="@style/Regular12TextAppearance"
+                android:visibility="visible" />
+
+            <!-- Поле ввода -->
+            <EditText
+                android:id="@+id/etInner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:textColor="?attr/textColorPrimary"
+                android:textColorHint="?attr/searchHintColor"
+                android:inputType="number"
+                android:maxLength="8"
+                android:textAppearance="@style/Regular16TextAppearance"
+                android:hint="@string/filter_parameters_salary_bottom_hint"
+                android:textCursorDrawable="@drawable/cursor_blue"
+                 />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/ivClear"
+            android:layout_width="@dimen/standard_icon_size"
+            android:layout_height="@dimen/standard_icon_size"
+            android:layout_marginHorizontal="@dimen/padding4"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_close_24px"
+            android:visibility="visible" />
+    </LinearLayout>
+</merge>

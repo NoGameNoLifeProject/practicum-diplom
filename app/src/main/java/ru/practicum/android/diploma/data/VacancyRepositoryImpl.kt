@@ -3,7 +3,6 @@ package ru.practicum.android.diploma.data
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.cancel
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onStart
 import ru.practicum.android.diploma.data.dto.toDomain
@@ -19,7 +18,6 @@ import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.Area
 import ru.practicum.android.diploma.domain.models.Industry
 import ru.practicum.android.diploma.domain.models.ReceivedVacanciesData
-import ru.practicum.android.diploma.domain.models.SubIndustry
 import ru.practicum.android.diploma.domain.models.VacancyDetails
 import ru.practicum.android.diploma.util.NO_INTERNET_ERROR_CODE
 import java.net.HttpURLConnection
@@ -56,7 +54,7 @@ class VacancyRepositoryImpl(
         }
     }
 
-    override fun getCountries(): Flow<Resource<List<Area>>> = flow {
+    override fun getAreas(): Flow<Resource<List<Area>>> = flow {
         val result = networkClient.getAreas(GetAreasRequest())
         val body = result.body()
         if (result.isSuccessful && body != null) {
@@ -124,8 +122,8 @@ class VacancyRepositoryImpl(
                         Industry(
                             id = it1.id,
                             name = it1.name,
-                            subIndustries = it1.subIndustries
-                                ?.map { SubIndustry(id = it.id, name = it.name) }
+                            subIndustries = it1.industries
+                                ?.map { Industry(id = it.id, name = it.name, subIndustries = null) }
                         )
                     }
                 )

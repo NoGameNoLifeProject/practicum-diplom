@@ -16,8 +16,8 @@ class MapperSearchVacancyRequestResponse {
     fun mapRequest(expression: String, searchVacanciesParam: SearchVacanciesParam): SearchVacanciesRequest {
         return SearchVacanciesRequest(
             text = expression,
-            areaIDs = searchVacanciesParam.areaIDs,
-            industryIDs = searchVacanciesParam.industryIDs,
+            areaIDs = searchVacanciesParam.areaIDs?.id ?: searchVacanciesParam.country?.id,
+            industryIDs = searchVacanciesParam.industryIDs?.id,
             salary = searchVacanciesParam.salary,
             onlyWithSalary = searchVacanciesParam.onlyWithSalary,
             page = searchVacanciesParam.page,

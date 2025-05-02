@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/view_floating_label_textview.xml"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding16"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+
+                <!-- Это плавающий hint, изначально скрыт -->
+                <TextView
+                    android:id="@+id/tvFloatingHint"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="?attr/textColorPrimary"
+                    tools:text = "Место работы"
+                    android:visibility="gone"
+                    android:textAppearance="@style/Regular12TextAppearance"
+                    />
+
+                <!-- Это «контент» — невводимый EditText, который будет показывать hint в середине -->
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:textColor="?attr/textColorPrimary"
+                    tools:text=""
+                    android:textAppearance="@style/Regular16TextAppearance"
+                    android:clickable="true"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:hint="@string/filter_parameters_location_hint"
+                     />
+            </LinearLayout>
+            <ImageView
+                android:id="@+id/ivIcon"
+                android:layout_width="@dimen/standard_icon_size"
+                android:layout_height="@dimen/standard_icon_size"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginHorizontal="@dimen/padding4"
+                android:src="@drawable/ic_arrow_forward_24px"
+                android:scaleType="centerInside"/>
+        </LinearLayout>
+</merge>

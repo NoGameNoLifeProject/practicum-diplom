@@ -20,7 +20,11 @@ class StorageRepositoryImpl(
 
     override fun write(filterParam: SearchVacanciesParam) {
         val json = gson.toJson(filterParam)
-        storageSharedPreferences.edit() { putString(STORAGE_PREFERENCES_KEY, json) }
+        storageSharedPreferences.edit { putString(STORAGE_PREFERENCES_KEY, json) }
+    }
+
+    override fun clear() {
+        storageSharedPreferences.edit { putString(STORAGE_PREFERENCES_KEY, null) }
     }
 
     companion object {

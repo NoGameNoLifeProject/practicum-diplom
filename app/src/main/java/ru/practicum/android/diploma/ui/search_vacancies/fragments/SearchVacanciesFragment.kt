@@ -6,8 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.StringRes
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,6 +47,15 @@ class SearchVacanciesFragment : Fragment() {
         binding.recyclerViewVacancy.adapter = adapter
         configurePagination()
 
+        binding.searchToolBar.drawableAction1 = if (viewModel.filterParamIsNotEmpty()) {
+            ContextCompat.getDrawable(
+                requireContext(),
+                R.drawable.ic_filter_on_24px
+            )
+        } else {
+            ContextCompat.getDrawable(requireContext(), R.drawable.ic_filter_off_24px)
+        }
+
         viewModel.state.observe(viewLifecycleOwner) {
             render(it)
         }
@@ -64,6 +75,10 @@ class SearchVacanciesFragment : Fragment() {
         viewModel.showToast.observe(viewLifecycleOwner) {
             adapter.isLoadingMore = false
             showToast(it)
+        }
+
+        setFragmentResultListener("updateSearch") { _, _ ->
+            viewModel.reLastSearch()
         }
     }
 

@@ -14,8 +14,8 @@ class VacancyInteractorImpl(private val repository: IVacancyRepository) : IVacan
         return repository.searchVacancies(expression)
     }
 
-    override fun getCountries(): Flow<Resource<List<Area>>> {
-        return repository.getCountries()
+    override fun getAreas(): Flow<Resource<List<Area>>> {
+        return repository.getAreas()
     }
 
     override fun getIndustries(): Flow<Resource<List<Industry>>> {

@@ -6,11 +6,14 @@
     <dimen name="text_size_xl">32sp</dimen>
 
     <dimen name="padding4">4dp</dimen>
+    <dimen name="padding6">6dp</dimen>
     <dimen name="padding8">8dp</dimen>
     <dimen name="padding16">16dp</dimen>
     <dimen name="padding12">12dp</dimen>
+    <dimen name="padding20">20dp</dimen>
     <dimen name="padding24">24dp</dimen>
     <dimen name="padding32">32dp</dimen>
+    <dimen name="padding57">57dp</dimen>
 
     <dimen name="vacancy_logo_corner_radius">12dp</dimen>
 
@@ -26,5 +29,10 @@
 
     <dimen name="error_image_width">328dp</dimen>
     <dimen name="error_image_height">223dp</dimen>
+
+    <dimen name="view_double_hint_edit_text">51dp</dimen>
+    <dimen name="view_floating_label_textview.xml">60dp</dimen>
+    <dimen name="button_size">59dp</dimen>
+
 </resources>
 
