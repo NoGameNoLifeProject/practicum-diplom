@@ -6,7 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.practicum.android.diploma.databinding.IndustryItemBinding
 import ru.practicum.android.diploma.domain.models.Industry
 
-class SelectIndustriesAdapter(private val onClick: (Industry) -> Unit) :
+class SelectIndustriesAdapter(
+    private val onSelectionFilteredOut: () -> Unit,
+    private val onClick: (Industry) -> Unit
+) :
     RecyclerView.Adapter<SelectIndustriesAdapter.ViewHolder>() {
 
     private val industries = mutableListOf<Industry>()
@@ -48,9 +51,14 @@ class SelectIndustriesAdapter(private val onClick: (Industry) -> Unit) :
     override fun getItemCount() = filteredIndustries.size
 
     fun filter(expression: String) {
+        val selected = selectedId
         val filtered = industries.filter { it.name.contains(expression, true) }
         filteredIndustries.clear()
         filteredIndustries.addAll(filtered)
         notifyDataSetChanged()
+        // обработка случая, когда выбраный элемент отсеивается фильтром
+        if (selected != null && (filteredIndustries.find { it.id == selected } == null)) {
+            onSelectionFilteredOut()
+        }
     }
 }

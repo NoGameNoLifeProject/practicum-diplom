@@ -25,7 +25,11 @@ class SelectIndustriesFragment : Fragment() {
         by koinNavGraphViewModel<FilterParametersViewModel>(R.id.navigation)
     private val viewModel: SelectIndustriesViewModel by viewModel<SelectIndustriesViewModel>()
 
-    private val adapter = SelectIndustriesAdapter {
+    private val onSelectionFilteredOut = {
+        showSelectButton(false)
+    }
+
+    private val adapter = SelectIndustriesAdapter(onSelectionFilteredOut) {
         selectedIndustry = it
         showSelectButton(true)
     }
@@ -57,6 +61,9 @@ class SelectIndustriesFragment : Fragment() {
         }
 
         binding.selectIndustrySearchbar.setOnQueryTextChangedListener {
+            if (it.isEmpty() && selectedIndustry != null) {
+                showSelectButton(true)
+            }
             adapter.filter(it)
         }
 
