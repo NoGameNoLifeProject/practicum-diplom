@@ -52,15 +52,17 @@ class SelectIndustriesAdapter(
 
     fun filter(expression: String) {
         val selected = selectedId
-        val filtered = industries.filter { it.name.contains(expression, true) }
-        filteredIndustries.clear()
-        if (filtered.isEmpty()) {
-            onFilterResult(true, true)
-        } else {
-            filteredIndustries.addAll(filtered)
-            val isSelectionFilteredOut = selected != null && filteredIndustries.find { it.id == selected } == null
-            onFilterResult(false, isSelectionFilteredOut)
+        if (industries.isNotEmpty()) {
+            val filtered = industries.filter { it.name.contains(expression, true) }
+            filteredIndustries.clear()
+            if (filtered.isEmpty()) {
+                onFilterResult(true, true)
+            } else {
+                filteredIndustries.addAll(filtered)
+                val isSelectionFilteredOut = selected != null && filteredIndustries.find { it.id == selected } == null
+                onFilterResult(false, isSelectionFilteredOut)
+            }
+            notifyDataSetChanged()
         }
-        notifyDataSetChanged()
     }
 }
