@@ -129,7 +129,7 @@ class SelectIndustriesFragment : Fragment() {
 
     private fun showNoInternet() {
         binding.errorView.setErrorImage(R.drawable.image_error_no_internet)
-        binding.errorView.setErrorText(getString(R.string.search_vacancies_no_internet))
+        binding.errorView.setErrorText(getString(R.string.no_internet))
     }
 
     private fun showSelectButton(show: Boolean) {

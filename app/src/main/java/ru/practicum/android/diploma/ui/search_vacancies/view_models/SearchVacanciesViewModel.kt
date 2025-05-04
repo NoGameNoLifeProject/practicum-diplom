@@ -140,7 +140,7 @@ class SearchVacanciesViewModel(
         when (result.errorCode) {
             NO_INTERNET_ERROR_CODE -> {
                 if (isOnLoadingMore) {
-                    _showToast.value = R.string.search_vacancies_no_internet
+                    _showToast.value = R.string.no_internet
                 } else {
                     renderState(ResourceState.Error(ResourceState.ErrorType.NoInternet))
                 }

@@ -149,7 +149,7 @@ class SearchVacanciesFragment : Fragment() {
     private fun showNoInternet() {
         binding.errorStateView.isVisible = true
         binding.errorStateView.setErrorImage(R.drawable.image_error_no_internet)
-        binding.errorStateView.setErrorText(getString(R.string.search_vacancies_no_internet))
+        binding.errorStateView.setErrorText(getString(R.string.no_internet))
     }
 
     private fun showToast(@StringRes resId: Int) {
