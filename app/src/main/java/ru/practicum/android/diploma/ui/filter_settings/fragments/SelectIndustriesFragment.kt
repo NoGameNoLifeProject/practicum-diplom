@@ -30,7 +30,7 @@ class SelectIndustriesFragment : Fragment() {
             showFilteredEmpty()
             showSelectButton(false)
         } else {
-            showFiltered()
+            binding.errorView.isVisible = false
             val shouldShowButton = selectedIndustry != null && !isSelectionFilteredOut
             showSelectButton(shouldShowButton)
         }
@@ -68,7 +68,8 @@ class SelectIndustriesFragment : Fragment() {
         }
 
         binding.selectIndustrySearchbar.setOnQueryTextChangedListener {
-            if (it.isEmpty() && selectedIndustry != null) {
+            val stateIsContent = viewModel.state.value is SelectIndustriesScreenState.Content
+            if (it.isEmpty() && selectedIndustry != null && stateIsContent) {
                 showSelectButton(true)
             }
             adapter.filter(it)
@@ -87,47 +88,36 @@ class SelectIndustriesFragment : Fragment() {
     }
 
     private fun render(state: SelectIndustriesScreenState) {
-        when (state) {
-            is SelectIndustriesScreenState.Loading -> showLoading()
-            is SelectIndustriesScreenState.Content -> showContent(state)
-            is SelectIndustriesScreenState.Error -> showError()
+        binding.selectIndustryButton.isVisible =
+            state is SelectIndustriesScreenState.Content && selectedIndustry != null
+        binding.progressCircular.isVisible = state is SelectIndustriesScreenState.Loading
+        binding.errorView.isVisible = showError(state)
+        binding.industryRecyclerview.isVisible = showContent(state)
+    }
+
+    private fun showContent(state: SelectIndustriesScreenState): Boolean {
+        if (state is SelectIndustriesScreenState.Content) {
+            adapter.setIndustries(state.industries)
+            binding.errorView.isVisible = false
+            return true
+        } else {
+            return false
         }
     }
 
-    private fun hideAll() {
-        binding.industryRecyclerview.isVisible = false
-        binding.progressCircular.isVisible = false
-        binding.errorView.isVisible = false
-    }
-
-    private fun showLoading() {
-        hideAll()
-        binding.progressCircular.isVisible = true
-    }
-
-    private fun showContent(state: SelectIndustriesScreenState.Content) {
-        hideAll()
-        binding.industryRecyclerview.isVisible = true
-        adapter.setIndustries(state.industries)
-    }
-
-    private fun showFiltered() {
-        hideAll()
-        binding.industryRecyclerview.isVisible = true
-    }
-
     private fun showFilteredEmpty() {
-        hideAll()
         binding.errorView.isVisible = true
         binding.errorView.setErrorImage(R.drawable.image_error_404)
         binding.errorView.setErrorText(getString(R.string.select_industries_placeholder_not_found))
     }
 
-    private fun showError() {
-        hideAll()
-        binding.errorView.isVisible = true
-        binding.errorView.setErrorImage(R.drawable.image_error_region_500)
-        binding.errorView.setErrorText(getString(R.string.select_industries_placeholder_error))
+    private fun showError(state: SelectIndustriesScreenState): Boolean {
+        if (state is SelectIndustriesScreenState.Error) {
+            binding.errorView.setErrorImage(R.drawable.image_error_region_500)
+            binding.errorView.setErrorText(getString(R.string.select_industries_placeholder_error))
+            return true
+        }
+        return false
     }
 
     private fun showSelectButton(show: Boolean) {

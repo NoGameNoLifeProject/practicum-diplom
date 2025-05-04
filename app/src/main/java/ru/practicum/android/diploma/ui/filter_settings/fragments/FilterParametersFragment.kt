@@ -36,7 +36,6 @@ class FilterParametersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.toolbar.setOnNavigationClick {
-            viewModel.saveParam()
             setNewStateAndGoUp()
         }
         requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) { setNewStateAndGoUp() }
@@ -91,6 +90,7 @@ class FilterParametersFragment : Fragment() {
     }
 
     private fun setNewStateAndGoUp() {
+        viewModel.saveParam()
         clearGraphViewModel()
         findNavController().navigateUp()
     }
