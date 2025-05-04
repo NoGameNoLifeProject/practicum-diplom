@@ -10,7 +10,8 @@ import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentFavVacanciesBinding
-import ru.practicum.android.diploma.domain.models.FavVacanciesState
+import ru.practicum.android.diploma.domain.models.ResourceState
+import ru.practicum.android.diploma.domain.models.VacancyDetails
 import ru.practicum.android.diploma.ui.fav_vacancies.adapters.FavVacanciesAdapter
 import ru.practicum.android.diploma.ui.fav_vacancies.view_models.FavVacanciesViewModel
 
@@ -44,12 +45,17 @@ class FavVacanciesFragment : Fragment() {
         }
     }
 
-    private fun render(state: FavVacanciesState) {
+    private fun render(state: ResourceState<List<VacancyDetails>>) {
         when (state) {
-            is FavVacanciesState.Loading -> showLoading()
-            is FavVacanciesState.VacanciesList -> showContent(state)
-            is FavVacanciesState.Error -> showError()
-            is FavVacanciesState.Empty -> showEmpty()
+            is ResourceState.Loading -> showLoading()
+            is ResourceState.Content -> showContent(state)
+            is ResourceState.Error -> {
+                when (state.errorType) {
+                    ResourceState.ErrorType.Empty -> showEmpty()
+                    else -> showError()
+                }
+                showError()
+            }
         }
     }
 
@@ -64,10 +70,10 @@ class FavVacanciesFragment : Fragment() {
         binding.progressBar.isVisible = true
     }
 
-    private fun showContent(state: FavVacanciesState.VacanciesList) {
+    private fun showContent(state: ResourceState.Content<List<VacancyDetails>>) {
         hideAll()
         binding.rvVacancies.isVisible = true
-        adapter?.setVacancies(state.vacancies)
+        adapter?.setVacancies(state.data)
     }
 
     private fun showError() {
