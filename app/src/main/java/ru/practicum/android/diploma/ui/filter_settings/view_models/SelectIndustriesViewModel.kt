@@ -19,6 +19,12 @@ class SelectIndustriesViewModel(
     private val _state = MutableLiveData<ResourceState<List<Industry>>>(ResourceState.Loading())
     val state: LiveData<ResourceState<List<Industry>>> get() = _state
 
+    private var _selectedIndustry = MutableLiveData<Industry?>(null)
+    val selectedIndustry: LiveData<Industry?> get() = _selectedIndustry
+
+    private var industries = listOf<Industry>()
+    private var selected: Industry? = null
+
     init {
         updateIndustries()
     }
@@ -44,11 +50,36 @@ class SelectIndustriesViewModel(
                         val flatten = response.data.flatMap {
                             it.flatten()
                         }
+                        industries = flatten
                         renderState(ResourceState.Content(flatten))
                     }
                 }
             }
         }
+    }
+
+    fun filter(expression: String) {
+        val selected = this.selected
+        if (industries.isNotEmpty()) {
+            val filtered = industries.filter { it.name.contains(expression, true) }
+            if (filtered.isEmpty()) {
+                renderState(ResourceState.Error(ResourceState.ErrorType.Empty))
+                _selectedIndustry.postValue(null)
+            } else {
+                renderState(ResourceState.Content(filtered))
+                val isSelectionFilteredOut = selected != null && filtered.find { it.id == selected.id } == null
+                if (isSelectionFilteredOut) {
+                    _selectedIndustry.postValue(null)
+                } else {
+                    _selectedIndustry.postValue(selected)
+                }
+            }
+        }
+    }
+
+    fun select(industry: Industry?) {
+        selected = industry
+        _selectedIndustry.postValue(industry)
     }
 
 }

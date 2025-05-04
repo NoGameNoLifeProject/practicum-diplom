@@ -25,23 +25,9 @@ class SelectIndustriesFragment : Fragment() {
         by koinNavGraphViewModel<FilterParametersViewModel>(R.id.navigation)
     private val viewModel: SelectIndustriesViewModel by viewModel<SelectIndustriesViewModel>()
 
-    private val onFilterResult = { isEmpty: Boolean, isSelectionFilteredOut: Boolean ->
-        if (isEmpty) {
-            showFilteredEmpty()
-            showSelectButton(false)
-        } else {
-            binding.errorView.isVisible = false
-            val shouldShowButton = selectedIndustry != null && !isSelectionFilteredOut
-            showSelectButton(shouldShowButton)
-        }
+    private val adapter = SelectIndustriesAdapter { industry ->
+        viewModel.select(industry)
     }
-
-    private val adapter = SelectIndustriesAdapter(onFilterResult) {
-        selectedIndustry = it
-        showSelectButton(true)
-    }
-
-    private var selectedIndustry: Industry? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,21 +44,20 @@ class SelectIndustriesFragment : Fragment() {
         binding.industryRecyclerview.adapter = adapter
 
         mainViewModel.industryLiveData.observe(viewLifecycleOwner) {
-            adapter.setSelected(it?.id)
-            selectedIndustry = it
-            showSelectButton(it != null)
+            viewModel.select(it)
         }
 
         viewModel.state.observe(viewLifecycleOwner) {
             render(it)
         }
 
+        viewModel.selectedIndustry.observe(viewLifecycleOwner) {
+            adapter.setSelected(it?.id)
+            showSelectButton(it != null)
+        }
+
         binding.selectIndustrySearchbar.setOnQueryTextChangedListener {
-            val stateIsContent = viewModel.state.value is ResourceState.Content
-            if (it.isEmpty() && selectedIndustry != null && stateIsContent) {
-                showSelectButton(true)
-            }
-            adapter.filter(it)
+            viewModel.filter(it)
         }
 
         binding.selectIndustryToolbar.setOnNavigationClick {
@@ -80,16 +65,15 @@ class SelectIndustriesFragment : Fragment() {
         }
 
         binding.selectIndustryButton.setOnClickListener {
-            if (selectedIndustry != null) {
-                mainViewModel.setIndustry(selectedIndustry!!)
+            val selected = viewModel.selectedIndustry.value
+            if (selected != null) {
+                mainViewModel.setIndustry(selected)
             }
             findNavController().navigateUp()
         }
     }
 
     private fun render(state: ResourceState<List<Industry>>) {
-        binding.selectIndustryButton.isVisible =
-            state is ResourceState.Content && selectedIndustry != null
         binding.progressCircular.isVisible = state is ResourceState.Loading
         binding.errorView.isVisible = showError(state)
         binding.industryRecyclerview.isVisible = showContent(state)
@@ -97,7 +81,7 @@ class SelectIndustriesFragment : Fragment() {
 
     private fun showContent(state: ResourceState<List<Industry>>): Boolean {
         if (state is ResourceState.Content) {
-            adapter.setIndustries(state.data)
+            adapter.setIndustries(state.data, viewModel.selectedIndustry.value?.id)
             binding.errorView.isVisible = false
             return true
         } else {
@@ -106,7 +90,6 @@ class SelectIndustriesFragment : Fragment() {
     }
 
     private fun showFilteredEmpty() {
-        binding.errorView.isVisible = true
         binding.errorView.setErrorImage(R.drawable.image_error_404)
         binding.errorView.setErrorText(getString(R.string.select_industries_placeholder_not_found))
     }
@@ -115,6 +98,7 @@ class SelectIndustriesFragment : Fragment() {
         if (state is ResourceState.Error) {
             when (state.errorType) {
                 ResourceState.ErrorType.NoInternet -> showNoInternet()
+                ResourceState.ErrorType.Empty -> showFilteredEmpty()
                 else -> showNetworkError()
             }
             return true
