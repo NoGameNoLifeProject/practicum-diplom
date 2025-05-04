@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
 import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.Industry
@@ -34,7 +33,9 @@ class SelectIndustriesViewModel(
                 when (response) {
                     is Resource.Error -> {
                         when (response.errorCode) {
-                            NO_INTERNET_ERROR_CODE -> renderState(ResourceState.Error(ResourceState.ErrorType.NoInternet))
+                            NO_INTERNET_ERROR_CODE -> renderState(
+                                ResourceState.Error(ResourceState.ErrorType.NoInternet)
+                            )
                             else -> renderState(ResourceState.Error(ResourceState.ErrorType.NetworkError))
                         }
                     }

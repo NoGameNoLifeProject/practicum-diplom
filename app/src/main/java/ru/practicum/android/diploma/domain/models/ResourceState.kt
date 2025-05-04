@@ -1,7 +1,7 @@
 package ru.practicum.android.diploma.domain.models
 
 sealed class ResourceState<T> {
-    class Loading<T>() : ResourceState<T>()
+    class Loading<T> : ResourceState<T>()
 
     data class Content<T>(val data: T) : ResourceState<T>()
 

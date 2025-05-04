@@ -76,7 +76,10 @@ class SearchVacanciesViewModel(
 
     fun loadNewVacanciesPage() {
         val current = _state.value
-        if (current is ResourceState.Content<SearchVacanciesPage> && (current.data.isLoadingMore || current.data.endReached)) return
+        if (current is ResourceState.Content<SearchVacanciesPage> &&
+            (current.data.isLoadingMore || current.data.endReached)) {
+            return
+        }
 
         renderState(
             ResourceState.Content(
