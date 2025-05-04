@@ -12,7 +12,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSelectIndustriesBinding
 import ru.practicum.android.diploma.domain.models.Industry
-import ru.practicum.android.diploma.domain.models.SelectIndustriesScreenState
+import ru.practicum.android.diploma.domain.models.ResourceState
 import ru.practicum.android.diploma.ui.filter_settings.adapters.SelectIndustriesAdapter
 import ru.practicum.android.diploma.ui.filter_settings.view_models.FilterParametersViewModel
 import ru.practicum.android.diploma.ui.filter_settings.view_models.SelectIndustriesViewModel
@@ -68,7 +68,7 @@ class SelectIndustriesFragment : Fragment() {
         }
 
         binding.selectIndustrySearchbar.setOnQueryTextChangedListener {
-            val stateIsContent = viewModel.state.value is SelectIndustriesScreenState.Content
+            val stateIsContent = viewModel.state.value is ResourceState.Content
             if (it.isEmpty() && selectedIndustry != null && stateIsContent) {
                 showSelectButton(true)
             }
@@ -87,17 +87,17 @@ class SelectIndustriesFragment : Fragment() {
         }
     }
 
-    private fun render(state: SelectIndustriesScreenState) {
+    private fun render(state: ResourceState<List<Industry>>) {
         binding.selectIndustryButton.isVisible =
-            state is SelectIndustriesScreenState.Content && selectedIndustry != null
-        binding.progressCircular.isVisible = state is SelectIndustriesScreenState.Loading
+            state is ResourceState.Content && selectedIndustry != null
+        binding.progressCircular.isVisible = state is ResourceState.Loading
         binding.errorView.isVisible = showError(state)
         binding.industryRecyclerview.isVisible = showContent(state)
     }
 
-    private fun showContent(state: SelectIndustriesScreenState): Boolean {
-        if (state is SelectIndustriesScreenState.Content) {
-            adapter.setIndustries(state.industries)
+    private fun showContent(state: ResourceState<List<Industry>>): Boolean {
+        if (state is ResourceState.Content) {
+            adapter.setIndustries(state.data)
             binding.errorView.isVisible = false
             return true
         } else {
@@ -111,13 +111,25 @@ class SelectIndustriesFragment : Fragment() {
         binding.errorView.setErrorText(getString(R.string.select_industries_placeholder_not_found))
     }
 
-    private fun showError(state: SelectIndustriesScreenState): Boolean {
-        if (state is SelectIndustriesScreenState.Error) {
-            binding.errorView.setErrorImage(R.drawable.image_error_region_500)
-            binding.errorView.setErrorText(getString(R.string.select_industries_placeholder_error))
+    private fun showError(state: ResourceState<List<Industry>>): Boolean {
+        if (state is ResourceState.Error) {
+            when (state.errorType) {
+                ResourceState.ErrorType.NoInternet -> showNoInternet()
+                else -> showNetworkError()
+            }
             return true
         }
         return false
+    }
+
+    private fun showNetworkError() {
+        binding.errorView.setErrorImage(R.drawable.image_error_region_500)
+        binding.errorView.setErrorText(getString(R.string.select_industries_placeholder_error))
+    }
+
+    private fun showNoInternet() {
+        binding.errorView.setErrorImage(R.drawable.image_error_no_internet)
+        binding.errorView.setErrorText(getString(R.string.search_vacancies_no_internet))
     }
 
     private fun showSelectButton(show: Boolean) {
