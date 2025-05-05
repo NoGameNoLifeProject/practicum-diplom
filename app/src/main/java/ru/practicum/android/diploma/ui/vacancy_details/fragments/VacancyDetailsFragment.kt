@@ -73,7 +73,7 @@ class VacancyDetailsFragment : Fragment() {
     }
 
     private fun setPlaceholder(state: ResourceState<VacancyDetails>): Boolean {
-        val didShow = if (state is ResourceState.Error){
+        val didShow = if (state is ResourceState.Error) {
             when (state.errorType) {
                 ResourceState.ErrorType.NothingFound -> {
                     binding.placeholder.setErrorImage(R.drawable.image_error_vacancy_404)
@@ -91,7 +91,7 @@ class VacancyDetailsFragment : Fragment() {
                     true
                 }
 
-                ResourceState.ErrorType.NoInternet ->{
+                ResourceState.ErrorType.NoInternet -> {
                     binding.placeholder.setErrorImage(R.drawable.image_error_no_internet)
                     binding.placeholder.setErrorText(
                         getString(R.string.no_internet)
@@ -101,7 +101,9 @@ class VacancyDetailsFragment : Fragment() {
 
                 else -> false
             }
-        }else false
+        } else {
+            false
+        }
         return didShow
     }
 
