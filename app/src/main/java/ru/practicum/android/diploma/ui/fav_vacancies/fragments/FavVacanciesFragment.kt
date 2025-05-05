@@ -54,7 +54,6 @@ class FavVacanciesFragment : Fragment() {
                     ResourceState.ErrorType.Empty -> showEmpty()
                     else -> showError()
                 }
-                showError()
             }
         }
     }
