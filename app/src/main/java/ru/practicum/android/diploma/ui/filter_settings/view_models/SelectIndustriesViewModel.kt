@@ -34,6 +34,7 @@ class SelectIndustriesViewModel(
     }
 
     private fun updateIndustries() {
+        renderState(ResourceState.Loading())
         viewModelScope.launch(Dispatchers.IO) {
             vacancyInteractor.getIndustries().collect { response ->
                 when (response) {

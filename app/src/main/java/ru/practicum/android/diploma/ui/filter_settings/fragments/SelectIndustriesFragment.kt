@@ -47,13 +47,15 @@ class SelectIndustriesFragment : Fragment() {
             viewModel.select(it)
         }
 
-        viewModel.state.observe(viewLifecycleOwner) {
-            render(it)
-        }
-
         viewModel.selectedIndustry.observe(viewLifecycleOwner) {
             adapter.setSelected(it?.id)
             showSelectButton(it != null)
+        }
+
+        viewModel.state.observe(viewLifecycleOwner) {
+            if (it != null) {
+                render(it)
+            }
         }
 
         binding.selectIndustrySearchbar.setOnQueryTextChangedListener {
@@ -74,7 +76,7 @@ class SelectIndustriesFragment : Fragment() {
     }
 
     private fun render(state: ResourceState<List<Industry>>) {
-        binding.progressCircular.isVisible = state is ResourceState.Loading
+        binding.progressCircular.isVisible = showLoading(state)
         binding.errorView.isVisible = showError(state)
         binding.industryRecyclerview.isVisible = showContent(state)
     }
@@ -83,10 +85,23 @@ class SelectIndustriesFragment : Fragment() {
         if (state is ResourceState.Content) {
             adapter.setIndustries(state.data, viewModel.selectedIndustry.value?.id)
             binding.errorView.isVisible = false
+            if (binding.selectIndustrySearchbar.getQuery().isEmpty() && viewModel.selectedIndustry.value != null) {
+                binding.selectIndustryButton.isVisible = true
+            }
             return true
         } else {
             return false
         }
+    }
+
+    private fun showLoading(state: ResourceState<List<Industry>>): Boolean {
+        if (state is ResourceState.Loading) {
+            binding.selectIndustryButton.isVisible = false
+            return true
+        } else {
+            return false
+        }
+
     }
 
     private fun showFilteredEmpty() {
@@ -96,6 +111,7 @@ class SelectIndustriesFragment : Fragment() {
 
     private fun showError(state: ResourceState<List<Industry>>): Boolean {
         if (state is ResourceState.Error) {
+            binding.selectIndustryButton.isVisible = false
             when (state.errorType) {
                 ResourceState.ErrorType.NoInternet -> showNoInternet()
                 ResourceState.ErrorType.Empty -> showFilteredEmpty()
@@ -117,7 +133,9 @@ class SelectIndustriesFragment : Fragment() {
     }
 
     private fun showSelectButton(show: Boolean) {
-        binding.selectIndustryButton.isVisible = show
+        if (viewModel.state.value is ResourceState.Content) {
+            binding.selectIndustryButton.isVisible = show
+        }
     }
 
     override fun onDestroy() {

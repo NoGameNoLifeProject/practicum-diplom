@@ -13,7 +13,6 @@ import ru.practicum.android.diploma.domain.api.IVacancyInteractor
 import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.ResourceState
 import ru.practicum.android.diploma.domain.models.VacancyDetails
-import ru.practicum.android.diploma.domain.models.VacancyDetailsState
 import ru.practicum.android.diploma.util.NO_INTERNET_ERROR_CODE
 import java.net.HttpURLConnection
 
