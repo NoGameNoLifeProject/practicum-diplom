@@ -11,21 +11,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding12"
-        android:layout_marginHorizontal="4dp"
-        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="@dimen/padding4"
+        android:layout_marginVertical="@dimen/padding8"
         android:visibility="gone"
         tools:visibility="visible"
         tools:src="@drawable/ic_arrow_back_24px"/>
 
     <TextView
         android:id="@+id/toolbarTitle"
-        android:paddingTop="19dp"
-        android:paddingBottom="19dp"
+        android:paddingTop="@dimen/padding19"
+        android:paddingBottom="@dimen/padding19"
         android:textAppearance="@style/Medium22TextAppearance"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginEnd="4dp"
+        android:layout_marginEnd="@dimen/padding4"
         android:textColor="?attr/textColorPrimary"
         tools:text="Выбор места работы"/>
 
@@ -34,8 +34,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding12"
-        android:layout_marginEnd="4dp"
-        android:layout_marginVertical="8dp"
+        android:layout_marginEnd="@dimen/padding4"
+        android:layout_marginVertical="@dimen/padding8"
         android:visibility="gone"
         tools:visibility="visible"
         tools:src="@drawable/ic_sharing_24px"/>
@@ -44,8 +44,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="@dimen/padding12"
-        android:layout_marginEnd="8dp"
-        android:layout_marginVertical="8dp"
+        android:layout_marginEnd="@dimen/padding8"
+        android:layout_marginVertical="@dimen/padding8"
         android:visibility="gone"
         tools:visibility="visible"
         tools:src="@drawable/ic_favorites_off_24px"/>
