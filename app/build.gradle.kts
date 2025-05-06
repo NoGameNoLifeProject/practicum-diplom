@@ -43,7 +43,6 @@ android {
 }
 
 dependencies {
-    implementation(libs.koin.androidx.navigation)
     implementation(libs.androidX.core)
     implementation(libs.androidX.appCompat)
     implementation(libs.koin.android)

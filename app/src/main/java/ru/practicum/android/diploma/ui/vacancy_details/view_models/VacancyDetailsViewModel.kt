@@ -14,6 +14,7 @@ import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.ResourceState
 import ru.practicum.android.diploma.domain.models.VacancyDetails
 import ru.practicum.android.diploma.util.NO_INTERNET_ERROR_CODE
+import ru.practicum.android.diploma.util.throttleFirst
 import java.net.HttpURLConnection
 
 class VacancyDetailsViewModel(
@@ -83,7 +84,8 @@ class VacancyDetailsViewModel(
 
     }
 
-    fun shareVacancy(context: Context) {
+    val shareVacancy: (Context) -> Unit = throttleFirst(THROTTLE_DELAY, viewModelScope, this::onShareVacancy)
+    fun onShareVacancy(context: Context) {
         val vacancy = getCurrentVacancy() ?: return
         val shareText = vacancy.alternateUrl
         val shareIntent = Intent().apply {
@@ -91,6 +93,7 @@ class VacancyDetailsViewModel(
             putExtra(Intent.EXTRA_TEXT, shareText)
             type = "text/plain"
         }
+
         context.startActivity(Intent.createChooser(shareIntent, "Поделиться ссылкой на вакансию"))
     }
 
@@ -123,6 +126,10 @@ class VacancyDetailsViewModel(
         } else {
             null
         }
+    }
+
+    companion object {
+        private const val THROTTLE_DELAY = 1000L
     }
 
 }
