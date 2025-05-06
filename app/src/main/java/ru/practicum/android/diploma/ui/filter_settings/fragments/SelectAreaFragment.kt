@@ -13,7 +13,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSelectAreaBinding
 import ru.practicum.android.diploma.domain.models.Area
-import ru.practicum.android.diploma.domain.models.AreaState
+import ru.practicum.android.diploma.domain.models.ResourceState
 import ru.practicum.android.diploma.ui.filter_settings.adapters.SelectAreaAdapter
 import ru.practicum.android.diploma.ui.filter_settings.view_models.SelectAreaViewModel
 import ru.practicum.android.diploma.ui.filter_settings.view_models.SelectLocationViewModel
@@ -51,7 +51,7 @@ class SelectAreaFragment : Fragment() {
         }
         binding.selectAreaSearchbar.setOnQueryTextChangedListener {
             adapter.filter(it)
-            if (viewModel.areaState.value is AreaState.ListAreas) {
+            if (viewModel.areaState.value is ResourceState.Content) {
                 setEmptyPlaceholder(adapter.itemCount)
             }
         }
@@ -65,21 +65,33 @@ class SelectAreaFragment : Fragment() {
         findNavController().popBackStack(R.id.selectLocationFragment, false)
     }
 
-    private fun render(state: AreaState) {
-        binding.progressBar.isVisible = state is AreaState.Loading
+    private fun render(state: ResourceState<List<Area>>) {
+        binding.progressBar.isVisible = state is ResourceState.Loading
         binding.placeholder.isVisible = setPlaceholder(state)
         binding.areaRecyclerview.isVisible = setData(state)
     }
 
-    private fun setPlaceholder(state: AreaState): Boolean {
-        if (state is AreaState.NetworkError) {
-            binding.placeholder.setErrorText(getString(R.string.select_area_placeholder_error))
-            binding.placeholder.setErrorImage(R.drawable.image_error_region_500)
+    private fun setPlaceholder(state: ResourceState<List<Area>>): Boolean {
+        if (state is ResourceState.Error) {
+            when (state.errorType) {
+                ResourceState.ErrorType.NoInternet -> showNoInternet()
+                else -> showNetworkError()
+            }
             binding.placeholder.isVisible = true
             return true
         } else {
             return false
         }
+    }
+
+    private fun showNetworkError() {
+        binding.placeholder.setErrorText(getString(R.string.select_area_placeholder_error))
+        binding.placeholder.setErrorImage(R.drawable.image_error_region_500)
+    }
+
+    private fun showNoInternet() {
+        binding.placeholder.setErrorImage(R.drawable.image_error_no_internet)
+        binding.placeholder.setErrorText(getString(R.string.no_internet))
     }
 
     private fun setEmptyPlaceholder(size: Int) {
@@ -94,9 +106,9 @@ class SelectAreaFragment : Fragment() {
         }
     }
 
-    private fun setData(state: AreaState): Boolean {
-        if (state is AreaState.ListAreas) {
-            adapter.setAreas(state.listAreas)
+    private fun setData(state: ResourceState<List<Area>>): Boolean {
+        if (state is ResourceState.Content) {
+            adapter.setAreas(state.data)
             return true
         } else {
             return false

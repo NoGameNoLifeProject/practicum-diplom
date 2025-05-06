@@ -15,8 +15,8 @@ import com.bumptech.glide.load.resource.bitmap.CenterInside
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentVacancyDetailsBinding
+import ru.practicum.android.diploma.domain.models.ResourceState
 import ru.practicum.android.diploma.domain.models.VacancyDetails
-import ru.practicum.android.diploma.domain.models.VacancyDetailsState
 import ru.practicum.android.diploma.ui.vacancy_details.view_models.VacancyDetailsViewModel
 import ru.practicum.android.diploma.util.salaryFormat
 import ru.practicum.android.diploma.util.setTextOrGone
@@ -66,47 +66,59 @@ class VacancyDetailsFragment : Fragment() {
         binding.toolbar.setOnAction2Click { viewModel.shareVacancy(requireContext()) }
     }
 
-    private fun render(state: VacancyDetailsState) {
-        binding.progressBar.isVisible = state is VacancyDetailsState.Loading
+    private fun render(state: ResourceState<VacancyDetails>) {
+        binding.progressBar.isVisible = state is ResourceState.Loading
         binding.placeholder.isVisible = setPlaceholder(state)
         binding.content.isVisible = setContent(state)
     }
 
-    private fun setPlaceholder(state: VacancyDetailsState): Boolean {
-        val didShow = when (state) {
-            is VacancyDetailsState.NothingFound -> {
-                binding.placeholder.setErrorImage(R.drawable.image_error_vacancy_404)
-                binding.placeholder.setErrorText(
-                    getString(R.string.vacancy_details_placeholder_not_found)
-                )
-                true
-            }
+    private fun setPlaceholder(state: ResourceState<VacancyDetails>): Boolean {
+        val didShow = if (state is ResourceState.Error) {
+            when (state.errorType) {
+                ResourceState.ErrorType.NothingFound -> {
+                    binding.placeholder.setErrorImage(R.drawable.image_error_vacancy_404)
+                    binding.placeholder.setErrorText(
+                        getString(R.string.vacancy_details_placeholder_not_found)
+                    )
+                    true
+                }
 
-            is VacancyDetailsState.NetworkError -> {
-                binding.placeholder.setErrorImage(R.drawable.image_error_vacancy_500)
-                binding.placeholder.setErrorText(
-                    getString(R.string.vacancy_details_placeholder_server_error)
-                )
-                true
-            }
+                ResourceState.ErrorType.NetworkError -> {
+                    binding.placeholder.setErrorImage(R.drawable.image_error_vacancy_500)
+                    binding.placeholder.setErrorText(
+                        getString(R.string.vacancy_details_placeholder_server_error)
+                    )
+                    true
+                }
 
-            else -> false
+                ResourceState.ErrorType.NoInternet -> {
+                    binding.placeholder.setErrorImage(R.drawable.image_error_no_internet)
+                    binding.placeholder.setErrorText(
+                        getString(R.string.no_internet)
+                    )
+                    true
+                }
+
+                else -> false
+            }
+        } else {
+            false
         }
         return didShow
     }
 
-    private fun setContent(state: VacancyDetailsState): Boolean {
+    private fun setContent(state: ResourceState<VacancyDetails>): Boolean {
         when (state) {
-            is VacancyDetailsState.VacanciesDetails -> {
-                binding.vacancyName.text = state.vacancy.name
-                binding.vacancySalary.text = salaryFormat(requireContext(), state.vacancy.salary)
-                setEmployer(state.vacancy)
-                setExperience(state.vacancy)
+            is ResourceState.Content -> {
+                binding.vacancyName.text = state.data.name
+                binding.vacancySalary.text = salaryFormat(requireContext(), state.data.salary)
+                setEmployer(state.data)
+                setExperience(state.data)
                 binding.workFormatAndSchedule.setTextOrGone(
-                    workFormatSchedule(requireContext(), state.vacancy.workFormat, state.vacancy.workSchedule)
+                    workFormatSchedule(requireContext(), state.data.workFormat, state.data.workSchedule)
                 )
-                setDescription(state.vacancy)
-                setKeySkills(state.vacancy)
+                setDescription(state.data)
+                setKeySkills(state.data)
                 return true
             }
 

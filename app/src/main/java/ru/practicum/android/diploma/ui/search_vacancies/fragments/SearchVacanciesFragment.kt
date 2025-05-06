@@ -16,7 +16,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.practicum.android.diploma.R
 import ru.practicum.android.diploma.databinding.FragmentSearchVacanciesBinding
-import ru.practicum.android.diploma.domain.models.SearchVacanciesState
+import ru.practicum.android.diploma.domain.models.ResourceState
+import ru.practicum.android.diploma.domain.models.SearchVacanciesPage
 import ru.practicum.android.diploma.ui.search_vacancies.adapter.VacancyAdapter
 import ru.practicum.android.diploma.ui.search_vacancies.view_models.SearchVacanciesViewModel
 
@@ -82,11 +83,11 @@ class SearchVacanciesFragment : Fragment() {
         }
     }
 
-    private fun render(state: SearchVacanciesState) {
+    private fun render(state: ResourceState<SearchVacanciesPage>) {
         when (state) {
-            is SearchVacanciesState.Content -> showVacancies(state)
-            is SearchVacanciesState.Loading -> showLoadingPage()
-            is SearchVacanciesState.Error -> showError(state)
+            is ResourceState.Content -> showVacancies(state)
+            is ResourceState.Loading -> showLoadingPage()
+            is ResourceState.Error -> showError(state)
         }
     }
 
@@ -97,14 +98,15 @@ class SearchVacanciesFragment : Fragment() {
         binding.foundedVacancy.isVisible = false
     }
 
-    private fun showVacancies(state: SearchVacanciesState.Content) {
+    private fun showVacancies(state: ResourceState.Content<SearchVacanciesPage>) {
         hideAll()
+        val page = state.data
         binding.recyclerViewVacancy.isVisible = true
         binding.foundedVacancy.isVisible = true
         binding.foundedVacancy.text =
-            String.format(getString(R.string.search_vacancies_chip_found_vacancies), state.founded.toString())
-        adapter.setVacancies(state.items)
-        adapter.isLoadingMore = state.isLoadingMore
+            String.format(getString(R.string.search_vacancies_chip_found_vacancies), page.found.toString())
+        adapter.setVacancies(page.items)
+        adapter.isLoadingMore = page.isLoadingMore
     }
 
     private fun showLoadingPage() {
@@ -112,13 +114,13 @@ class SearchVacanciesFragment : Fragment() {
         binding.progressCircular.isVisible = true
     }
 
-    private fun showError(state: SearchVacanciesState.Error) {
+    private fun showError(state: ResourceState.Error<SearchVacanciesPage>) {
         hideAll()
         when (state.errorType) {
-            SearchVacanciesState.ErrorType.Empty -> showEmpty()
-            SearchVacanciesState.ErrorType.NetworkError -> showNetworkError()
-            SearchVacanciesState.ErrorType.NothingFound -> showNothingFound()
-            SearchVacanciesState.ErrorType.NoInternet -> showNoInternet()
+            ResourceState.ErrorType.Empty -> showEmpty()
+            ResourceState.ErrorType.NetworkError -> showNetworkError()
+            ResourceState.ErrorType.NothingFound -> showNothingFound()
+            ResourceState.ErrorType.NoInternet -> showNoInternet()
         }
     }
 
@@ -147,7 +149,7 @@ class SearchVacanciesFragment : Fragment() {
     private fun showNoInternet() {
         binding.errorStateView.isVisible = true
         binding.errorStateView.setErrorImage(R.drawable.image_error_no_internet)
-        binding.errorStateView.setErrorText(getString(R.string.search_vacancies_no_internet))
+        binding.errorStateView.setErrorText(getString(R.string.no_internet))
     }
 
     private fun showToast(@StringRes resId: Int) {

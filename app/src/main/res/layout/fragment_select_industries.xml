@@ -36,8 +36,9 @@
     <ru.practicum.android.diploma.ui.common.ErrorStateView
         android:id="@+id/error_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:visibility="gone"
+        android:layout_marginTop="@dimen/error_padding_top122"
         app:layout_constraintTop_toBottomOf="@id/select_industry_searchbar"
         app:errorImage="@drawable/image_error_region_500"
         app:errorText="@string/select_industries_placeholder_error"/>

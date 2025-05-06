@@ -10,6 +10,7 @@
     <dimen name="padding8">8dp</dimen>
     <dimen name="padding16">16dp</dimen>
     <dimen name="padding12">12dp</dimen>
+    <dimen name="padding19">19dp</dimen>
     <dimen name="padding20">20dp</dimen>
     <dimen name="padding24">24dp</dimen>
     <dimen name="padding32">32dp</dimen>
@@ -33,6 +34,7 @@
     <dimen name="view_double_hint_edit_text">51dp</dimen>
     <dimen name="view_floating_label_textview.xml">60dp</dimen>
     <dimen name="button_size">59dp</dimen>
+    <dimen name="error_padding_top122">122dp</dimen>
 
 </resources>
 
