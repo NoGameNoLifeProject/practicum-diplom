@@ -24,3 +24,19 @@ fun <T> debounce(
         }
     }
 }
+
+fun <T> throttleFirst(
+    skipMs: Long = 300L,
+    coroutineScope: CoroutineScope,
+    destinationFunction: (T) -> Unit
+): (T) -> Unit {
+    var throttleJob: Job? = null
+    return { param: T ->
+        if (throttleJob?.isCompleted != false) {
+            throttleJob = coroutineScope.launch {
+                destinationFunction(param)
+                delay(skipMs)
+            }
+        }
+    }
+}

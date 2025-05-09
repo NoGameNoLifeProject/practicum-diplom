@@ -8,12 +8,13 @@ import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
 import ru.practicum.android.diploma.domain.api.Resource
 import ru.practicum.android.diploma.domain.models.Area
-import ru.practicum.android.diploma.domain.models.AreaState
+import ru.practicum.android.diploma.domain.models.ResourceState
+import ru.practicum.android.diploma.util.NO_INTERNET_ERROR_CODE
 
 class SelectAreaViewModel(private val interactor: IVacancyInteractor) : ViewModel() {
 
-    private val _areaState = MutableLiveData<AreaState>()
-    val areaState: LiveData<AreaState> get() = _areaState
+    private val _areaState = MutableLiveData<ResourceState<List<Area>>>()
+    val areaState: LiveData<ResourceState<List<Area>>> get() = _areaState
     var allAreas: List<Area> = emptyList()
 
     fun getCountryByArea(
@@ -46,7 +47,7 @@ class SelectAreaViewModel(private val interactor: IVacancyInteractor) : ViewMode
     }
 
     fun getAreas(countryId: String?) {
-        _areaState.postValue(AreaState.Loading)
+        _areaState.postValue(ResourceState.Loading())
         viewModelScope.launch {
             interactor.getAreas().collect { res ->
                 when (res) {
@@ -55,16 +56,24 @@ class SelectAreaViewModel(private val interactor: IVacancyInteractor) : ViewMode
                             val areas = res.data
                             allAreas = areas
                             val flattenAreas = areas.flatten().filter { it.parentId != null }.sortedBy { it.name }
-                            _areaState.postValue(AreaState.ListAreas(flattenAreas))
+                            _areaState.postValue(ResourceState.Content(flattenAreas))
                         } else {
                             val areas = res.data
                             allAreas = areas
                             val flattenAreas = res.data.flattenDescendantsOf(countryId).sortedBy { it.name }
-                            _areaState.postValue(AreaState.ListAreas(flattenAreas))
+                            _areaState.postValue(ResourceState.Content(flattenAreas))
                         }
                     }
-
-                    is Resource.Error -> _areaState.postValue(AreaState.NetworkError)
+                    is Resource.Error -> {
+                        when (res.errorCode) {
+                            NO_INTERNET_ERROR_CODE -> _areaState.postValue(
+                                ResourceState.Error(ResourceState.ErrorType.NoInternet)
+                            )
+                            else -> _areaState.postValue(
+                                ResourceState.Error(ResourceState.ErrorType.NetworkError)
+                            )
+                        }
+                    }
                 }
             }
 

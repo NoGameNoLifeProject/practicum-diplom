@@ -11,8 +11,10 @@ import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.IFavVacanciesInteractor
 import ru.practicum.android.diploma.domain.api.IVacancyInteractor
 import ru.practicum.android.diploma.domain.api.Resource
+import ru.practicum.android.diploma.domain.models.ResourceState
 import ru.practicum.android.diploma.domain.models.VacancyDetails
-import ru.practicum.android.diploma.domain.models.VacancyDetailsState
+import ru.practicum.android.diploma.util.NO_INTERNET_ERROR_CODE
+import ru.practicum.android.diploma.util.throttleFirst
 import java.net.HttpURLConnection
 
 class VacancyDetailsViewModel(
@@ -22,11 +24,11 @@ class VacancyDetailsViewModel(
 
     private val _isFavoriteLiveData = MutableLiveData<Boolean>()
     val isFavoriteLiveData: LiveData<Boolean> get() = _isFavoriteLiveData
-    private val _vacancyDetailsState = MutableLiveData<VacancyDetailsState>(VacancyDetailsState.Empty)
-    val vacancyDetailsState: LiveData<VacancyDetailsState> get() = _vacancyDetailsState
+    private val _vacancyDetailsState = MutableLiveData<ResourceState<VacancyDetails>>(ResourceState.Loading())
+    val vacancyDetailsState: LiveData<ResourceState<VacancyDetails>> get() = _vacancyDetailsState
 
     fun getVacancyDetails(vacancyId: String, isLocal: Boolean) {
-        _vacancyDetailsState.value = VacancyDetailsState.Loading
+        _vacancyDetailsState.value = ResourceState.Loading()
         viewModelScope.launch {
             if (isLocal) {
                 val vacancyList = favoriteInteractor.getFavorite().first()
@@ -43,17 +45,21 @@ class VacancyDetailsViewModel(
     private fun getFromSearch(result: Resource<VacancyDetails>) {
         when (result) {
             is Resource.Success -> {
-                _vacancyDetailsState.value = VacancyDetailsState.VacanciesDetails(result.data)
+                _vacancyDetailsState.value = ResourceState.Content(result.data)
             }
 
             is Resource.Error -> {
                 when (result.errorCode) {
                     HttpURLConnection.HTTP_NOT_FOUND -> {
-                        _vacancyDetailsState.value = VacancyDetailsState.NothingFound
+                        _vacancyDetailsState.value = ResourceState.Error(ResourceState.ErrorType.NothingFound)
+                    }
+
+                    NO_INTERNET_ERROR_CODE -> {
+                        _vacancyDetailsState.value = ResourceState.Error(ResourceState.ErrorType.NoInternet)
                     }
 
                     else -> {
-                        _vacancyDetailsState.value = VacancyDetailsState.NetworkError
+                        _vacancyDetailsState.value = ResourceState.Error(ResourceState.ErrorType.NetworkError)
                     }
                 }
             }
@@ -65,20 +71,21 @@ class VacancyDetailsViewModel(
             is Resource.Success -> {
                 val vacancy = vacancyList.data.find { it.id == vacancyId }
                 if (vacancy != null) {
-                    _vacancyDetailsState.value = VacancyDetailsState.VacanciesDetails(vacancy)
+                    _vacancyDetailsState.value = ResourceState.Content(vacancy)
                 } else {
-                    _vacancyDetailsState.value = VacancyDetailsState.NothingFound
+                    _vacancyDetailsState.value = ResourceState.Error(ResourceState.ErrorType.NothingFound)
                 }
             }
 
             is Resource.Error -> {
-                _vacancyDetailsState.value = VacancyDetailsState.NetworkError
+                _vacancyDetailsState.value = ResourceState.Error(ResourceState.ErrorType.NetworkError)
             }
         }
 
     }
 
-    fun shareVacancy(context: Context) {
+    val shareVacancy: (Context) -> Unit = throttleFirst(THROTTLE_DELAY, viewModelScope, this::onShareVacancy)
+    fun onShareVacancy(context: Context) {
         val vacancy = getCurrentVacancy() ?: return
         val shareText = vacancy.alternateUrl
         val shareIntent = Intent().apply {
@@ -86,6 +93,7 @@ class VacancyDetailsViewModel(
             putExtra(Intent.EXTRA_TEXT, shareText)
             type = "text/plain"
         }
+
         context.startActivity(Intent.createChooser(shareIntent, "Поделиться ссылкой на вакансию"))
     }
 
@@ -113,11 +121,15 @@ class VacancyDetailsViewModel(
 
     private fun getCurrentVacancy(): VacancyDetails? {
         val state = _vacancyDetailsState.value
-        return if (state is VacancyDetailsState.VacanciesDetails) {
-            state.vacancy
+        return if (state is ResourceState.Content) {
+            state.data
         } else {
             null
         }
+    }
+
+    companion object {
+        private const val THROTTLE_DELAY = 1000L
     }
 
 }

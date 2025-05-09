@@ -7,13 +7,14 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import ru.practicum.android.diploma.domain.api.IFavVacanciesInteractor
 import ru.practicum.android.diploma.domain.api.Resource
-import ru.practicum.android.diploma.domain.models.FavVacanciesState
+import ru.practicum.android.diploma.domain.models.ResourceState
+import ru.practicum.android.diploma.domain.models.VacancyDetails
 
 class FavVacanciesViewModel(private val favVacanciesInteractor: IFavVacanciesInteractor) : ViewModel() {
-    private val _state = MutableLiveData<FavVacanciesState>()
-    val state: LiveData<FavVacanciesState> get() = _state
+    private val _state = MutableLiveData<ResourceState<List<VacancyDetails>>>()
+    val state: LiveData<ResourceState<List<VacancyDetails>>> get() = _state
 
-    private fun renderState(state: FavVacanciesState) {
+    private fun renderState(state: ResourceState<List<VacancyDetails>>) {
         _state.postValue(state)
     }
 
@@ -22,19 +23,19 @@ class FavVacanciesViewModel(private val favVacanciesInteractor: IFavVacanciesInt
     }
 
     private fun getFavVacancies() {
-        renderState(FavVacanciesState.Loading)
+        renderState(ResourceState.Loading())
         viewModelScope.launch {
             favVacanciesInteractor.getFavorite().collect { result ->
                 when (result) {
                     is Resource.Success -> {
                         if (result.data.isNullOrEmpty()) {
-                            renderState(FavVacanciesState.Empty)
+                            renderState(ResourceState.Error(ResourceState.ErrorType.Empty))
                         } else {
-                            renderState(FavVacanciesState.VacanciesList(result.data))
+                            renderState(ResourceState.Content(result.data))
                         }
                     }
                     is Resource.Error -> {
-                        renderState(FavVacanciesState.Error)
+                        renderState(ResourceState.Error(ResourceState.ErrorType.NothingFound))
                     }
                 }
             }

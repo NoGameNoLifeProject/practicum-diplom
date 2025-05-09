@@ -6,18 +6,18 @@ import androidx.recyclerview.widget.RecyclerView
 import ru.practicum.android.diploma.databinding.IndustryItemBinding
 import ru.practicum.android.diploma.domain.models.Industry
 
-class SelectIndustriesAdapter(private val onClick: (Industry) -> Unit) :
+class SelectIndustriesAdapter(
+    private val onClick: (Industry) -> Unit
+) :
     RecyclerView.Adapter<SelectIndustriesAdapter.ViewHolder>() {
 
-    private val industries = mutableListOf<Industry>()
     private val filteredIndustries = mutableListOf<Industry>()
     private var selectedId: String? = null
 
     inner class ViewHolder(val binding: IndustryItemBinding) : RecyclerView.ViewHolder(binding.root)
 
-    fun setIndustries(newIndustries: List<Industry>) {
-        industries.clear()
-        industries.addAll(newIndustries)
+    fun setIndustries(newIndustries: List<Industry>, selected: String? = null) {
+        setSelected(selected)
         filteredIndustries.clear()
         filteredIndustries.addAll(newIndustries)
         notifyDataSetChanged()
@@ -25,6 +25,7 @@ class SelectIndustriesAdapter(private val onClick: (Industry) -> Unit) :
 
     fun setSelected(id: String?) {
         selectedId = id
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -39,18 +40,9 @@ class SelectIndustriesAdapter(private val onClick: (Industry) -> Unit) :
 
             holder.itemView.setOnClickListener {
                 onClick(filteredIndustries[position])
-                selectedId = filteredIndustries[position].id
-                notifyDataSetChanged()
             }
         }
     }
 
     override fun getItemCount() = filteredIndustries.size
-
-    fun filter(expression: String) {
-        val filtered = industries.filter { it.name.contains(expression, true) }
-        filteredIndustries.clear()
-        filteredIndustries.addAll(filtered)
-        notifyDataSetChanged()
-    }
 }
